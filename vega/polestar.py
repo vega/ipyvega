@@ -6,11 +6,11 @@ import codecs
 from IPython import display
 
 
-JS = ['index.js', 'polestar/scripts/vendor-41301df4d0.js', 'polestar/scripts/app-3b0363786b.js']
-CSS = ['polestar/styles/app-a696a065c6.css']
+JS = ['polestar/scripts/vendor-13742e93f0.js', 'polestar/scripts/app-512c772610.js']
+CSS = ['polestar/styles/app-a696a065c6.css', 'polestar/scripts/vendor-e4b58aff85.css']
 TEAMPLATE = 'index.html'
 
-IFRAME_STYLE = 'border: none; width: 100%; height: 450px;'
+IFRAME_STYLE = 'border: none; width: 100%; min-height: 580px;'
 
 
 def publish(dataframe):
@@ -60,10 +60,7 @@ class Polestar(display.DisplayObject):
         return u'\n'.join(out)
 
     def __data(self):
-        return {
-            'cols': len(self.columns),
-            'rows': len(self.data)
-        }
+        return self.data.tolist()
 
     def __escape(self, body):
         return cgi.escape(body, quote=True)
