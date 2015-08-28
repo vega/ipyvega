@@ -4,7 +4,7 @@ iPython widget for [polestar](/uwdata/polestar), [voyager](/uwdata/voyager), and
 
 ## Status
 
-This project is in a very early stage but we expect to have a working prototype in the next one or two months.
+This project is in a very early stage but we have a [working prototype](http://nbviewer.ipython.org/github/uwdata/ipython-vega-lite/blob/master/Example.ipynb).
 
 ## Get started with development
 
