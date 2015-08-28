@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
 	<title>Test iframe</title>
 	{styles}
 	{scripts}
@@ -8,7 +9,7 @@
 		var data = '{data}';
 	</script>
 </head>
-<body>
-	<span class="red">Hello world.</span>
+<body class="no-js" ng-app="polestar">
+	<div class="abs-100" ui-view=""></div>
 </body>
 </html>

@@ -1,12 +1,13 @@
 import os
 import json
 import cgi
+import codecs
 
 from IPython import display
 
 
-JS = ['index.js']
-CSS = ['main.css']
+JS = ['index.js', 'polestar/scripts/vendor-41301df4d0.js', 'polestar/scripts/app-3b0363786b.js']
+CSS = ['polestar/styles/app-a696a065c6.css']
 TEAMPLATE = 'index.html'
 
 IFRAME_STYLE = 'border: none; width: 100%; height: 450px;'
@@ -39,24 +40,24 @@ class Polestar(display.DisplayObject):
     def __get_content(self, path):
         path = os.path.join('static', path)
         abs_path = os.path.abspath(path)
-        with open(abs_path, 'r') as f:
+        with codecs.open(abs_path, encoding='utf-8') as f:
             return path, f.read()
 
     def __styles(self, paths):
         out = []
         for p in paths:
             path, body = self.__get_content(p)
-            out.append('<style>//@ sourceURL={path}\n{body}</style>'.format(
+            out.append(u'<style>/*# sourceURL={path} */\n{body}</style>'.format(
                 path=path, body=body))
-        return '\n'.join(out)
+        return u'\n'.join(out)
 
     def __scripts(self, paths):
         out = []
         for p in paths:
             path, body = self.__get_content(p)
-            out.append(('<script type="text/javascript">//@ sourceURL={path}'
+            out.append((u'<script type="text/javascript">//@ sourceURL={path}'
                        '\n{body}</script>').format(path=path, body=body))
-        return '\n'.join(out)
+        return u'\n'.join(out)
 
     def __data(self):
         return {
@@ -74,6 +75,6 @@ class Polestar(display.DisplayObject):
             styles=self.__styles(CSS),
             scripts=self.__scripts(JS),
             data=json.dumps(self.__data()))
-        output = '<iframe srcdoc="{srcdoc}" style="{style}"></iframe>'.format(
+        output = u'<iframe srcdoc="{srcdoc}" style="{style}"></iframe>'.format(
             srcdoc=self.__escape(body), style=IFRAME_STYLE)
         return output
