@@ -71,7 +71,8 @@ class Polestar(display.DisplayObject):
         """Used by the frontend to show html for polestar."""
         _, template = self.__get_content(TEAMPLATE)
         body = template.format(
-            styles=self.__styles(CSS), scripts=self.__scripts(JS),
+            styles=self.__styles(CSS),
+            scripts=self.__scripts(JS),
             data=json.dumps(self.__data()))
         output = '<iframe srcdoc="{srcdoc}" style="{style}"></iframe>'.format(
             srcdoc=self.__escape(body), style=IFRAME_STYLE)

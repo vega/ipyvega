@@ -1,0 +1,3 @@
+[submodule "static/polestar"]
+	path = static/polestar
+	url = git@github.com:uwdata/polestar.git
