@@ -6,9 +6,11 @@ import codecs
 from IPython import display
 
 
-JS = ['polestar/scripts/vendor-13742e93f0.js', 'polestar/scripts/app-512c772610.js']
-CSS = ['polestar/styles/app-a696a065c6.css', 'polestar/scripts/vendor-e4b58aff85.css']
-TEAMPLATE = 'index.html'
+JS = ['static/polestar/scripts/vendor-6292494709.js',
+      'static/polestar/scripts/app-ddc64cf3e9.js']
+CSS = ['static/polestar/scripts/vendor-5779b264ab.css',
+       'static/polestar/styles/app-767140e98a.css']
+TEAMPLATE = 'static/index.html'
 
 IFRAME_STYLE = 'border: none; width: 100%; min-height: 580px;'
 
@@ -38,36 +40,37 @@ class Polestar(display.DisplayObject):
         self.columns = columns
 
     def __get_content(self, path):
-        path = os.path.join('static', path)
         abs_path = os.path.abspath(path)
         with codecs.open(abs_path, encoding='utf-8') as f:
-            return path, f.read()
+            return f.read()
 
     def __styles(self, paths):
         out = []
-        for p in paths:
-            path, body = self.__get_content(p)
+        for path in paths:
             out.append(u'<style>/*# sourceURL={path} */\n{body}</style>'.format(
-                path=path, body=body))
+                path=path, body=self.__get_content(path)))
         return u'\n'.join(out)
 
     def __scripts(self, paths):
         out = []
-        for p in paths:
-            path, body = self.__get_content(p)
+        for path in paths:
             out.append((u'<script type="text/javascript">//@ sourceURL={path}'
-                       '\n{body}</script>').format(path=path, body=body))
+                       '\n{body}</script>').format(
+                       path=path, body=self.__get_content(path)))
         return u'\n'.join(out)
 
     def __data(self):
-        return self.data.tolist()
+        res = []
+        for row in self.data.tolist():
+            res.append({k: v for k, v in zip(self.columns, row)})
+        return res
 
     def __escape(self, body):
         return cgi.escape(body, quote=True)
 
     def _repr_html_(self):
         """Used by the frontend to show html for polestar."""
-        _, template = self.__get_content(TEAMPLATE)
+        template = self.__get_content(TEAMPLATE)
         body = template.format(
             styles=self.__styles(CSS),
             scripts=self.__scripts(JS),
