@@ -25,7 +25,7 @@ def create(dataframe):
     return Polestar(dataframe.columns, dataframe.values)
 
 
-class Polestar(display.DisplayObject):
+class Polestar():
     """Defines Polestar widget"""
 
     def __init__(self, columns, data):
@@ -74,6 +74,7 @@ class Polestar(display.DisplayObject):
         body = template.format(
             styles=self.__styles(CSS),
             scripts=self.__scripts(JS),
+            spec={},
             data=json.dumps(self.__data()))
         output = u'<iframe srcdoc="{srcdoc}" style="{style}"></iframe>'.format(
             srcdoc=self.__escape(body), style=IFRAME_STYLE)
