@@ -15,29 +15,30 @@ TEAMPLATE = 'static/index.html'
 IFRAME_STYLE = 'border: none; width: 100%; min-height: 580px;'
 
 
-def publish(dataframe):
+def publish(dataframe, spec={}):
     """Create and immediately display even if it is not the last line."""
-    display.display(create(dataframe))
+    display.display(create(dataframe, spec))
 
 
-def create(dataframe):
+def create(dataframe, spec={}):
     """Creates polestar from a dataframe"""
-    return Polestar(dataframe.columns, dataframe.values)
+    return Polestar(dataframe.columns, dataframe.values, spec)
 
 
 class Polestar():
     """Defines Polestar widget"""
 
-    def __init__(self, columns, data):
+    def __init__(self, columns, data, spec={}):
         """Constructor
 
         Args:
             columns: a list of column names
-
-            data: list of rows"""
+            data: list of rows
+            spec: the initial vega-lite spec as a python dictionary"""
 
         self.data = data
         self.columns = columns
+        self.spec = spec
 
     def __get_content(self, path):
         abs_path = os.path.abspath(path)
@@ -75,7 +76,7 @@ class Polestar():
         body = template.format(
             styles=self.__styles(CSS),
             scripts=self.__scripts(JS),
-            spec={},
+            spec=json.dumps(self.spec),
             data=json.dumps(self.__data()))
         output = u'<iframe srcdoc="{srcdoc}" style="{style}"></iframe>'.format(
             srcdoc=self.__escape(body), style=IFRAME_STYLE)
