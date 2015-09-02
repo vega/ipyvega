@@ -47,8 +47,9 @@ class Polestar():
     def __styles(self, paths):
         out = []
         for path in paths:
-            out.append(u'<style>/*# sourceURL={path} */\n{body}</style>'.format(
-                path=path, body=self.__get_content(path)))
+            out.append(
+                u'<style>/*# sourceURL={path} */\n{body}</style>'.format(
+                    path=path, body=self.__get_content(path)))
         return u'\n'.join(out)
 
     def __scripts(self, paths):
