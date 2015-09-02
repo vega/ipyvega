@@ -15,7 +15,7 @@ TEAMPLATE = 'static/index.html'
 IFRAME_STYLE = 'border: none; width: 100%; min-height: 580px;'
 
 
-def publish(dataframe, spec={}):
+def explore(dataframe, spec={}):
     """Create and immediately display even if it is not the last line."""
     display.display(create(dataframe, spec))
 
