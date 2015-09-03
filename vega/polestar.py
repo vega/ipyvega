@@ -5,11 +5,10 @@ import codecs
 
 from IPython import display
 
-
-JS = ['static/polestar/scripts/vendor-6292494709.js',
-      'static/polestar/scripts/app-ddc64cf3e9.js']
+JS = ['static/polestar/scripts/vendor-bf365ade30.js',
+      'static/polestar/scripts/app-51ac5b5c07.js']
 CSS = ['static/polestar/scripts/vendor-5779b264ab.css',
-       'static/polestar/styles/app-767140e98a.css']
+       'static/polestar/styles/app-ca269f7a84.css']
 TEAMPLATE = 'static/index.html'
 
 IFRAME_STYLE = 'border: none; width: 100%; min-height: 580px;'
