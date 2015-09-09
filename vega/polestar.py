@@ -1,15 +1,15 @@
-import os
+import os.path
 import json
 import cgi
 import codecs
 
 from IPython import display
 
-JS = ['static/polestar/scripts/vendor-bf365ade30.js',
-      'static/polestar/scripts/app-51ac5b5c07.js']
-CSS = ['static/polestar/scripts/vendor-5779b264ab.css',
-       'static/polestar/styles/app-ca269f7a84.css']
-TEAMPLATE = 'static/index.html'
+JS = ['../static/polestar/scripts/vendor-bf365ade30.js',
+      '../static/polestar/scripts/app-51ac5b5c07.js']
+CSS = ['../static/polestar/scripts/vendor-5779b264ab.css',
+       '../static/polestar/styles/app-ca269f7a84.css']
+TEAMPLATE = '../static/index.html'
 
 IFRAME_STYLE = 'border: none; width: 100%; min-height: 580px;'
 
@@ -40,7 +40,9 @@ class Polestar():
         self.spec = spec
 
     def __get_content(self, path):
-        abs_path = os.path.abspath(path)
+        abs_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            path)
         with codecs.open(abs_path, encoding='utf-8') as f:
             return f.read()
 
