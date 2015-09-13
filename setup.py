@@ -12,7 +12,7 @@ setup(
     author='Dominik Moritz, Kanit "Ham" Wongsuphasawat',
     author_email='domoritz@gmail.com',
     license='MIT License',
-    url='https://github.com/uwdata/ipython-vega',
+    url='https://github.com/vega/ipython-vega',
     keywords='data visualization',
     classifiers=['Development Status :: 4 - Beta',
                  'Programming Language :: Python :: 2.7',
