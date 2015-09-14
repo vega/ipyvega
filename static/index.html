@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="polestar">
 <head>
   <meta charset="utf-8">
   <title>Test iframe</title>
@@ -10,7 +10,9 @@
   </script>
   {scripts}
 </head>
-<body class="no-js" ng-app="polestar">
-  <div class="abs-100" ui-view=""></div>
+<body class="no-js">
+  <div class="abs-100">
+    <ng-include src="'app/main/main.html'"></ng-include>
+  </div>
 </body>
 </html>

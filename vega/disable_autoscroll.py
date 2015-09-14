@@ -6,7 +6,7 @@ Usage:
 from IPython.display import display, Javascript
 
 DISABLE_SCROLLING = """
-IPython.OutputArea.prototype._should_scroll = function(lines) {
+require("notebook/js/outputarea").OutputArea.prototype._should_scroll = function(lines) {
     return false;
 }
 """

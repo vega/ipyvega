@@ -5,10 +5,10 @@ import codecs
 
 from IPython import display
 
-JS = ['../static/polestar/scripts/vendor-bf365ade30.js',
-      '../static/polestar/scripts/app-51ac5b5c07.js']
-CSS = ['../static/polestar/scripts/vendor-5779b264ab.css',
-       '../static/polestar/styles/app-ca269f7a84.css']
+JS = ['../static/polestar/scripts/vendor-906afe9505.js',
+      '../static/polestar/scripts/app-78ff08bd23.js']
+CSS = ['../static/polestar/styles/vendor-5779b264ab.css',
+       '../static/polestar/styles/app-89a877cacd.css']
 TEAMPLATE = '../static/index.html'
 
 IFRAME_STYLE = 'border: none; width: 100%; min-height: 580px;'
@@ -51,7 +51,8 @@ class Polestar():
         for path in paths:
             out.append(
                 u'<style>/*# sourceURL={path} */\n{body}</style>'.format(
-                    path=path, body=self.__get_content(path)))
+                    path=os.path.basename(path),
+                    body=self.__get_content(path)))
         return u'\n'.join(out)
 
     def __scripts(self, paths):
@@ -59,7 +60,8 @@ class Polestar():
         for path in paths:
             out.append((u'<script type="text/javascript">//@ sourceURL={path}'
                        '\n{body}</script>').format(
-                       path=path, body=self.__get_content(path)))
+                       path=os.path.basename(path),
+                       body=self.__get_content(path)))
         return u'\n'.join(out)
 
     def __data(self):
