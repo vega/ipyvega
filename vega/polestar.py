@@ -5,13 +5,15 @@ import codecs
 
 from IPython import display
 
-JS = ['../static/polestar/scripts/vendor-906afe9505.js',
-      '../static/polestar/scripts/app-78ff08bd23.js']
+JS = ['../static/polestar/scripts/vendor-e47d84deae.js',
+      '../static/polestar/scripts/app-85737da98d.js']
 CSS = ['../static/polestar/styles/vendor-5779b264ab.css',
        '../static/polestar/styles/app-89a877cacd.css']
 TEAMPLATE = '../static/index.html'
 
 IFRAME_STYLE = 'border: none; width: 100%; min-height: 580px;'
+
+IFRAME = u'<iframe sandbox="allow-scripts" srcdoc="{srcdoc}" style="{style}"></iframe>'
 
 
 def explore(dataframe, spec={}):
@@ -81,6 +83,6 @@ class Polestar():
             scripts=self.__scripts(JS),
             spec=json.dumps(self.spec),
             data=json.dumps(self.__data()))
-        output = u'<iframe srcdoc="{srcdoc}" style="{style}"></iframe>'.format(
+        output = IFRAME.format(
             srcdoc=self.__escape(body), style=IFRAME_STYLE)
         return output
