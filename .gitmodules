@@ -1,3 +1,6 @@
 [submodule "static/polestar"]
 	path = static/polestar
 	url = git@github.com:uwdata/polestar.git
+[submodule "static/voyager"]
+	path = static/voyager
+	url = git@github.com:vega/voyager.git
