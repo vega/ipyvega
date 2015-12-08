@@ -2,10 +2,10 @@ from IPython import display
 
 from tool import Tool
 
-JS = ['../static/polestar/scripts/vendor-2fda575321.js',
-      '../static/polestar/scripts/app-001ebe1cd2.js']
-CSS = ['../static/polestar/styles/vendor-5779b264ab.css',
-       '../static/polestar/styles/app-ca269f7a84.css']
+JS = ['../static/polestar/scripts/vendor.js',
+      '../static/polestar/scripts/app.js']
+CSS = ['../static/polestar/styles/vendor.css',
+       '../static/polestar/styles/app.css']
 TEAMPLATE = '../static/polestar.html'
 
 

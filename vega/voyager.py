@@ -2,10 +2,10 @@ from IPython import display
 
 from tool import Tool
 
-JS = ['../static/voyager/scripts/vendor-74523ad045.js',
-      '../static/voyager/scripts/app-dd651a012b.js']
-CSS = ['../static/voyager/styles/vendor-792568d4e4.css',
-       '../static/voyager/styles/app-bb2801de8c.css']
+JS = ['../static/voyager/scripts/vendor.js',
+      '../static/voyager/scripts/app.js']
+CSS = ['../static/voyager/styles/vendor.css',
+       '../static/voyager/styles/app.css']
 TEAMPLATE = '../static/voyager.html'
 
 
