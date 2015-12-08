@@ -8,7 +8,7 @@ except ImportError:
 setup(
     name='vega',
     version='0.1',
-    description='An IPython widget for vega-lite, polestar, and voyager',
+    description='An iPython/ Jupyter widget for Vega, Vega-Lite, Polestar, and Voyager',
     author='Dominik Moritz, Kanit "Ham" Wongsuphasawat',
     author_email='domoritz@gmail.com',
     license='MIT License',
