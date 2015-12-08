@@ -1,6 +1,6 @@
 # ipython-vega
 
-iPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [polestar](/vega/polestar), and [voyager](/vega/voyager).
+iPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).
 
 ## Status
 
