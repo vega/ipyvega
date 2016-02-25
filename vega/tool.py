@@ -47,7 +47,7 @@ class Tool(object):
     def __scripts(self, paths):
         out = []
         for path in paths:
-            out.append((u'<script type="text/javascript">//@ sourceURL={path}'
+            out.append((u'<script type="text/javascript" charset="utf-8">//@ sourceURL={path}'
                        '\n{body}</script>').format(
                        path=os.path.basename(path),
                        body=self.__get_content(path)))

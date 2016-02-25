@@ -6,7 +6,7 @@ JS = ['../static/voyager/scripts/vendor.js',
       '../static/voyager/scripts/app.js']
 CSS = ['../static/voyager/styles/vendor.css',
        '../static/voyager/styles/app.css']
-TEAMPLATE = '../static/voyager.html'
+TEMPLATE = '../static/voyager.html'
 
 
 def explore(dataframe):
@@ -29,4 +29,4 @@ class Voyager(Tool):
             columns: a list of column names
             data: list of rows"""
 
-        super(Voyager, self).__init__(columns, data, JS, CSS, TEAMPLATE)
+        super(Voyager, self).__init__(columns, data, JS, CSS, TEMPLATE)

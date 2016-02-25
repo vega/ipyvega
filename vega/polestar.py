@@ -6,7 +6,7 @@ JS = ['../static/polestar/scripts/vendor.js',
       '../static/polestar/scripts/app.js']
 CSS = ['../static/polestar/styles/vendor.css',
        '../static/polestar/styles/app.css']
-TEAMPLATE = '../static/polestar.html'
+TEMPLATE = '../static/polestar.html'
 
 
 def explore(dataframe, spec={}):
@@ -30,5 +30,5 @@ class Polestar(Tool):
             data: list of rows
             spec: the initial vega-lite spec as a python dictionary"""
 
-        super(Polestar, self).__init__(columns, data, JS, CSS, TEAMPLATE)
+        super(Polestar, self).__init__(columns, data, JS, CSS, TEMPLATE)
         self.spec = spec
