@@ -1,0 +1,19 @@
+{
+  "name": "ipython-vega",
+  "version": "0.0.1",
+  "description": "iPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uwdata/ipython-vega.git"
+  },
+  "author": "",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/uwdata/ipython-vega/issues"
+  },
+  "homepage": "https://github.com/uwdata/ipython-vega#readme",
+  "dependencies": {
+    "vega-embed": "^2.0.0",
+    "vega-lite": "^1.0.0"
+  }
+}

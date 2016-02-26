@@ -3,13 +3,9 @@ import cgi
 import json
 import codecs
 
-IFRAME_STYLE = 'border: none; width: 100%; min-height: 580px;'
-
-IFRAME = u'<iframe sandbox="allow-scripts" srcdoc="{srcdoc}" style="{style}"></iframe>'
-
 
 class Tool(object):
-    """Abstract class for polestar and voyager widget"""
+    """Abstract class for widget"""
 
     def __init__(self, columns, data, js, css, template):
         """Constructor
@@ -63,7 +59,7 @@ class Tool(object):
         return cgi.escape(body, quote=True)
 
     def _repr_html_(self):
-        """Used by the frontend to show html for polestar."""
+        """Used by the frontend to show html."""
         template = self.__get_content(self._template)
         if hasattr(self, 'spec'):
             body = template.format(
@@ -76,6 +72,4 @@ class Tool(object):
                 styles=self.__styles(self._css),
                 scripts=self.__scripts(self._js),
                 data=json.dumps(self.__data()))
-        output = IFRAME.format(
-            srcdoc=self.__escape(body), style=IFRAME_STYLE)
-        return output
+        return self.__escape(body)
