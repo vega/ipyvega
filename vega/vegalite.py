@@ -1,15 +1,18 @@
 from IPython.display import display, Javascript, HTML
+from IPython.html import install_nbextension
 
 import json
 import os
 
+from . import __path__
 import utils
 
 JS = ["../static/d3.min.js",
       "../static/vega.min.js",
       "../static/vega-lite.min.js",
-      "../static/vega-embed.min.js",
-      "../static/embed.js"]
+      "../static/vega-embed.min.js"]
+
+EMBED = "../static/embed.js"
 
 CSS = ["../static/embed.css"]
 
@@ -23,6 +26,12 @@ DEFAULTS = {
         }
     }
 }
+
+def install():
+    display(HTML(utils.styles(CSS)))
+    for path in JS:
+        install_nbextension(utils.abs_path(path))
+    display(HTML(utils.script(EMBED) % {"path": "/notebooks/static"}))
 
 
 def view(dataframe, spec={}):
@@ -52,9 +61,6 @@ class VegaLite(object):
     def _repr_html_(self):
         """Used by the frontend to show html."""
         template = utils.get_content(TEMPLATE)
-
-        display(HTML(utils.styles(CSS)))
-        display(HTML(utils.scripts(JS)))
 
         return template.format(spec=json.dumps(self.spec))
 

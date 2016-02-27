@@ -15,14 +15,24 @@ def update(d, u):
     return d
 
 
+def require(script):
+    wrapped = "{}".format(script)
+
+    return wrapped
+
+
+def script(path):
+    return (u'<script type="text/javascript" charset="utf-8">//@ sourceURL={path}'
+                     '\n{body}</script>').format(
+                        path=os.path.basename(path),
+                        body=require(get_content(path)))
+
+
 def scripts(paths):
     """ Generate script tags for the given path """
     out = []
     for path in paths:
-        out.append((u'<script type="text/javascript" charset="utf-8">//@ sourceURL={path}'
-                     '\n{body}</script>').format(
-                        path=os.path.basename(path),
-                        body=get_content(path)))
+        out.append(script(path))
     return u'\n'.join(out)
 
 
