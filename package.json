@@ -13,8 +13,8 @@
   },
   "homepage": "https://github.com/uwdata/ipython-vega#readme",
   "scripts": {
-    "build": "browserify src/index.js -d | exorcist static/embed.map > static/embed.js",
-    "watch": "watchify src/index.js -v -d -o 'exorcist static/embed.map > static/embed.js'"
+    "build": "webpack --display-error-details",
+    "watch": "webpack --watch"
   },
   "dependencies": {
     "vega-embed": "^2.0.0",
@@ -22,17 +22,11 @@
     "vega-lite": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
-    "browserify-shim": "^3.8.12",
-    "browserify-versionify": "^1.0.6",
+    "css-loader": "^0.23.1",
     "exorcist": "^0.4.0",
     "jstransform": "^11.0.3",
-    "watchify": "^3.7.0"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "browserify-shim": {}
+    "style-loader": "^0.13.0",
+    "watchify": "^3.7.0",
+    "webpack": "^1.12.14"
+  }
 }

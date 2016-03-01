@@ -7,9 +7,7 @@ import os
 from . import __path__
 import utils
 
-EMBED = "../static/embed.js"
-
-CSS = ["../static/embed.css"]
+JS = ["../static/embed.js"]
 
 TEMPLATE = "../static/vega-lite.html"
 
@@ -22,12 +20,11 @@ DEFAULTS = {
     }
 }
 
-# /notebooks/static/vega-lite.min.js
+# /notebooks/static/embed.js
 
 def install():
-    display(HTML(utils.styles(CSS)))
-    # install_nbextension(utils.abs_path(EMBED))
-    display(Javascript(filename=utils.abs_path(EMBED)))
+    #install_nbextension(utils.abs_path(JS[0]))
+    display(HTML(utils.scripts(JS)))
 
 
 def view(dataframe, spec={}):

@@ -1,0 +1,3 @@
+.vega-embed svg, .vega-embed canvas {
+  border: 1px dotted gray;
+}
