@@ -58,3 +58,5 @@ target/
 
 .ipynb_checkpoints/
 node_modules/
+static/embed.map
+static/embed.js
