@@ -15,17 +15,11 @@ def update(d, u):
     return d
 
 
-def require(script):
-    wrapped = "{}".format(script)
-
-    return wrapped
-
-
 def script(path):
     return (u'<script type="text/javascript" charset="utf-8">//@ sourceURL={path}'
                      '\n{body}</script>').format(
                         path=os.path.basename(path),
-                        body=require(get_content(path)))
+                        body=get_content(path))
 
 
 def scripts(paths):
