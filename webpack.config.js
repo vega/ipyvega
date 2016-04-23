@@ -1,7 +1,9 @@
 module.exports = {
   entry: './src/index.js',
   output: {
-    filename: 'static/embed.js'
+    filename: 'vega/static/embed.js',
+    library: "IPythonVega",
+    libraryTarget: "umd"
   },
   module: {
     loaders: [
