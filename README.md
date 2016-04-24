@@ -2,12 +2,35 @@
 
 IPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).
 
+![screenshot](https://raw.githubusercontent.com/vega/ipython-vega/rewrite/screenshot.png "Screenshot of the Vega-Lite module")
+
+
 ## Install
 
 ```sh
 python setup.py install
 jupyter nbextension install --py vega
 jupyter nbextension enable --py vega
+```
+
+## Usage
+
+```
+%load_ext vega.disable_autoscroll
+```
+
+```py
+import pandas as pd
+df = pd.read_json('data/cars.json')
+
+from vega import vegalite
+vegalite.view(df, {
+  "mark": "point",
+  "encoding": {
+    "y": {"type": "quantitative","field": "Acceleration"},
+    "x": {"type": "quantitative","field": "Horsepower"}
+  }
+})
 ```
 
 ## Developers
@@ -24,12 +47,8 @@ jupyter nbextension enable --py vega
 
 Run kernel: `jypyter notebook`
 
-### TODO
+To rebuild the javascript continuously, run `npm run watch`.
 
-If you want to help with one of these, or have questions, comment on the corresponding issue.
-
-* Add export functionality to polestar so that a visualization can be saved in a new cell [#3](/vega/ipython-vega/issues/3)
-* Save state of voyager and polestar [#19](/vega/ipython-vega/issues/19)
 
 ## Resources
 
