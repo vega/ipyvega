@@ -1,13 +1,9 @@
-from IPython.display import display, Javascript, HTML
-from IPython.html import install_nbextension
+from IPython.display import display
+from ipywidgets import HTML
 
 import json
-import os
 
-from . import __path__
 import utils
-
-JS = ["static/embed.js"]
 
 TEMPLATE = "static/vega-lite.html"
 
@@ -19,12 +15,6 @@ DEFAULTS = {
         }
     }
 }
-
-# /notebooks/static/embed.js
-
-def install():
-    install_nbextension(utils.abs_path(JS[0]))
-    # display(HTML(utils.scripts(JS)))
 
 
 def view(dataframe, spec={}):
@@ -56,4 +46,3 @@ class VegaLite(object):
         template = utils.get_content(TEMPLATE)
 
         return template.format(spec=json.dumps(self.spec))
-

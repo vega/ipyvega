@@ -1,6 +1,6 @@
 {
   "name": "ipython-vega",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "iPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).",
   "repository": {
     "type": "git",
@@ -13,8 +13,8 @@
   },
   "homepage": "https://github.com/uwdata/ipython-vega#readme",
   "scripts": {
-    "build": "webpack --display-error-details",
-    "watch": "webpack --watch"
+    "build": "PROD_ENV=1 webpack --display-error-details",
+    "watch": "PROD_ENV=0 webpack --watch"
   },
   "dependencies": {
     "vega-embed": "^2.0.0",

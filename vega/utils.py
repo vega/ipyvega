@@ -3,6 +3,7 @@ import cgi
 import json
 import codecs
 import collections
+import pandas as pd
 
 
 def update(d, u):
@@ -13,13 +14,6 @@ def update(d, u):
         else:
             d[k] = u[k]
     return d
-
-
-def script(path):
-    return (u'<script type="text/javascript" charset="utf-8">//@ sourceURL={path}'
-                     '\n{body}</script>').format(
-                        path=os.path.basename(path),
-                        body=get_content(path))
 
 
 def scripts(paths):
@@ -41,23 +35,19 @@ def get_content(path):
     with codecs.open(abs_path(path), encoding='utf-8') as f:
         return f.read()
 
-
-def styles(paths):
-    """ Generate inline style tags for the files in the given paths """
-    out = []
-    for path in paths:
-        out.append(
-            u'<style>/*# sourceURL={path} */\n{body}</style>'.format(
-                path=os.path.basename(path),
-                body=get_content(path)))
-    return u'\n'.join(out)
+def sanitize(value):
+    """ Makes sure that the data is compatible with JSON """
+    if pd.isnull(value):
+        # json doesn't support nan
+        return None
+    return value
 
 
 def data(data, columns):
     """ Creates a dictionary from a pandas data frame """
     res = []
     for row in data.tolist():
-        res.append({k: v for k, v in zip(columns, row)})
+        res.append({k: sanitize(v) for k, v in zip(columns, row)})
     return res
 
 
