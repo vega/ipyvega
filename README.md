@@ -1,4 +1,4 @@
-# ipython-vega
+# IPython Vega
 
 IPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).
 
