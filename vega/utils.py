@@ -1,8 +1,8 @@
-import os.path
 import cgi
-import json
 import codecs
 import collections
+import os.path
+
 import pandas as pd
 
 
@@ -16,14 +16,6 @@ def update(d, u):
     return d
 
 
-def scripts(paths):
-    """ Generate script tags for the given path """
-    out = []
-    for path in paths:
-        out.append(script(path))
-    return u'\n'.join(out)
-
-
 def abs_path(path):
     return os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
@@ -34,6 +26,7 @@ def get_content(path):
     """ Get content of file """
     with codecs.open(abs_path(path), encoding='utf-8') as f:
         return f.read()
+
 
 def sanitize(value):
     """ Makes sure that the data is compatible with JSON """

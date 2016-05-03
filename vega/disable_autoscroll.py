@@ -3,7 +3,7 @@ Usage:
     %load_ext vega.disable_autoscroll
 """
 
-from IPython.display import display, Javascript
+from IPython.display import Javascript, display
 
 DISABLE_SCROLLING = """
 require("notebook/js/outputarea").OutputArea.prototype._should_scroll = function(lines) {

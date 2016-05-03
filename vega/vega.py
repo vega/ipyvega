@@ -1,11 +1,12 @@
-from IPython.display import display
-from ipywidgets import HTML
-
 import json
+
+from IPython.display import display
 
 import utils
 
+
 TEMPLATE = "static/vega.html"
+
 
 def view(spec):
     """Create and immediately display even if it is not the last line."""

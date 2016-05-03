@@ -1,7 +1,6 @@
-from IPython.display import display
-from ipywidgets import HTML
-
 import json
+
+from IPython.display import display
 
 import utils
 
