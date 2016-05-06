@@ -13,4 +13,5 @@ setuptools.setup(
     keywords='data visualization',
     long_description=open('README.md').read(),
     packages=setuptools.find_packages(),
+    include_package_data=True,
 )
