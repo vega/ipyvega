@@ -1,6 +1,8 @@
+from __future__ import absolute_import
+
 from IPython import display
 
-from tool import Tool
+from .tool import Tool
 
 JS = ['../static/vega-lite/bower_components/d3/d3.js',
       '../static/vega-lite/bower_components/vega/vega.js',
