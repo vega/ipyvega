@@ -1,21 +1,26 @@
 from __future__ import absolute_import
 
-from IPython import display
+import json
 
-from .tool import Tool
+from IPython.display import display
 
-JS = ['../static/vega-lite/bower_components/d3/d3.js',
-      '../static/vega-lite/bower_components/vega/vega.js',
-      '../static/vega-lite/vega-lite.js',
-      '../static/vega-lite/bower_components/vega-embed/vega-embed.js',
-      '../static/embed.js']
-CSS = ['../static/embed.css']
-TEMPLATE = '../static/vega-lite.html'
+from . import utils
+
+TEMPLATE = "static/vega-lite.html"
+
+DEFAULTS = {
+    "config": {
+        "cell": {
+            "width": 500,
+            "height": 350
+        }
+    }
+}
 
 
-def explore(dataframe, spec={}):
+def view(dataframe, spec={}):
     """Create and immediately display even if it is not the last line."""
-    display.display(create(dataframe, spec))
+    display(create(dataframe, spec))
 
 
 def create(dataframe, spec={}):
@@ -23,16 +28,22 @@ def create(dataframe, spec={}):
     return VegaLite(dataframe.columns, dataframe.values, spec)
 
 
-class VegaLite(Tool):
+class VegaLite(object):
     """Defines Vega-Lite widget"""
 
-    def __init__(self, columns, data, spec={}):
-        """Constructor
+    def __init__(self, columns, data, spec):
+        self.columns = columns
 
-        Args:
-            columns: a list of column names
-            data: list of rows
-            spec: the initial vega-lite spec as a python dictionary"""
+        updated = utils.update(DEFAULTS, spec)
 
-        super(VegaLite, self).__init__(columns, data, JS, CSS, TEMPLATE)
-        self.spec = spec
+        self.spec = utils.update({
+            "data": {
+                "values": utils.data(data, columns)
+            }
+        }, updated)
+
+    def _repr_html_(self):
+        """Used by the frontend to show html."""
+        template = utils.get_content(TEMPLATE)
+
+        return template.format(spec=json.dumps(self.spec))

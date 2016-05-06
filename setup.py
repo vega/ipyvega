@@ -1,23 +1,16 @@
 # -*- coding: utf-8 -*-
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+import setuptools
 
-setup(
+setuptools.setup(
     name='vega',
-    version='0.1',
-    description='An iPython/ Jupyter widget for Vega, Vega-Lite, Polestar, and Voyager',
-    author='Dominik Moritz, Kanit "Ham" Wongsuphasawat',
+    version='0.2',
+    description='An iPython/ Jupyter widget for Vega and Vega-Lite',
+    author='Dominik Moritz',
     author_email='domoritz@gmail.com',
-    license='MIT License',
+    license='BSD-3-Clause',
     url='https://github.com/vega/ipython-vega',
     keywords='data visualization',
-    classifiers=['Development Status :: 4 - Beta',
-                 'Programming Language :: Python :: 2.7',
-                 'License :: OSI Approved :: BSD License'],
-    packages=['vega'],
-    package_data={'': ['static/*.js',
-                       'static/*.css']}
+    long_description=open('README.md').read(),
+    packages=setuptools.find_packages(),
 )
