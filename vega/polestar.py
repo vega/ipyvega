@@ -1,6 +1,8 @@
+from __future__ import absolute_import
+
 from IPython import display
 
-from tool import Tool
+from .tool import Tool
 
 JS = ['../static/polestar/scripts/vendor.js',
       '../static/polestar/scripts/app.js']
