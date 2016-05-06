@@ -1,8 +1,10 @@
+from __future__ import absolute_import
+
 import json
 
 from IPython.display import display
 
-import utils
+from . import utils
 
 TEMPLATE = "static/vega-lite.html"
 
