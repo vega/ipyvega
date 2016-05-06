@@ -52,5 +52,8 @@ To rebuild the javascript continuously, run `npm run watch`.
 
 ## Resources
 
-https://github.com/ipython-contrib/IPython-notebook-extensions/blob/master/nbextensions/styling/table_beautifier/main.js
-https://ipywidgets.readthedocs.org/en/latest/index.html
+How to implement an nbextension. 
+
+* https://github.com/ipython-contrib/IPython-notebook-extensions/blob/master/nbextensions/styling/table_beautifier/main.js
+* https://ipywidgets.readthedocs.org/en/latest/index.html
+* https://github.com/jovyan/pythreejs
