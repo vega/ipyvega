@@ -2,7 +2,7 @@
 
 IPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).
 
-![screenshot](https://raw.githubusercontent.com/vega/ipython-vega/rewrite/screenshot.png "Screenshot of the Vega-Lite module")
+![screenshot](https://raw.githubusercontent.com/vega/ipython-vega/master/screenshot.png "Screenshot of the Vega-Lite module")
 
 
 ## Install
