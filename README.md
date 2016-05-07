@@ -2,7 +2,7 @@
 
 IPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).
 
-![screenshot](https://raw.githubusercontent.com/vega/ipython-vega/master/screenshot.png "Screenshot of the Vega-Lite module")
+![screenshot](https://raw.githubusercontent.com/vega/ipyvega/master/screenshot.png "Screenshot of the Vega-Lite module")
 
 
 ## Install
@@ -52,7 +52,7 @@ To rebuild the javascript continuously, run `npm run watch`.
 
 ## Resources
 
-How to implement an nbextension. 
+How to implement an nbextension.
 
 * https://github.com/ipython-contrib/IPython-notebook-extensions/blob/master/nbextensions/styling/table_beautifier/main.js
 * https://ipywidgets.readthedocs.org/en/latest/index.html
