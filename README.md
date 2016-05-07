@@ -1,4 +1,4 @@
-# IPython Vega
+# IPython Vega [![PyPI](https://img.shields.io/pypi/v/vega.svg?maxAge=2592000)]()
 
 IPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).
 
@@ -50,6 +50,8 @@ jupyter nbextension enable --py vega
 Run kernel: `jypyter notebook`
 
 To rebuild the javascript continuously, run `npm run watch`.
+
+Publish a new version to pypi with `python3 setup.py sdist upload`.
 
 
 ## Resources

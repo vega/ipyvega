@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from distutils.core import setup
-setup(
+import setuptools
+
+setuptools.setup(
     name='vega',
-    packages=['vega'],
-    version='0.2',
+    version='0.2.1',
     description='An IPython/ Jupyter widget for Vega and Vega-Lite',
     author='Dominik Moritz',
     author_email='domoritz@gmail.com',
@@ -12,4 +12,5 @@ setup(
     url='https://github.com/vega/ipyvega',
     keywords=['data visualization', 'vega', 'vega-lite'],
     long_description=open('README.md').read(),
+    packages=setuptools.find_packages(),
 )
