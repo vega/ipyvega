@@ -1,9 +1,13 @@
+from __future__ import absolute_import
+
 from warnings import warn
+
 
 def _jupyter_server_extension_paths():
     return [{
         "module": "vega"
     }]
+
 
 # Jupyter Extension points
 def _jupyter_nbextension_paths():
@@ -15,6 +19,7 @@ def _jupyter_nbextension_paths():
         dest="vega",
         # _also_ in the `nbextension/` namespace
         require="vega/index")]
+
 
 def find_static_assets():
     warn("""To use the vega nbextension, you'll need to update

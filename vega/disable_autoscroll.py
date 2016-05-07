@@ -13,5 +13,6 @@ require("notebook/js/outputarea").OutputArea.prototype._should_scroll = function
 
 
 def load_ipython_extension(ip):
+    """Disable auto scrolling."""
     display(Javascript(DISABLE_SCROLLING))
     print ("autoscrolling is disabled")

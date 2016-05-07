@@ -16,14 +16,15 @@ def view(spec):
 
 
 def create(spec):
-    """Creates vega from a dataframe"""
+    """Create vega from a dataframe."""
     return Vega(spec)
 
 
 class Vega(object):
-    """Defines Vega widget"""
+    """Define Vega widget."""
 
     def __init__(self, spec):
+        """Initialize Vega."""
         self.spec = spec
 
     def _repr_html_(self):

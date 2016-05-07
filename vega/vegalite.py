@@ -24,14 +24,18 @@ def view(dataframe, spec={}):
 
 
 def create(dataframe, spec={}):
-    """Creates vega-lite from a dataframe"""
+    """Create vega-lite from a dataframe."""
     return VegaLite(dataframe.columns, dataframe.values, spec)
 
 
 class VegaLite(object):
-    """Defines Vega-Lite widget"""
+    """Define Vega-Lite widget."""
 
     def __init__(self, columns, data, spec):
+        """Initialize Vega-Lite widget.
+
+        Pass in a list of columns, and data values.
+        """
         self.columns = columns
 
         updated = utils.update(DEFAULTS, spec)
