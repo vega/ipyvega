@@ -4,7 +4,7 @@ import setuptools
 
 setuptools.setup(
     name='vega',
-    version='0.2.1',
+    version='0.2.2',
     description='An IPython/ Jupyter widget for Vega and Vega-Lite',
     author='Dominik Moritz',
     author_email='domoritz@gmail.com',
