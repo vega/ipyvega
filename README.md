@@ -1,6 +1,6 @@
 # IPython Vega [![PyPI](https://img.shields.io/pypi/v/vega.svg?maxAge=2592000)]()
 
-IPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).
+IPython/Jupyter notebook module for [Vega](https://github.com/vega/vega-lite), and [Vega-Lite](https://github.com/vega/vega-lite), [Polestar](https://github.com/vega/polestar), and [Voyager](https://github.com/vega/voyager).
 
 Available on [pypi](https://pypi.python.org/pypi/vega).
 
