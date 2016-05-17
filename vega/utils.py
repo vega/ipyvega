@@ -2,12 +2,17 @@ import cgi
 import codecs
 import collections
 import os.path
+import copy
 
 import pandas as pd
 
 
 def update(d, u, overwrite=True):
-    """Update dictionary."""
+    """Update dictionary.
+    
+    If overwrite is False, then existing keys in d won't be overwriten
+    by values in u.
+    """
     for k, v in u.items():
         if isinstance(v, collections.Mapping):
             r = update(d.get(k, {}), v)
@@ -31,12 +36,10 @@ def get_content(path):
         return f.read()
 
 
-def sanitize(value):
-    """Make sure that the data is compatible with JSON."""
-    if pd.isnull(value):
-        # json doesn't support nan
-        return None
-    return value
+def escape(string):
+    """Escape the string."""
+    return cgi.escape(string, quote=True)
+
 
 def sanitize_dataframe(df):
     """Sanitize a DataFrame to prepare it for serialization.
@@ -60,15 +63,17 @@ def sanitize_dataframe(df):
             df[col_name] = df[col_name].astype(str)
     return df
 
+def prepare_spec(spec, data=''):
+    import pandas as pd
 
-def data(data, columns):
-    """Create a dictionary from a pandas data frame."""
-    res = []
-    for row in data.tolist():
-        res.append({k: sanitize(v) for k, v in zip(columns, row)})
-    return res
+    if data is '' and 'data' not in spec:
+        raise ValueError('No data provided')
+    if not isinstance(data, pd.DataFrame):
+        data = pd.DataFrame(data)
+    spec = copy.deepcopy(spec)
+    data = sanitize_dataframe(data)
+    spec['data'] = data.to_dict(orient='records')
+    return spec
 
+    
 
-def escape(string):
-    """Escape the string."""
-    return cgi.escape(string, quote=True)

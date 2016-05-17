@@ -30,7 +30,7 @@ def view(spec, data=None):
     data : pandas.DataFrame
         If the spec doesn't encode the data, it can be passed in separately.
     """
-    spec = prepare_spec(spec, data)
+    spec = utils.prepare_spec(spec, data)
     display(VegaLite(spec))
 
 
