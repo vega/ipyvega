@@ -7,12 +7,15 @@ Available on [pypi](https://pypi.python.org/pypi/vega).
 ![screenshot](https://raw.githubusercontent.com/vega/ipyvega/master/screenshot.png "Screenshot of the Vega-Lite module")
 
 
-## Install
+## Install and run
 
 ```sh
-python setup.py install
+pip install jupyter pandas vega
 jupyter nbextension install --py vega
+jupyter notebook
 ```
+
+Now jupyter should be running and you can create a notebook.
 
 ## Usage
 
@@ -33,6 +36,8 @@ vegalite.view(df, {
   }
 })
 ```
+
+This assumes that you have the correct `cars.json` in the directory `data`.
 
 ## Developers
 
