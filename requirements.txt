@@ -1,3 +1,2 @@
 jupyter
-ipython
 pandas
