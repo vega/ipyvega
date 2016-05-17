@@ -21,22 +21,34 @@ DEFAULTS = {
 
 
 def view(spec, data=None):
+    """View a Vega-Lite visualization in the Jupyter notebook.
+    
+    Parameters
+    ----------
+    spec : dict
+        The Vega-Lite spec as a Python dict.
+    data : pandas.DataFrame
+        If the spec doesn't encode the data, it can be passed in separately.
+    """
     spec = prepare_spec(spec, data)
     display(VegaLite(spec))
 
 
-def view(dataframe, spec={}):
-    """Create and immediately display even if it is not the last line."""
-    display(create(dataframe, spec))
-
-
-def create(dataframe, spec={}):
-    """Create vega-lite from a dataframe."""
-    return VegaLite(dataframe.columns, dataframe.values, spec)
+def create(spec, data=None):
+    """Create Vega-Lite visualization from a spec and (optionaly) data.
+    
+    Parameters
+    ----------
+    spec : dict
+        The Vega-Lite spec as a Python dict.
+    data : pandas.DataFrame
+        If the spec doesn't encode the data, it can be passed in separately.
+    """
+    return VegaLite(spec)
 
 
 class VegaLite(object):
-    """Define Vega-Lite widget."""
+    """A custom Vega-Lite display object."""
 
     def __init__(self, spec):
         self.spec = utils.update(spec, DEFAULTS, overwrite=False)
@@ -56,7 +68,7 @@ class VegaLite(object):
         return payload
 
     def _ipython_display_(self):
-        """Used by the frontend to show html."""
+        """Display the visualization in the Jupyter notebook."""
         id = uuid.uuid4()
-        print(self._generate_html(id))
-        print(self._generate_js(id))
+        display_html(self._generate_html(id))
+        display_js(self._generate_js(id))
