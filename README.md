@@ -12,7 +12,6 @@ Available on [pypi](https://pypi.python.org/pypi/vega).
 ```sh
 python setup.py install
 jupyter nbextension install --py vega
-jupyter nbextension enable --py vega
 ```
 
 ## Usage
@@ -44,7 +43,7 @@ Symlink files instead of copying files:
 ```sh
 python setup.py develop
 jupyter nbextension install --py --symlink vega
-jupyter nbextension enable --py vega
+# optional: jupyter nbextension enable --py vega
 ```
 
 Run kernel: `jypyter notebook`
