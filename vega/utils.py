@@ -6,14 +6,15 @@ import os.path
 import pandas as pd
 
 
-def update(d, u):
+def update(d, u, overwrite=True):
     """Update dictionary."""
     for k, v in u.items():
         if isinstance(v, collections.Mapping):
             r = update(d.get(k, {}), v)
             d[k] = r
         else:
-            d[k] = u[k]
+            if overwrite or k not in d:
+                d[k] = u[k]
     return d
 
 
@@ -36,6 +37,28 @@ def sanitize(value):
         # json doesn't support nan
         return None
     return value
+
+def sanitize_dataframe(df):
+    """Sanitize a DataFrame to prepare it for serialization.
+    
+    * Make a copy
+    * Raise ValueError is it has a hierarchical index.
+    * Convert categoricals to strings.
+    """
+    import pandas as pd
+    df = df.copy()
+
+    if type(df.index) == pd.core.index.MultiIndex:
+        raise ValueError('Hierarchical indices not supported')
+    if type(df.columns) == pd.core.index.MultiIndex:
+        raise ValueError('Hierarchical indices not supported')
+
+    for col_name, dtype in df.dtypes.iteritems():
+        if str(dtype) == 'category':
+            # XXXX: work around bug in to_json for categorical types
+            # https://github.com/pydata/pandas/issues/10778
+            df[col_name] = df[col_name].astype(str)
+    return df
 
 
 def data(data, columns):

@@ -14,7 +14,7 @@ function render(selector, spec, type, output_area) {
     }
 
     embed(el[0], embedSpec, function(error, result) {
-      console.log(result)
+      console.log(result);
       // Callback receiving the View instance and parsed Vega spec
       // result.view is the View, which resides under the '#vis' element
       // Grab the base64 encoded png here and send it to output_area.append_output

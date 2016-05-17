@@ -1,12 +1,14 @@
 from __future__ import absolute_import
 
 import json
+import uuid
 
-from IPython.display import display
+from IPython.display import display, display_javascript, display_html
 
 from . import utils
 
-TEMPLATE = "static/vega-lite.js"
+JS_TEMPLATE = "static/vega-lite.js"
+HTML_TEMPLATE = "static/vega-lite.html"
 
 DEFAULTS = {
     "config": {
@@ -16,6 +18,11 @@ DEFAULTS = {
         }
     }
 }
+
+
+def view(spec, data=None):
+    spec = prepare_spec(spec, data)
+    display(VegaLite(spec))
 
 
 def view(dataframe, spec={}):
@@ -31,28 +38,25 @@ def create(dataframe, spec={}):
 class VegaLite(object):
     """Define Vega-Lite widget."""
 
-    def __init__(self, columns, data, spec):
-        """Initialize Vega-Lite widget.
+    def __init__(self, spec):
+        self.spec = utils.update(spec, DEFAULTS, overwrite=False)
 
-        Pass in a list of columns, and data values.
-        """
-        self.columns = columns
+    def _generate_html(self, id):
+        template = utils.get_content(HTML_TEMPLATE)
+        return template.format(id=id)
 
-        updated = utils.update(DEFAULTS, spec)
-
-        self.spec = utils.update({
-            "data": {
-                "values": utils.data(data, columns)
-            }
-        }, updated)
-
-    def _repr_javascript_(self):
-        """Used by the frontend to show html."""
-        template = utils.get_content(TEMPLATE)
-        payload = template % (
-            json.dumps(self.spec),
-            'vega-lite',
-            'foobar'
-            )
-        print(payload)
+    def _generate_js(self, id):
+        template = utils.get_content(JS_TEMPLATE)
+        selector = '#{0}'.format(id)
+        payload = template.format(
+            selector=selector,
+            spec=json.dumps(self.spec),
+            type='vega-lite'
+        )
         return payload
+
+    def _ipython_display_(self):
+        """Used by the frontend to show html."""
+        id = uuid.uuid4()
+        print(self._generate_html(id))
+        print(self._generate_js(id))
