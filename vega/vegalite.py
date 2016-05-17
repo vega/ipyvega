@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import json
 import uuid
 
-from IPython.display import display, display_javascript, display_html
+from IPython.display import display, publish_display_data
 
 from . import utils
 
@@ -51,6 +51,8 @@ class VegaLite(object):
     """A custom Vega-Lite display object."""
 
     def __init__(self, spec):
+        if 'data' not in spec:
+            raise KeyError('No data provided with spec')
         self.spec = utils.update(spec, DEFAULTS, overwrite=False)
 
     def _generate_html(self, id):
@@ -70,5 +72,5 @@ class VegaLite(object):
     def _ipython_display_(self):
         """Display the visualization in the Jupyter notebook."""
         id = uuid.uuid4()
-        display_html(self._generate_html(id))
-        display_js(self._generate_js(id))
+        publish_display_data({'text/html':self._generate_html(id)})
+        publish_display_data({'application/javascript': self._generate_js(id)})

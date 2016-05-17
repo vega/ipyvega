@@ -63,7 +63,7 @@ def sanitize_dataframe(df):
             df[col_name] = df[col_name].astype(str)
         if str(dtype).startswith('datetime'):
             # Convert datetimes to strings
-            df[col_name] = df[col_name].astype(str)
+            df[col_name] = df[col_name].astype(str).replace('NaT','')
         if str(dtype).startswith('float'):
             # For floats, convert nan->None
             s = df[col_name].astype(object)
