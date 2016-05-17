@@ -50,10 +50,10 @@ def sanitize_dataframe(df):
     """
     import pandas as pd
     df = df.copy()
-
-    if type(df.index) == pd.core.index.MultiIndex:
+    
+    if isinstance(df.index, pd.core.index.MultiIndex):
         raise ValueError('Hierarchical indices not supported')
-    if type(df.columns) == pd.core.index.MultiIndex:
+    if isinstance(df.columns, pd.core.index.MultiIndex):
         raise ValueError('Hierarchical indices not supported')
 
     for col_name, dtype in df.dtypes.iteritems():
@@ -61,7 +61,15 @@ def sanitize_dataframe(df):
             # XXXX: work around bug in to_json for categorical types
             # https://github.com/pydata/pandas/issues/10778
             df[col_name] = df[col_name].astype(str)
+        if str(dtype).startswith('datetime'):
+            # Convert datetimes to strings
+            df[col_name] = df[col_name].astype(str)
+        if str(dtype).startswith('float'):
+            # For floats, convert nan->None
+            s = df[col_name].astype(object)
+            df[col_name] = s.where(s.notnull(), None)
     return df
+
 
 def prepare_spec(spec, data=''):
     import pandas as pd
