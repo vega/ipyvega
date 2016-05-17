@@ -6,7 +6,7 @@ from IPython.display import display
 
 from . import utils
 
-TEMPLATE = "static/vega-lite.html"
+TEMPLATE = "static/vega-lite.js"
 
 DEFAULTS = {
     "config": {
@@ -46,8 +46,13 @@ class VegaLite(object):
             }
         }, updated)
 
-    def _repr_html_(self):
+    def _repr_javascript_(self):
         """Used by the frontend to show html."""
         template = utils.get_content(TEMPLATE)
-
-        return template.format(spec=json.dumps(self.spec))
+        payload = template % (
+            json.dumps(self.spec),
+            'vega-lite',
+            'foobar'
+            )
+        print(payload)
+        return payload
