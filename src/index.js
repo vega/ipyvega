@@ -5,7 +5,6 @@ var $ = require('jquery');
 var events = require('base/js/events');
 
 function render(selector, spec, type, output_area) {
-  console.log(selector, spec, type, output_area);
   var el = $.find(selector);
   if (type) {
     var embedSpec = {
@@ -14,10 +13,15 @@ function render(selector, spec, type, output_area) {
     }
 
     embed(el[0], embedSpec, function(error, result) {
-      console.log(result);
-      // Callback receiving the View instance and parsed Vega spec
-      // result.view is the View, which resides under the '#vis' element
-      // Grab the base64 encoded png here and send it to output_area.append_output
+      var imageData = result.view.toImageURL();
+      var output = {
+          data: {
+            "image/png": imageData.split(",")[1]
+          },
+          metadata: {},
+          output_type: "display_data"
+      };
+      output_area.outputs.append(output);
     });
   }
 }
