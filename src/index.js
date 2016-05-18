@@ -6,7 +6,7 @@ var events = require('base/js/events');
 
 function render(selector, spec, type, output_area) {
   console.log(selector, spec, type, output_area);
-  var el = $.find(selector).first();
+  var el = $.find(selector);
   if (type) {
     var embedSpec = {
       mode: type,

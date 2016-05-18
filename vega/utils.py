@@ -80,8 +80,7 @@ def prepare_spec(spec, data=''):
         data = pd.DataFrame(data)
     spec = copy.deepcopy(spec)
     data = sanitize_dataframe(data)
-    spec['data'] = data.to_dict(orient='records')
+    spec['data'] = {'values': data.to_dict(orient='records')}
     return spec
 
-    
 
