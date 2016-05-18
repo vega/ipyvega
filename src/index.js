@@ -13,6 +13,7 @@ function render(selector, spec, type, output_area) {
     }
 
     embed(el[0], embedSpec, function(error, result) {
+      console.log(error, result);
       var imageData = result.view.toImageURL();
       var output = {
           data: {
@@ -21,7 +22,7 @@ function render(selector, spec, type, output_area) {
           metadata: {},
           output_type: "display_data"
       };
-      output_area.outputs.append(output);
+      output_area.append_output(output);
     });
   }
 }
