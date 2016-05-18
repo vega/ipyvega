@@ -44,9 +44,11 @@ def escape(string):
 def sanitize_dataframe(df):
     """Sanitize a DataFrame to prepare it for serialization.
     
-    * Make a copy
-    * Raise ValueError is it has a hierarchical index.
+    * Make a copy.
+    * Raise ValueError if it has a hierarchical index.
     * Convert categoricals to strings.
+    * Convert datetimes to strings.
+    * Convert floats to objects and replace NaNs by None.
     """
     import pandas as pd
     df = df.copy()
@@ -72,15 +74,23 @@ def sanitize_dataframe(df):
 
 
 def prepare_spec(spec, data=''):
+    """Prepare a Vega-Lite spec for sending to the frontend.
+    
+    This allows data to be passed in either as part of the spec
+    or separately. If separately, the data is assumed to be a
+    pandas DataFrame or object that can be converted to to a DataFrame.
+    """
     import pandas as pd
 
+    # No data provided
     if data is '' and 'data' not in spec:
         raise ValueError('No data provided')
-    if not isinstance(data, pd.DataFrame):
-        data = pd.DataFrame(data)
-    spec = copy.deepcopy(spec)
-    data = sanitize_dataframe(data)
-    spec['data'] = {'values': data.to_dict(orient='records')}
+    # Data provided, prepared it and put it into the spec
+    if not data is '':
+        if not isinstance(data, pd.DataFrame):
+            data = pd.DataFrame(data)
+        spec = copy.deepcopy(spec)
+        data = sanitize_dataframe(data)
+        spec['data'] = {'values': data.to_dict(orient='records')}    
+    # Otherwise data provided in spec, just use it
     return spec
-
-

@@ -2,6 +2,12 @@ from __future__ import absolute_import
 
 from warnings import warn
 
+from .vega import Vega
+from .vegalite import VegaLite
+
+
+__all__ = ['Vega', 'VegaLite']
+
 
 def _jupyter_nbextension_paths():
     """Return metadata for the jupyter-vega nbextension."""
