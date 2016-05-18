@@ -72,5 +72,12 @@ class VegaLite(object):
     def _ipython_display_(self):
         """Display the visualization in the Jupyter notebook."""
         id = uuid.uuid4()
-        publish_display_data({'text/html':self._generate_html(id)})
-        publish_display_data({'application/javascript': self._generate_js(id)})
+        publish_display_data(
+            {'text/html':self._generate_html(id)},
+            metadata={'jupyter-vega': '#{0}'.format(id)}
+        )
+        publish_display_data(
+            {'application/javascript': self._generate_js(id)},
+            metadata={'jupyter-vega': '#{0}'.format(id)}
+        )
+        
