@@ -73,7 +73,7 @@ def sanitize_dataframe(df):
     return df
 
 
-def prepare_spec(spec, data=''):
+def prepare_spec(spec, data=None):
     """Prepare a Vega-Lite spec for sending to the frontend.
     
     This allows data to be passed in either as part of the spec
@@ -82,15 +82,20 @@ def prepare_spec(spec, data=''):
     """
     import pandas as pd
 
-    # No data provided
-    if data is '' and 'data' not in spec:
-        raise ValueError('No data provided')
-    # Data provided, prepared it and put it into the spec
-    if not data is '':
-        if not isinstance(data, pd.DataFrame):
-            data = pd.DataFrame(data)
+    if isinstance(data, pd.DataFrame):
+        # We have to do the isinstance test first because we can't
+        # compare a DataFrame to None.
         spec = copy.deepcopy(spec)
         data = sanitize_dataframe(data)
         spec['data'] = {'values': data.to_dict(orient='records')}    
-    # Otherwise data provided in spec, just use it
+    elif data is None:
+        # Data is either passed in spec or error
+        if 'data' not in spec:
+            raise ValueError('No data provided')
+    else:
+        # As a last resort try to pass the data to a DataFrame and use it
+        data = pd.DataFrame(data)
+        spec = copy.deepcopy(spec)
+        data = sanitize_dataframe(data)
+        spec['data'] = {'values': data.to_dict(orient='records')}
     return spec
