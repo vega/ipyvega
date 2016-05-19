@@ -15,29 +15,13 @@ jupyter nbextension install --py vega
 jupyter notebook
 ```
 
-Now jupyter should be running and you can create a notebook.
+Now Jupyter should be running and you can create a notebook.
 
 ## Usage
 
-```
-%load_ext vega.disable_autoscroll
-```
+Check out the example notebooks at https://github.com/vega/ipyvega/blob/master/notebooks/Vega.ipynb and https://github.com/vega/ipyvega/blob/master/notebooks/Vega-Lite.ipynb
 
-```py
-import pandas as pd
-df = pd.read_json('data/cars.json')
-
-from vega import vegalite
-vegalite.view(df, {
-  "mark": "point",
-  "encoding": {
-    "y": {"type": "quantitative","field": "Acceleration"},
-    "x": {"type": "quantitative","field": "Horsepower"}
-  }
-})
-```
-
-This assumes that you have the correct `cars.json` in the directory `data`.
+This assumes that you have the correct `cars.json`.
 
 ## Developers
 
@@ -48,7 +32,6 @@ Symlink files instead of copying files:
 ```sh
 python setup.py develop
 jupyter nbextension install --py --symlink vega
-# optional: jupyter nbextension enable --py vega
 ```
 
 Run kernel: `jypyter notebook`
