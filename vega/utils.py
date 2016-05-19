@@ -13,7 +13,7 @@ def update(d, u, overwrite=True):
     """
     for k, v in u.items():
         if isinstance(v, collections.Mapping):
-            r = update(d.get(k, {}), v)
+            r = update(d.get(k, {}), v, overwrite=overwrite)
             d[k] = r
         else:
             if overwrite or k not in d:
