@@ -63,7 +63,7 @@ def sanitize_dataframe(df):
             df[col_name] = df[col_name].astype(str)
         if str(dtype).startswith('datetime'):
             # Convert datetimes to strings
-            df[col_name] = df[col_name].astype(str).replace('NaT','')
+            df[col_name] = df[col_name].astype(str).replace('NaT', '')
         if str(dtype).startswith('float'):
             # For floats, convert nan->None
             s = df[col_name].astype(object)
@@ -85,7 +85,7 @@ def prepare_spec(spec, data=None):
         # compare a DataFrame to None.
         spec = copy.deepcopy(spec)
         data = sanitize_dataframe(data)
-        spec['data'] = {'values': data.to_dict(orient='records')}    
+        spec['data'] = {'values': data.to_dict(orient='records')}
     elif data is None:
         # Data is either passed in spec or error
         if 'data' not in spec:
