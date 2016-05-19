@@ -57,20 +57,20 @@ function render(selector, spec, type, output_area) {
     var embedSpec = {
       mode: type,
       spec: spec
-    }
+    };
 
     // Find the indices of this visualizations JS and PNG
     // representation.
     var imgIndex = imageIndex(selector, output_area.outputs);
     var jsIndex = javascriptIndex(selector, output_area.outputs);
-    
+
     // If we have already rendered a static image, don't render
     // the JS version or append a new PNG version
-    if (imgIndex>-1 && jsIndex>-1 && imgIndex===(jsIndex+1)) {
+    if (imgIndex >- 1 && jsIndex >- 1 && imgIndex === (jsIndex+1)) {
       return;
     }
 
-    // Never been rendered, so render JS and append the PNG to the 
+    // Never been rendered, so render JS and append the PNG to the
     // outputs for the cell
     var el = $.find(selector);
     embed(el[0], embedSpec, function(error, result) {
@@ -78,10 +78,10 @@ function render(selector, spec, type, output_area) {
       if (output_area!==undefined) {
         var output = {
             data: {
-              "image/png": imageData.split(",")[1]
+              'image/png': imageData.split(',')[1]
             },
             metadata: {'jupyter-vega': selector},
-            output_type: "display_data"
+            output_type: 'display_data'
         };
         // This appends the PNG output, but doesn't render it this time
         // as the JS version will be rendered already.
