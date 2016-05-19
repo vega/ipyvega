@@ -2,23 +2,23 @@ from __future__ import absolute_import
 
 from warnings import warn
 
-
-def _jupyter_server_extension_paths():
-    return [{
-        "module": "vega"
-    }]
+from .vega import Vega
+from .vegalite import VegaLite
 
 
-# Jupyter Extension points
+__all__ = ['Vega', 'VegaLite']
+
+
 def _jupyter_nbextension_paths():
+    """Return metadata for the jupyter-vega nbextension."""
     return [dict(
         section="notebook",
         # the path is relative to the `vega` directory
         src="static",
         # directory in the `nbextension/` namespace
-        dest="vega",
+        dest="jupyter-vega",
         # _also_ in the `nbextension/` namespace
-        require="vega/index")]
+        require="jupyter-vega/index")]
 
 
 def find_static_assets():

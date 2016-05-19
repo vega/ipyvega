@@ -1,7 +1,0 @@
-.vega-embed svg, .vega-embed canvas {
-  border: 1px dotted gray;
-}
-
-.vega-embed .vega-actions a {
-  margin-right: 6px;
-}

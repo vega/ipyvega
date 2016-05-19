@@ -1,34 +1,16 @@
 from __future__ import absolute_import
 
-import json
-
-from IPython.display import display
-
-from . import utils
+from .base import VegaBase
 
 
-TEMPLATE = "static/vega.html"
+DEFAULTS = {}
 
 
-def view(spec):
-    """Create and immediately display even if it is not the last line."""
-    display(create(spec))
+class Vega(VegaBase):
+    """Display a Vega visualization in the Jupyter Notebook."""
+
+    DEFAULTS = DEFAULTS
+    render_type = 'vega'
 
 
-def create(spec):
-    """Create vega from a dataframe."""
-    return Vega(spec)
-
-
-class Vega(object):
-    """Define Vega widget."""
-
-    def __init__(self, spec):
-        """Initialize Vega."""
-        self.spec = spec
-
-    def _repr_html_(self):
-        """Used by the frontend to show html."""
-        template = utils.get_content(TEMPLATE)
-
-        return template.format(spec=json.dumps(self.spec))
+__all__ = ['Vega']

@@ -1,4 +1,4 @@
-define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __WEBPACK_EXTERNAL_MODULE_206__) { return /******/ (function(modules) { // webpackBootstrap
+define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_201__, __WEBPACK_EXTERNAL_MODULE_202__) { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -44,405 +44,245 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(1);
+	var embed = __webpack_require__(1);
+	var $ = __webpack_require__(201);
+	var events = __webpack_require__(202);
 	
-	var embed = __webpack_require__(6);
-	var $ = __webpack_require__(205);
-	var events = __webpack_require__(206);
+	function javascriptIndex(selector, outputs) {
+	  // Return the index in the output array of the JS repr of this viz
+	  for (var i = 0; i < outputs.length; i++) {
+	    var item = outputs[i];
+	    if (item.metadata['jupyter-vega'] === selector &&
+	        item.data['application/javascript'] !== undefined) {
+	      return i;
+	    }
+	  }
+	  return -1;
+	}
 	
-	function render_all() {
-	  $('.vega-embed').each(function(i, el) {
-	    render($(el));
+	function imageIndex(selector, outputs) {
+	  // Return the index in the output array of the PNG repr of this viz
+	  for (var i = 0; i < outputs.length; i++) {
+	    var item = outputs[i];
+	    if (item.metadata['jupyter-vega'] === selector &&
+	        item.data['image/png'] !== undefined) {
+	      return i;
+	    }
+	  }
+	  return -1;
+	}
+	
+	function render(selector, spec, type, output_area) {
+	  var embedSpec = {
+	    mode: type,
+	    spec: spec
+	  };
+	
+	  // Find the indices of this visualizations JS and PNG
+	  // representation.
+	  var imgIndex = imageIndex(selector, output_area.outputs);
+	  var jsIndex = javascriptIndex(selector, output_area.outputs);
+	
+	  // If we have already rendered a static image, don't render
+	  // the JS version or append a new PNG version
+	  if (imgIndex >- 1 && jsIndex >- 1 && imgIndex === (jsIndex+1)) {
+	    return;
+	  }
+	
+	  // Never been rendered, so render JS and append the PNG to the
+	  // outputs for the cell
+	  var el = $.find(selector);
+	  embed(el[0], embedSpec, function(error, result) {
+	    var imageData = result.view.toImageURL();
+	    if (output_area!==undefined) {
+	      var output = {
+	          data: {
+	            'image/png': imageData.split(',')[1]
+	          },
+	          metadata: {'jupyter-vega': selector},
+	          output_type: 'display_data'
+	      };
+	      // This appends the PNG output, but doesn't render it this time
+	      // as the JS version will be rendered already.
+	      output_area.outputs.push(output);
+	    }
 	  });
 	}
 	
-	function render_one(event, type, value, metadata, $toinsert) {
-	  var el = $toinsert.find('.vega-embed');
-	  render(el);
-	}
-	
-	function render(el) {
-	  var type = el.attr('data-type');
-	
-	  if (type) {
-	    var embedSpec = {
-	      mode: type,
-	      spec: JSON.parse(el.text())
-	    }
-	
-	    embed(el[0], embedSpec, function(error, result) {
-	      // Callback receiving the View instance and parsed Vega spec
-	      // result.view is the View, which resides under the '#vis' element
-	    });
-	  }
-	}
-	
-	function load_extension() {
-	  events.on("notebook_loaded.Notebook", render_all);
-	  events.on("kernel_ready.Kernel", render_all);
-	  events.on("output_appended.OutputArea", render_one);
-	  render_all();
-	}
-	
-	exports.load_jupyter_extension = load_extension;
-	exports.load_ipython_extension = load_extension;
+	exports.render = render;
 
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
+	var d3 = __webpack_require__(2),
+	    vg = __webpack_require__(3),
+	    vl = __webpack_require__(161),
+	    parameter = __webpack_require__(199),
+	    post = __webpack_require__(200);
 	
-	// load the styles
-	var content = __webpack_require__(2);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./embed.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./embed.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
+	var config = {
+	  // URL for loading specs into editor
+	  editor_url: 'http://vega.github.io/vega-editor/',
+	
+	  // HTML to inject within view source head element
+	  source_header: '',
+	
+	  // HTML to inject before view source closing body tag
+	  source_footer: ''
+	};
+	
+	var MODES = {
+	  'vega':      'vega',
+	  'vega-lite': 'vega-lite'
+	};
+	
+	var PREPROCESSOR = {
+	  'vega':      function(vgjson) { return vgjson; },
+	  'vega-lite': function(vljson) { return vl.compile(vljson).spec; }
+	};
+	
+	function load(url, arg, el, callback) {
+	  vg.util.load({url: url}, function(err, data) {
+	    if (err || !data) {
+	      console.error(err || ('No data found at ' + url));
+	    } else {
+	      // marshal embedding spec and restart
+	      var opt = !arg ? JSON.parse(data) : vg.util.extend({source: data}, arg);
+	      embed(el, opt, callback);
+	    }
+	  });
 	}
+	
+	// Embed a Vega visualization component in a web page.
+	// el: DOM element in which to place component (DOM node or CSS selector)
+	// opt: Embedding specification (parsed JSON or URL string)
+	// callback: invoked with the generated Vega View instance
+	function embed(el, opt, callback) {
+	  var cb = callback || function(){},
+	      params = [], source, spec, mode;
+	
+	  try {
+	    if (vg.util.isString(opt)) {
+	      return load(opt, null, el, callback);
+	    } else if (opt.source) {
+	      source = opt.source;
+	      spec = JSON.parse(source);
+	    } else if (opt.spec) {
+	      spec = opt.spec;
+	      source = JSON.stringify(spec, null, 2);
+	    } else if (opt.url) {
+	      return load(opt.url, opt, el, callback);
+	    } else {
+	      spec = opt;
+	      source = JSON.stringify(spec, null, 2);
+	      opt = {spec: spec, actions: false};
+	    }
+	    mode = MODES[opt.mode] || MODES.vega;
+	    spec = PREPROCESSOR[mode](spec);
+	
+	    // ensure container div has class 'vega-embed'
+	    var div = d3.select(el)
+	      .classed('vega-embed', true)
+	      .html(''); // clear container
+	
+	    // handle parameters
+	    if (opt.parameters) {
+	      var elp = opt.parameter_el ? d3.select(opt.parameter_el) : div;
+	      var pdiv = elp.append('div')
+	        .attr('class', 'vega-params');
+	      params = opt.parameters.map(function(p) {
+	        return parameter.init(pdiv, p, spec);
+	      });
+	    }
+	  } catch (err) { cb(err); }
+	
+	  vg.parse.spec(spec, function(error, chart) {
+	    if (error) { cb(error); return; }
+	    try {
+	      var renderer = opt.renderer || 'canvas',
+	          actions  = opt.actions || {};
+	
+	      var view = chart({
+	        el: el,
+	        data: opt.data || undefined,
+	        renderer: renderer
+	      });
+	
+	      if (opt.actions !== false) {
+	        // add child div to house action links
+	        var ctrl = div.append('div')
+	          .attr('class', 'vega-actions');
+	
+	        // add 'Export' action
+	        if (actions.export !== false) {
+	          var ext = (renderer==='canvas' ? 'png' : 'svg');
+	          ctrl.append('a')
+	            .text('Export as ' + ext.toUpperCase())
+	            .attr('href', '#')
+	            .attr('target', '_blank')
+	            .attr('download', (spec.name || 'vega') + '.' + ext)
+	            .on('mousedown', function() {
+	              this.href = view.toImageURL(ext);
+	              d3.event.preventDefault();
+	            });
+	        }
+	
+	        // add 'View Source' action
+	        if (actions.source !== false) {
+	          ctrl.append('a')
+	            .text('View Source')
+	            .attr('href', '#')
+	            .on('click', function() {
+	              viewSource(source);
+	              d3.event.preventDefault();
+	            });
+	        }
+	
+	        // add 'Open in Vega Editor' action
+	        if (actions.editor !== false) {
+	          ctrl.append('a')
+	            .text('Open in Vega Editor')
+	            .attr('href', '#')
+	            .on('click', function() {
+	              post(window, embed.config.editor_url, {spec: source, mode: mode});
+	              d3.event.preventDefault();
+	            });
+	        }
+	      }
+	
+	      // bind all parameter elements
+	      params.forEach(function(p) { parameter.bind(p, view); });
+	
+	      // initialize and return visualization
+	      view.update();
+	      cb(null, {view: view, spec: spec});
+	    } catch (err) { cb(err); }
+	  });
+	}
+	
+	function viewSource(source) {
+	  var header = '<html><head>' + config.source_header + '</head>' + '<body><pre><code class="json">';
+	  var footer = '</code></pre>' + config.source_footer + '</body></html>';
+	  var win = window.open('');
+	  win.document.write(header + source + footer);
+	  win.document.title = 'Vega JSON Source';
+	}
+	
+	// make config externally visible
+	embed.config = config;
+	
+	module.exports = embed;
+
 
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, ".vega-embed svg, .vega-embed canvas {\n  border: 1px dotted gray;\n}\n\n.vega-embed .vega-actions a {\n  margin-right: 6px;\n}\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-	
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-	
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-	
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
 	  var d3 = {
-	    version: "3.5.16"
+	    version: "3.5.17"
 	  };
 	  var d3_arraySlice = [].slice, d3_array = function(list) {
 	    return d3_arraySlice.call(list);
@@ -3967,7 +3807,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	        λ0 = λ, sinφ0 = sinφ, cosφ0 = cosφ, point0 = point;
 	      }
 	    }
-	    return (polarAngle < -ε || polarAngle < ε && d3_geo_areaRingSum < 0) ^ winding & 1;
+	    return (polarAngle < -ε || polarAngle < ε && d3_geo_areaRingSum < -ε) ^ winding & 1;
 	  }
 	  function d3_geo_clipCircle(radius) {
 	    var cr = Math.cos(radius), smallRadius = cr > 0, notHemisphere = abs(cr) > ε, interpolate = d3_geo_circleInterpolate(radius, 6 * d3_radians);
@@ -9996,218 +9836,54 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	}();
 
 /***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var d3 = __webpack_require__(5),
-	    vg = __webpack_require__(7),
-	    vl = __webpack_require__(165),
-	    parameter = __webpack_require__(203),
-	    post = __webpack_require__(204);
-	
-	var config = {
-	  // URL for loading specs into editor
-	  editor_url: 'http://vega.github.io/vega-editor/',
-	
-	  // HTML to inject within view source head element
-	  source_header: '',
-	
-	  // HTML to inject before view source closing body tag
-	  source_footer: ''
-	};
-	
-	var MODES = {
-	  'vega':      'vega',
-	  'vega-lite': 'vega-lite'
-	};
-	
-	var PREPROCESSOR = {
-	  'vega':      function(vgjson) { return vgjson; },
-	  'vega-lite': function(vljson) { return vl.compile(vljson).spec; }
-	};
-	
-	function load(url, arg, el, callback) {
-	  vg.util.load({url: url}, function(err, data) {
-	    if (err || !data) {
-	      console.error(err || ('No data found at ' + url));
-	    } else {
-	      // marshal embedding spec and restart
-	      var opt = !arg ? JSON.parse(data) : vg.util.extend({source: data}, arg);
-	      embed(el, opt, callback);
-	    }
-	  });
-	}
-	
-	// Embed a Vega visualization component in a web page.
-	// el: DOM element in which to place component (DOM node or CSS selector)
-	// opt: Embedding specification (parsed JSON or URL string)
-	// callback: invoked with the generated Vega View instance
-	function embed(el, opt, callback) {
-	  var cb = callback || function(){},
-	      params = [], source, spec, mode;
-	
-	  try {
-	    if (vg.util.isString(opt)) {
-	      return load(opt, null, el, callback);
-	    } else if (opt.source) {
-	      source = opt.source;
-	      spec = JSON.parse(source);
-	    } else if (opt.spec) {
-	      spec = opt.spec;
-	      source = JSON.stringify(spec, null, 2);
-	    } else if (opt.url) {
-	      return load(opt.url, opt, el, callback);
-	    } else {
-	      spec = opt;
-	      source = JSON.stringify(spec, null, 2);
-	      opt = {spec: spec, actions: false};
-	    }
-	    mode = MODES[opt.mode] || MODES.vega;
-	    spec = PREPROCESSOR[mode](spec);
-	
-	    // ensure container div has class 'vega-embed'
-	    var div = d3.select(el)
-	      .classed('vega-embed', true)
-	      .html(''); // clear container
-	
-	    // handle parameters
-	    if (opt.parameters) {
-	      var elp = opt.parameter_el ? d3.select(opt.parameter_el) : div;
-	      var pdiv = elp.append('div')
-	        .attr('class', 'vega-params');
-	      params = opt.parameters.map(function(p) {
-	        return parameter.init(pdiv, p, spec);
-	      });
-	    }
-	  } catch (err) { cb(err); }
-	
-	  vg.parse.spec(spec, function(error, chart) {
-	    if (error) { cb(error); return; }
-	    try {
-	      var renderer = opt.renderer || 'canvas',
-	          actions  = opt.actions || {};
-	
-	      var view = chart({
-	        el: el,
-	        data: opt.data || undefined,
-	        renderer: renderer
-	      });
-	
-	      if (opt.actions !== false) {
-	        // add child div to house action links
-	        var ctrl = div.append('div')
-	          .attr('class', 'vega-actions');
-	
-	        // add 'Export' action
-	        if (actions.export !== false) {
-	          var ext = (renderer==='canvas' ? 'png' : 'svg');
-	          ctrl.append('a')
-	            .text('Export as ' + ext.toUpperCase())
-	            .attr('href', '#')
-	            .attr('target', '_blank')
-	            .attr('download', (spec.name || 'vega') + '.' + ext)
-	            .on('mousedown', function() {
-	              this.href = view.toImageURL(ext);
-	              d3.event.preventDefault();
-	            });
-	        }
-	
-	        // add 'View Source' action
-	        if (actions.source !== false) {
-	          ctrl.append('a')
-	            .text('View Source')
-	            .attr('href', '#')
-	            .on('click', function() {
-	              viewSource(source);
-	              d3.event.preventDefault();
-	            });
-	        }
-	
-	        // add 'Open in Vega Editor' action
-	        if (actions.editor !== false) {
-	          ctrl.append('a')
-	            .text('Open in Vega Editor')
-	            .attr('href', '#')
-	            .on('click', function() {
-	              post(window, embed.config.editor_url, {spec: source, mode: mode});
-	              d3.event.preventDefault();
-	            });
-	        }
-	      }
-	
-	      // bind all parameter elements
-	      params.forEach(function(p) { parameter.bind(p, view); });
-	
-	      // initialize and return visualization
-	      view.update();
-	      cb(null, {view: view, spec: spec});
-	    } catch (err) { cb(err); }
-	  });
-	}
-	
-	function viewSource(source) {
-	  var header = '<html><head>' + config.source_header + '</head>' + '<body><pre><code class="json">';
-	  var footer = '</code></pre>' + config.source_footer + '</body></html>';
-	  var win = window.open('');
-	  win.document.write(header + source + footer);
-	  win.document.title = 'Vega JSON Source';
-	}
-	
-	// make config externally visible
-	embed.config = config;
-	
-	module.exports = embed;
-
-
-/***/ },
-/* 7 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
 	  version: '__VERSION__',
-	  dataflow: __webpack_require__(8),
-	  parse: __webpack_require__(56),
+	  dataflow: __webpack_require__(4),
+	  parse: __webpack_require__(52),
 	  scene: {
-	    Bounder: __webpack_require__(156),
-	    Builder: __webpack_require__(154),
-	    Encoder: __webpack_require__(155),
-	    GroupBuilder: __webpack_require__(153),
-	    visit: __webpack_require__(158)
+	    Bounder: __webpack_require__(152),
+	    Builder: __webpack_require__(150),
+	    Encoder: __webpack_require__(151),
+	    GroupBuilder: __webpack_require__(149),
+	    visit: __webpack_require__(154)
 	  },
-	  transforms: __webpack_require__(106),
-	  Transform: __webpack_require__(108),
-	  BatchTransform: __webpack_require__(112),
-	  Parameter: __webpack_require__(109),
-	  schema: __webpack_require__(164),
-	  config: __webpack_require__(159),
-	  util: __webpack_require__(61),
-	  logging: __webpack_require__(12),
-	  debug: __webpack_require__(12).debug
+	  transforms: __webpack_require__(102),
+	  Transform: __webpack_require__(104),
+	  BatchTransform: __webpack_require__(108),
+	  Parameter: __webpack_require__(105),
+	  schema: __webpack_require__(160),
+	  config: __webpack_require__(155),
+	  util: __webpack_require__(57),
+	  logging: __webpack_require__(8),
+	  debug: __webpack_require__(8).debug
 	};
 
 
 /***/ },
-/* 8 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  ChangeSet:    __webpack_require__(9),
-	  Collector:    __webpack_require__(11),
-	  DataSource:   __webpack_require__(15),
-	  Dependencies: __webpack_require__(10),
-	  Graph:        __webpack_require__(53),
-	  Node:         __webpack_require__(14),
-	  Signal:       __webpack_require__(55),
-	  Tuple:        __webpack_require__(13),
-	  debug:        __webpack_require__(12).debug
+	  ChangeSet:    __webpack_require__(5),
+	  Collector:    __webpack_require__(7),
+	  DataSource:   __webpack_require__(11),
+	  Dependencies: __webpack_require__(6),
+	  Graph:        __webpack_require__(49),
+	  Node:         __webpack_require__(10),
+	  Signal:       __webpack_require__(51),
+	  Tuple:        __webpack_require__(9),
+	  debug:        __webpack_require__(8).debug
 	};
 
 
 /***/ },
-/* 9 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DEPS = __webpack_require__(10).ALL;
+	var DEPS = __webpack_require__(6).ALL;
 	
 	function create(cs, reflow) {
 	  var out = {};
@@ -10240,7 +9916,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 10 */
+/* 6 */
 /***/ function(module, exports) {
 
 	var deps = module.exports = {
@@ -10250,13 +9926,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 11 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var log = __webpack_require__(12),
-	    Tuple = __webpack_require__(13),
-	    Base = __webpack_require__(14).prototype,
-	    ChangeSet = __webpack_require__(9);
+	var log = __webpack_require__(8),
+	    Tuple = __webpack_require__(9),
+	    Base = __webpack_require__(10).prototype,
+	    ChangeSet = __webpack_require__(5);
 	
 	function Collector(graph) {
 	  Base.init.call(this, graph);
@@ -10308,7 +9984,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	module.exports = Collector;
 
 /***/ },
-/* 12 */
+/* 8 */
 /***/ function(module, exports) {
 
 	var ts = Date.now();
@@ -10348,7 +10024,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 13 */
+/* 9 */
 /***/ function(module, exports) {
 
 	var tupleID = 0;
@@ -10422,10 +10098,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 14 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DEPS = __webpack_require__(10).ALL,
+	var DEPS = __webpack_require__(6).ALL,
 	    nodeID = 0;
 	
 	function Node(graph) {
@@ -10625,15 +10301,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 15 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    log = __webpack_require__(12),
-	    ChangeSet = __webpack_require__(9),
-	    Collector = __webpack_require__(11),
-	    Tuple = __webpack_require__(13),
-	    Node = __webpack_require__(14); // jshint ignore:line
+	var dl = __webpack_require__(12),
+	    log = __webpack_require__(8),
+	    ChangeSet = __webpack_require__(5),
+	    Collector = __webpack_require__(7),
+	    Tuple = __webpack_require__(9),
+	    Node = __webpack_require__(10); // jshint ignore:line
 	
 	function DataSource(graph, name, facet) {
 	  this._graph = graph;
@@ -10937,32 +10613,32 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 16 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
+	var util = __webpack_require__(13);
 	
 	var dl = {
 	  version:    '__VERSION__',
-	  load:       __webpack_require__(22),
-	  read:       __webpack_require__(27),
-	  type:       __webpack_require__(28),
-	  Aggregator: __webpack_require__(40),
-	  groupby:    __webpack_require__(45),
-	  bins:       __webpack_require__(46),
-	  $bin:       __webpack_require__(48).$bin,
-	  histogram:  __webpack_require__(48).histogram,
-	  format:     __webpack_require__(36),
-	  template:   __webpack_require__(49),
-	  time:       __webpack_require__(47)
+	  load:       __webpack_require__(18),
+	  read:       __webpack_require__(23),
+	  type:       __webpack_require__(24),
+	  Aggregator: __webpack_require__(36),
+	  groupby:    __webpack_require__(41),
+	  bins:       __webpack_require__(42),
+	  $bin:       __webpack_require__(44).$bin,
+	  histogram:  __webpack_require__(44).histogram,
+	  format:     __webpack_require__(32),
+	  template:   __webpack_require__(45),
+	  time:       __webpack_require__(43)
 	};
 	
 	util.extend(dl, util);
-	util.extend(dl, __webpack_require__(50));
-	util.extend(dl, __webpack_require__(43));
-	util.extend(dl, __webpack_require__(42));
-	util.extend(dl, __webpack_require__(51));
-	util.extend(dl.format, __webpack_require__(52));
+	util.extend(dl, __webpack_require__(46));
+	util.extend(dl, __webpack_require__(39));
+	util.extend(dl, __webpack_require__(38));
+	util.extend(dl, __webpack_require__(47));
+	util.extend(dl.format, __webpack_require__(48));
 	
 	// backwards-compatible, deprecated API
 	// will remove in the future
@@ -10975,7 +10651,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 17 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var u = module.exports;
@@ -11213,6 +10889,19 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  return array;
 	};
 	
+	// permutes an array using a Knuth shuffle
+	u.permute = function(a) {
+	  var m = a.length,
+	      swap,
+	      i;
+	
+	  while (m) {
+	    i = Math.floor(Math.random() * m--);
+	    swap = a[m];
+	    a[m] = a[i];
+	    a[i] = swap;
+	  }
+	};
 	
 	// string functions
 	
@@ -11271,10 +10960,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	
 	var truncate_word_re = /([\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u2028\u2029\u3000\uFEFF])/;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14).Buffer))
 
 /***/ },
-/* 18 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -11287,9 +10976,9 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	
 	'use strict'
 	
-	var base64 = __webpack_require__(19)
-	var ieee754 = __webpack_require__(20)
-	var isArray = __webpack_require__(21)
+	var base64 = __webpack_require__(15)
+	var ieee754 = __webpack_require__(16)
+	var isArray = __webpack_require__(17)
 	
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -12826,10 +12515,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  return i
 	}
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 19 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -12959,7 +12648,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 20 */
+/* 16 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -13049,7 +12738,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 21 */
+/* 17 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -13060,10 +12749,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 22 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
+	var util = __webpack_require__(13);
 	
 	// Matches absolute URLs with optional protocol
 	//   https://...    file://...    //...
@@ -13109,7 +12798,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	      origin = window.location.hostname;
 	    } else {
 	      // relative protocol is broken: https://github.com/defunctzombie/node-url/issues/5
-	      var parts = __webpack_require__(23).parse(url);
+	      var parts = __webpack_require__(19).parse(url);
 	      domain = parts.hostname;
 	      origin = null;
 	    }
@@ -13209,7 +12898,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	}
 	
 	function file(filename, opt, callback) {
-	  var fs = __webpack_require__(24);
+	  var fs = __webpack_require__(20);
 	  if (!callback) {
 	    return fs.readFileSync(filename, 'utf8');
 	  }
@@ -13220,11 +12909,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  var headers = util.extend({}, load.headers, opt.headers);
 	
 	  if (!callback) {
-	    return __webpack_require__(25)('GET', url, {headers: headers}).getBody();
+	    return __webpack_require__(21)('GET', url, {headers: headers}).getBody();
 	  }
 	
 	  var options = {url: url, encoding: null, gzip: true, headers: headers};
-	  __webpack_require__(26)(options, function(error, response, body) {
+	  __webpack_require__(22)(options, function(error, response, body) {
 	    if (!error && response.statusCode === 200) {
 	      callback(null, body);
 	    } else {
@@ -13254,37 +12943,37 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	/* (ignored) */
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	/* (ignored) */
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	/* (ignored) */
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	/* (ignored) */
+
+/***/ },
 /* 23 */
-/***/ function(module, exports) {
-
-	/* (ignored) */
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	/* (ignored) */
-
-/***/ },
-/* 25 */
-/***/ function(module, exports) {
-
-	/* (ignored) */
-
-/***/ },
-/* 26 */
-/***/ function(module, exports) {
-
-	/* (ignored) */
-
-/***/ },
-/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17),
-	  type = __webpack_require__(28),
-	  formats = __webpack_require__(29),
-	  timeF = __webpack_require__(36).time;
+	var util = __webpack_require__(13),
+	  type = __webpack_require__(24),
+	  formats = __webpack_require__(25),
+	  timeF = __webpack_require__(32).time;
 	
 	function read(data, format) {
 	  var type = (format && format.type) || 'json';
@@ -13301,7 +12990,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  parsers = cols.map(function(c) {
 	    var t = types[c];
 	    if (t && t.indexOf('date:') === 0) {
-	      var parts = t.split(':', 2),
+	      var parts = t.split(/:(.+)?/, 2),  // split on first :
 	          pattern = parts[1];
 	      if ((pattern[0] === '\'' && pattern[pattern.length-1] === '\'') ||
 	          (pattern[0] === '"'  && pattern[pattern.length-1] === '"')) {
@@ -13332,10 +13021,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 28 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
+	var util = __webpack_require__(13);
 	
 	var TYPES = '__types__';
 	
@@ -13430,15 +13119,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 29 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dsv = __webpack_require__(30);
+	var dsv = __webpack_require__(26);
 	
 	module.exports = {
-	  json: __webpack_require__(32),
-	  topojson: __webpack_require__(33),
-	  treejson: __webpack_require__(35),
+	  json: __webpack_require__(28),
+	  topojson: __webpack_require__(29),
+	  treejson: __webpack_require__(31),
 	  dsv: dsv,
 	  csv: dsv.delimiter(','),
 	  tsv: dsv.delimiter('\t')
@@ -13446,11 +13135,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 30 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
-	var d3_dsv = __webpack_require__(31);
+	var util = __webpack_require__(13);
+	var d3_dsv = __webpack_require__(27);
 	
 	function dsv(data, format) {
 	  if (data) {
@@ -13471,7 +13160,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 31 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
@@ -13625,10 +13314,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	}));
 
 /***/ },
-/* 32 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
+	var util = __webpack_require__(13);
 	
 	module.exports = function(data, format) {
 	  var d = util.isObject(data) && !util.isBuffer(data) ?
@@ -13641,10 +13330,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 33 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var json = __webpack_require__(32);
+	var json = __webpack_require__(28);
 	
 	var reader = function(data, format) {
 	  var topojson = reader.topojson;
@@ -13669,23 +13358,23 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  }
 	};
 	
-	reader.topojson = __webpack_require__(34);
+	reader.topojson = __webpack_require__(30);
 	module.exports = reader;
 
 
 /***/ },
-/* 34 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
 	   true ? factory(exports) :
 	  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	  (factory((global.topojson = {})));
+	  (factory((global.topojson = global.topojson || {})));
 	}(this, function (exports) { 'use strict';
 	
 	  function noop() {}
 	
-	  function absolute(transform) {
+	  function transformAbsolute(transform) {
 	    if (!transform) return noop;
 	    var x0,
 	        y0,
@@ -13700,7 +13389,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    };
 	  }
 	
-	  function relative(transform) {
+	  function transformRelative(transform) {
 	    if (!transform) return noop;
 	    var x0,
 	        y0,
@@ -13710,8 +13399,8 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	        dy = transform.translate[1];
 	    return function(point, i) {
 	      if (!i) x0 = y0 = 0;
-	      var x1 = (point[0] - dx) / kx | 0,
-	          y1 = (point[1] - dy) / ky | 0;
+	      var x1 = Math.round((point[0] - dx) / kx),
+	          y1 = Math.round((point[1] - dy) / ky);
 	      point[0] = x1 - x0;
 	      point[1] = y1 - y0;
 	      x0 = x1;
@@ -13753,21 +13442,21 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  }
 	
 	  function object(topology, o) {
-	    var absolute$$ = absolute(topology.transform),
+	    var absolute = transformAbsolute(topology.transform),
 	        arcs = topology.arcs;
 	
 	    function arc(i, points) {
 	      if (points.length) points.pop();
 	      for (var a = arcs[i < 0 ? ~i : i], k = 0, n = a.length, p; k < n; ++k) {
 	        points.push(p = a[k].slice());
-	        absolute$$(p, k);
+	        absolute(p, k);
 	      }
 	      if (i < 0) reverse(points, n);
 	    }
 	
 	    function point(p) {
 	      p = p.slice();
-	      absolute$$(p, 0);
+	      absolute(p, 0);
 	      return p;
 	    }
 	
@@ -13929,7 +13618,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    return {type: "MultiLineString", arcs: stitchArcs(topology, arcs)};
 	  }
 	
-	  function triangle(triangle) {
+	  function cartesianTriangleArea(triangle) {
 	    var a = triangle[0], b = triangle[1], c = triangle[2];
 	    return Math.abs((a[0] - c[0]) * (b[1] - a[1]) - (a[0] - b[0]) * (c[1] - a[1]));
 	  }
@@ -13973,8 +13662,8 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	      polygons.push(polygon);
 	    }
 	
-	    function exterior(ring$$) {
-	      return ring(object(topology, {type: "Polygon", arcs: [ring$$]}).coordinates[0]) > 0; // TODO allow spherical?
+	    function area(ring$$) {
+	      return Math.abs(ring(object(topology, {type: "Polygon", arcs: [ring$$]}).coordinates[0]));
 	    }
 	
 	    polygons.forEach(function(polygon) {
@@ -14024,14 +13713,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	
 	        // If more than one ring is returned,
 	        // at most one of these rings can be the exterior;
-	        // this exterior ring has the same winding order
-	        // as any exterior ring in the original polygons.
+	        // choose the one with the greatest absolute area.
 	        if ((n = arcs.length) > 1) {
-	          var sgn = exterior(polygons[0][0]);
-	          for (var i = 0, t; i < n; ++i) {
-	            if (sgn === exterior(arcs[i])) {
-	              t = arcs[0], arcs[0] = arcs[i], arcs[i] = t;
-	              break;
+	          for (var i = 1, k = area(arcs[0]), ki, t; i < n; ++i) {
+	            if ((ki = area(arcs[i])) > k) {
+	              t = arcs[0], arcs[0] = arcs[i], arcs[i] = t, k = ki;
 	            }
 	          }
 	        }
@@ -14141,11 +13827,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  }
 	
 	  function presimplify(topology, triangleArea) {
-	    var absolute$$ = absolute(topology.transform),
-	        relative$$ = relative(topology.transform),
+	    var absolute = transformAbsolute(topology.transform),
+	        relative = transformRelative(topology.transform),
 	        heap = minAreaHeap();
 	
-	    if (!triangleArea) triangleArea = triangle;
+	    if (!triangleArea) triangleArea = cartesianTriangleArea;
 	
 	    topology.arcs.forEach(function(arc) {
 	      var triangles = [],
@@ -14161,7 +13847,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	      // Infinity will be computed in the next step.
 	      for (i = 0, n = arc.length; i < n; ++i) {
 	        p = arc[i];
-	        absolute$$(arc[i] = [p[0], p[1], Infinity], i);
+	        absolute(arc[i] = [p[0], p[1], Infinity], i);
 	      }
 	
 	      for (i = 1, n = arc.length - 1; i < n; ++i) {
@@ -14201,7 +13887,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	        }
 	      }
 	
-	      arc.forEach(relative$$);
+	      arc.forEach(relative);
 	    });
 	
 	    function update(triangle) {
@@ -14213,7 +13899,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    return topology;
 	  }
 	
-	  var version = "1.6.24";
+	  var version = "1.6.26";
 	
 	  exports.version = version;
 	  exports.mesh = mesh;
@@ -14227,10 +13913,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	}));
 
 /***/ },
-/* 35 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var json = __webpack_require__(32);
+	var json = __webpack_require__(28);
 	
 	module.exports = function(tree, format) {
 	  return toTable(json(tree, format), format);
@@ -14258,13 +13944,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 36 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17),
-	    d3_time = __webpack_require__(37),
-	    d3_timeF = __webpack_require__(38),
-	    d3_numberF = __webpack_require__(39),
+	var util = __webpack_require__(13),
+	    d3_time = __webpack_require__(33),
+	    d3_timeF = __webpack_require__(34),
+	    d3_numberF = __webpack_require__(35),
 	    numberF = d3_numberF, // defaults to EN-US
 	    timeF = d3_timeF,     // defaults to EN-US
 	    tmpDate = new Date(2000, 0, 1),
@@ -14295,8 +13981,9 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    utc:      function() { return utcAutoFormat(); }
 	  },
 	
-	  month: monthFormat, // format month name from integer code
-	  day:   dayFormat    // format week day name from integer code
+	  month:    monthFormat,  // format month name from integer code
+	  day:      dayFormat,    // format week day name from integer code
+	  quarter:  quarterFormat // format quarter number from integer code
 	};
 	
 	// -- Locales ----
@@ -14482,9 +14169,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    (dayFull || (dayFull = timeF.format('%A')));
 	  return (tmpDate.setMonth(0), tmpDate.setDate(2 + day), f(tmpDate));
 	}
+	
+	function quarterFormat(month) {
+	  return Math.floor(month / 3) + 1;
+	}
+
 
 /***/ },
-/* 37 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
@@ -14843,11 +14535,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	}));
 
 /***/ },
-/* 38 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
-	   true ? factory(exports, __webpack_require__(37)) :
+	   true ? factory(exports, __webpack_require__(33)) :
 	  typeof define === 'function' && define.amd ? define('d3-time-format', ['exports', 'd3-time'], factory) :
 	  factory((global.d3_time_format = {}),global.d3_time);
 	}(this, function (exports,d3Time) { 'use strict';
@@ -15668,7 +15360,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	}));
 
 /***/ },
-/* 39 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
@@ -16168,12 +15860,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	}));
 
 /***/ },
-/* 40 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17),
-	    Measures = __webpack_require__(41),
-	    Collector = __webpack_require__(44);
+	var util = __webpack_require__(13),
+	    Measures = __webpack_require__(37),
+	    Collector = __webpack_require__(40);
 	
 	function Aggregator() {
 	  this._cells = {};
@@ -16486,10 +16178,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 41 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
+	var util = __webpack_require__(13);
 	
 	var types = {
 	  'values': measure({
@@ -16551,6 +16243,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    set:  'this.valid > 1 ? Math.sqrt(this.dev / this.valid) : 0',
 	    req:  ['variance'], idx: 2
 	  }),
+	  'stderr': measure({
+	    name: 'stderr',
+	    set:  'this.valid > 1 ? Math.sqrt(this.dev / (this.valid * (this.valid-1))) : 0',
+	    req:  ['variance'], idx: 2
+	  }),
 	  'median': measure({
 	    name: 'median',
 	    set:  'cell.data.q2(this.get)',
@@ -16604,7 +16301,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  'modeskew': measure({
 	    name: 'modeskew',
 	    set:  'this.dev===0 ? 0 : (this.mean - cell.data.q2(this.get)) / Math.sqrt(this.dev/(this.valid-1))',
-	    req:  ['mean', 'stdev', 'median'], idx: 5
+	    req:  ['mean', 'variance', 'median'], idx: 5
 	  })
 	};
 	
@@ -16662,7 +16359,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  ctr.prototype.rem = Function('t', 'var v = this.get(t);' + rem);
 	  ctr.prototype.set = Function(set);
 	  ctr.prototype.get = accessor;
-	  ctr.prototype.distinct = __webpack_require__(42).count.distinct;
+	  ctr.prototype.distinct = __webpack_require__(38).count.distinct;
 	  ctr.prototype.isValid = util.isValid;
 	  ctr.fields = agg.map(util.$('out'));
 	  return ctr;
@@ -16673,12 +16370,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 42 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
-	var type = __webpack_require__(28);
-	var gen = __webpack_require__(43);
+	var util = __webpack_require__(13);
+	var type = __webpack_require__(24);
+	var gen = __webpack_require__(39);
 	
 	var stats = module.exports;
 	
@@ -17399,10 +17096,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 43 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17),
+	var util = __webpack_require__(13),
 	    gen = module.exports;
 	
 	gen.repeat = function(val, n) {
@@ -17574,11 +17271,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 44 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
-	var stats = __webpack_require__(42);
+	var util = __webpack_require__(13);
+	var stats = __webpack_require__(38);
 	
 	var REM = '__dl_rem__';
 	
@@ -17696,11 +17393,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 45 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
-	var Aggregator = __webpack_require__(40);
+	var util = __webpack_require__(13);
+	var Aggregator = __webpack_require__(36);
 	
 	module.exports = function() {
 	  // flatten arguments into a single array
@@ -17715,11 +17412,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 46 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17),
-	    time = __webpack_require__(47),
+	var util = __webpack_require__(13),
+	    time = __webpack_require__(43),
 	    EPSILON = 1e-15;
 	
 	function bins(opt) {
@@ -17834,10 +17531,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 47 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3_time = __webpack_require__(37);
+	var d3_time = __webpack_require__(33);
 	
 	var tempDate = new Date(),
 	    baseDate = new Date(0, 0, 1).setFullYear(0), // Jan 1, 0 AD
@@ -18008,14 +17705,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	module.exports.utc = toUnitMap(utc);
 
 /***/ },
-/* 48 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var bins = __webpack_require__(46),
-	    gen  = __webpack_require__(43),
-	    type = __webpack_require__(28),
-	    util = __webpack_require__(17),
-	    stats = __webpack_require__(42);
+	var bins = __webpack_require__(42),
+	    gen  = __webpack_require__(39),
+	    type = __webpack_require__(24),
+	    util = __webpack_require__(13),
+	    stats = __webpack_require__(38);
 	
 	var qtype = {
 	  'integer': 1,
@@ -18098,11 +17795,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 49 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17),
-	    format = __webpack_require__(36);
+	var util = __webpack_require__(13),
+	    format = __webpack_require__(32);
 	
 	var context = {
 	  formats:    [],
@@ -18110,7 +17807,8 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  truncate:   util.truncate,
 	  pad:        util.pad,
 	  day:        format.day,
-	  month:      format.month
+	  month:      format.month,
+	  quarter:    format.quarter
 	};
 	
 	function template(text) {
@@ -18289,6 +17987,9 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	      case 'day-abbrev':
 	        src = 'this.day(' + src + ',true)';
 	        break;
+	      case 'quarter':
+	        src = 'this.quarter(' + src + ')';
+	        break;
 	      default:
 	        throw Error('Unrecognized template filter: ' + f);
 	    }
@@ -18336,11 +18037,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 50 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17),
-	    time = __webpack_require__(47),
+	var util = __webpack_require__(13),
+	    time = __webpack_require__(43),
 	    utc = time.utc;
 	
 	var u = module.exports;
@@ -18363,12 +18064,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 51 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17);
-	var load = __webpack_require__(22);
-	var read = __webpack_require__(27);
+	var util = __webpack_require__(13);
+	var load = __webpack_require__(18);
+	var read = __webpack_require__(23);
 	
 	module.exports = util
 	  .keys(read.formats)
@@ -18405,13 +18106,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 52 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(17),
-	    type = __webpack_require__(28),
-	    stats = __webpack_require__(42),
-	    template = __webpack_require__(49);
+	var util = __webpack_require__(13),
+	    type = __webpack_require__(24),
+	    stats = __webpack_require__(38),
+	    template = __webpack_require__(45);
 	
 	module.exports = {
 	  table:   formatTable,  // format a data table
@@ -18513,18 +18214,18 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	}
 
 /***/ },
-/* 53 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    log = __webpack_require__(12),
-	    Heap = __webpack_require__(54),
-	    ChangeSet = __webpack_require__(9),
-	    DataSource = __webpack_require__(15),
-	    Collector = __webpack_require__(11),
-	    Tuple = __webpack_require__(13),
-	    Signal = __webpack_require__(55),
-	    Deps = __webpack_require__(10);
+	var dl = __webpack_require__(12),
+	    log = __webpack_require__(8),
+	    Heap = __webpack_require__(50),
+	    ChangeSet = __webpack_require__(5),
+	    DataSource = __webpack_require__(11),
+	    Collector = __webpack_require__(7),
+	    Tuple = __webpack_require__(9),
+	    Signal = __webpack_require__(51),
+	    Deps = __webpack_require__(6);
 	
 	function Graph() {
 	}
@@ -18853,7 +18554,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 54 */
+/* 50 */
 /***/ function(module, exports) {
 
 	function Heap(comparator) {
@@ -18954,11 +18655,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 55 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ChangeSet = __webpack_require__(9),
-	    Node = __webpack_require__(14), // jshint ignore:line
+	var ChangeSet = __webpack_require__(5),
+	    Node = __webpack_require__(10), // jshint ignore:line
 	    Base = Node.prototype;
 	
 	function Signal(graph, name, initialValue) {
@@ -19034,35 +18735,35 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 56 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  axes:       __webpack_require__(57),
-	  background: __webpack_require__(103),
-	  data:       __webpack_require__(104),
-	  events:     __webpack_require__(138),
-	  expr:       __webpack_require__(139),
-	  legends:    __webpack_require__(145),
-	  mark:       __webpack_require__(59),
-	  marks:      __webpack_require__(147),
-	  modify:     __webpack_require__(137),
-	  padding:    __webpack_require__(148),
-	  predicates: __webpack_require__(149),
-	  properties: __webpack_require__(60),
-	  signals:    __webpack_require__(150),
-	  spec:       __webpack_require__(151),
-	  streams:    __webpack_require__(161),
-	  transforms: __webpack_require__(105)
+	  axes:       __webpack_require__(53),
+	  background: __webpack_require__(99),
+	  data:       __webpack_require__(100),
+	  events:     __webpack_require__(134),
+	  expr:       __webpack_require__(135),
+	  legends:    __webpack_require__(141),
+	  mark:       __webpack_require__(55),
+	  marks:      __webpack_require__(143),
+	  modify:     __webpack_require__(133),
+	  padding:    __webpack_require__(144),
+	  predicates: __webpack_require__(145),
+	  properties: __webpack_require__(56),
+	  signals:    __webpack_require__(146),
+	  spec:       __webpack_require__(147),
+	  streams:    __webpack_require__(157),
+	  transforms: __webpack_require__(101)
 	};
 
 
 /***/ },
-/* 57 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    axs = __webpack_require__(58);
+	var dl = __webpack_require__(12),
+	    axs = __webpack_require__(54);
 	
 	var ORIENT = {
 	  "x":      "bottom",
@@ -19205,15 +18906,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 58 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    Tuple = __webpack_require__(8).Tuple,
-	    parseMark = __webpack_require__(59),
-	    util = __webpack_require__(61);
+	var dl = __webpack_require__(12),
+	    Tuple = __webpack_require__(4).Tuple,
+	    parseMark = __webpack_require__(55),
+	    util = __webpack_require__(57);
 	
-	var axisBounds = new (__webpack_require__(63).Bounds)();
+	var axisBounds = new (__webpack_require__(59).Bounds)();
 	var ORDINAL = 'ordinal';
 	
 	function axs(model) {
@@ -19788,11 +19489,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 59 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    parseProperties = __webpack_require__(60);
+	var dl = __webpack_require__(12),
+	    parseProperties = __webpack_require__(56);
 	
 	function parseMark(model, mark) {
 	  var props = mark.properties,
@@ -19873,13 +19574,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 60 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    dl = __webpack_require__(16),
-	    log = __webpack_require__(12),
-	    Tuple = __webpack_require__(8).Tuple;
+	var d3 = __webpack_require__(2),
+	    dl = __webpack_require__(12),
+	    log = __webpack_require__(8),
+	    Tuple = __webpack_require__(4).Tuple;
 	
 	var DEPS = ["signals", "scales", "data", "fields"];
 	
@@ -20519,20 +20220,20 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 61 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
+	var dl = __webpack_require__(12),
 	    u  = {};
 	
-	dl.extend(u, __webpack_require__(62));
+	dl.extend(u, __webpack_require__(58));
 	module.exports = dl.extend(u, dl);
 
 /***/ },
-/* 62 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16);
+	var dl = __webpack_require__(12);
 	
 	var TIME    = 'time',
 	    UTC     = 'utc',
@@ -20597,33 +20298,33 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 63 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  path:       __webpack_require__(64),
-	  render:     __webpack_require__(68),
-	  Item:       __webpack_require__(100),
-	  bound:      __webpack_require__(87),
-	  Bounds:     __webpack_require__(86),
-	  canvas:     __webpack_require__(89),
-	  Gradient:   __webpack_require__(101),
-	  toJSON:     __webpack_require__(102).toJSON,
-	  fromJSON:   __webpack_require__(102).fromJSON
+	  path:       __webpack_require__(60),
+	  render:     __webpack_require__(64),
+	  Item:       __webpack_require__(96),
+	  bound:      __webpack_require__(83),
+	  Bounds:     __webpack_require__(82),
+	  canvas:     __webpack_require__(85),
+	  Gradient:   __webpack_require__(97),
+	  toJSON:     __webpack_require__(98).toJSON,
+	  fromJSON:   __webpack_require__(98).fromJSON
 	};
 
 /***/ },
-/* 64 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  parse:  __webpack_require__(65),
-	  render: __webpack_require__(66)
+	  parse:  __webpack_require__(61),
+	  render: __webpack_require__(62)
 	};
 
 
 /***/ },
-/* 65 */
+/* 61 */
 /***/ function(module, exports) {
 
 	// Path parsing and rendering code adapted from fabric.js -- Thanks!
@@ -20678,10 +20379,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 66 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arc = __webpack_require__(67);
+	var arc = __webpack_require__(63);
 	
 	module.exports = function(g, path, l, t) {
 	  var current, // current instruction
@@ -20978,7 +20679,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 67 */
+/* 63 */
 /***/ function(module, exports) {
 
 	var segmentCache = {},
@@ -21097,31 +20798,31 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 68 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  'canvas': __webpack_require__(69),
-	  'svg':    __webpack_require__(95)
+	  'canvas': __webpack_require__(65),
+	  'svg':    __webpack_require__(91)
 	};
 
 
 /***/ },
-/* 69 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  Handler:  __webpack_require__(70),
-	  Renderer: __webpack_require__(92)
+	  Handler:  __webpack_require__(66),
+	  Renderer: __webpack_require__(88)
 	};
 
 /***/ },
-/* 70 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DOM = __webpack_require__(71),
-	    Handler = __webpack_require__(72),
-	    marks = __webpack_require__(73);
+	var DOM = __webpack_require__(67),
+	    Handler = __webpack_require__(68),
+	    marks = __webpack_require__(69);
 	
 	function CanvasHandler() {
 	  Handler.call(this);
@@ -21309,7 +21010,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 71 */
+/* 67 */
 /***/ function(module, exports) {
 
 	// create a new DOM element
@@ -21347,7 +21048,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	        a.tagName.toLowerCase() !== tag.toLowerCase() ||
 	        className && a.getAttribute('class') != className) {
 	      a = create(el.ownerDocument, tag, ns);
-	      el.insertBefore(a, b);
+	      el.insertBefore(a, b || null);
 	      if (className) a.setAttribute('class', className);
 	    }
 	    return a;
@@ -21391,7 +21092,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 72 */
+/* 68 */
 /***/ function(module, exports) {
 
 	function Handler() {
@@ -21445,28 +21146,28 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	module.exports = Handler;
 
 /***/ },
-/* 73 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  arc:    __webpack_require__(74),
-	  area:   __webpack_require__(76),
-	  group:  __webpack_require__(78),
-	  image:  __webpack_require__(79),
-	  line:   __webpack_require__(80),
-	  path:   __webpack_require__(81),
-	  rect:   __webpack_require__(82),
-	  rule:   __webpack_require__(83),
-	  symbol: __webpack_require__(84),
-	  text:   __webpack_require__(85)
+	  arc:    __webpack_require__(70),
+	  area:   __webpack_require__(72),
+	  group:  __webpack_require__(74),
+	  image:  __webpack_require__(75),
+	  line:   __webpack_require__(76),
+	  path:   __webpack_require__(77),
+	  rect:   __webpack_require__(78),
+	  rule:   __webpack_require__(79),
+	  symbol: __webpack_require__(80),
+	  text:   __webpack_require__(81)
 	};
 
 
 /***/ },
-/* 74 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(75);
+	var util = __webpack_require__(71);
 	var halfpi = Math.PI / 2;
 	
 	function path(g, o) {
@@ -21489,7 +21190,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 75 */
+/* 71 */
 /***/ function(module, exports) {
 
 	function drawPathOne(path, g, o, items) {
@@ -21642,13 +21343,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 76 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(75),
-	    parse = __webpack_require__(65),
-	    render = __webpack_require__(66),
-	    areaPath = __webpack_require__(77).path.area;
+	var util = __webpack_require__(71),
+	    parse = __webpack_require__(61),
+	    render = __webpack_require__(62),
+	    areaPath = __webpack_require__(73).path.area;
 	
 	function path(g, items) {
 	  var o = items[0],
@@ -21681,10 +21382,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 77 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3_svg = __webpack_require__(5).svg;
+	var d3_svg = __webpack_require__(2).svg;
 	
 	function x(o)     { return o.x || 0; }
 	function y(o)     { return o.y || 0; }
@@ -21757,10 +21458,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 78 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(75),
+	var util = __webpack_require__(71),
 	    EMPTY = [];
 	
 	function draw(g, scene, bounds) {
@@ -21900,10 +21601,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 79 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(75);
+	var util = __webpack_require__(71);
 	
 	function draw(g, scene, bounds) {
 	  if (!scene.items || !scene.items.length) return;
@@ -21942,13 +21643,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 80 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(75),
-	    parse = __webpack_require__(65),
-	    render = __webpack_require__(66),
-	    linePath = __webpack_require__(77).path.line;
+	var util = __webpack_require__(71),
+	    parse = __webpack_require__(61),
+	    render = __webpack_require__(62),
+	    linePath = __webpack_require__(73).path.line;
 	    
 	function path(g, items) {
 	  var o = items[0],
@@ -21981,12 +21682,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 81 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(75),
-	    parse = __webpack_require__(65),
-	    render = __webpack_require__(66);
+	var util = __webpack_require__(71),
+	    parse = __webpack_require__(61),
+	    render = __webpack_require__(62);
 	
 	function path(g, o) {
 	  if (o.path == null) return true;
@@ -22001,10 +21702,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 82 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(75);
+	var util = __webpack_require__(71);
 	
 	function draw(g, scene, bounds) {
 	  if (!scene.items || !scene.items.length) return;
@@ -22040,10 +21741,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 83 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(75);
+	var util = __webpack_require__(71);
 	
 	function draw(g, scene, bounds) {
 	  if (!scene.items || !scene.items.length) return;
@@ -22101,10 +21802,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 84 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var util = __webpack_require__(75);
+	var util = __webpack_require__(71);
 	
 	var sqrt3 = Math.sqrt(3),
 	    tan30 = Math.tan(30 * Math.PI / 180);
@@ -22179,13 +21880,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 85 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Bounds = __webpack_require__(86),
-	    textBounds = __webpack_require__(87).text,
-	    text = __webpack_require__(91),
-	    util = __webpack_require__(75),
+	var Bounds = __webpack_require__(82),
+	    textBounds = __webpack_require__(83).text,
+	    text = __webpack_require__(87),
+	    util = __webpack_require__(71),
 	    tempBounds = new Bounds();
 	
 	function draw(g, scene, bounds) {
@@ -22258,7 +21959,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 86 */
+/* 82 */
 /***/ function(module, exports) {
 
 	function Bounds(b) {
@@ -22391,15 +22092,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 87 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var BoundsContext = __webpack_require__(88),
-	    Bounds = __webpack_require__(86),
-	    canvas = __webpack_require__(89),
-	    svg = __webpack_require__(77),
-	    text = __webpack_require__(91),
-	    paths = __webpack_require__(64),
+	var BoundsContext = __webpack_require__(84),
+	    Bounds = __webpack_require__(82),
+	    canvas = __webpack_require__(85),
+	    svg = __webpack_require__(73),
+	    text = __webpack_require__(87),
+	    paths = __webpack_require__(60),
 	    parse = paths.parse,
 	    drawPath = paths.render,
 	    areaPath = svg.path.area,
@@ -22607,7 +22308,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	      bounds.union(axes[j].bounds);
 	    }
 	    for (j=0, m=items.length; j<m; ++j) {
-	      bounds.union(items[j].bounds);
+	      if (items[j].bounds) bounds.union(items[j].bounds);
 	    }
 	    if (includeLegends) {
 	      for (j=0, m=legends.length; j<m; ++j) {
@@ -22692,7 +22393,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 88 */
+/* 84 */
 /***/ function(module, exports) {
 
 	module.exports = function(b) {
@@ -22722,7 +22423,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 89 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function instance(w, h) {
@@ -22735,7 +22436,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    canvas.width = w;
 	    canvas.height = h;
 	  } else {
-	    var Canvas = __webpack_require__(90);
+	    var Canvas = __webpack_require__(86);
 	    if (!Canvas.prototype) return null;
 	    canvas = new Canvas(w, h);
 	  }
@@ -22817,13 +22518,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 90 */
+/* 86 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 91 */
+/* 87 */
 /***/ function(module, exports) {
 
 	function size(item) {
@@ -22862,15 +22563,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 92 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DOM = __webpack_require__(71),
-	    Bounds = __webpack_require__(86),
-	    ImageLoader = __webpack_require__(93),
-	    Canvas = __webpack_require__(89),
-	    Renderer = __webpack_require__(94),
-	    marks = __webpack_require__(73);
+	var DOM = __webpack_require__(67),
+	    Bounds = __webpack_require__(82),
+	    ImageLoader = __webpack_require__(89),
+	    Canvas = __webpack_require__(85),
+	    Renderer = __webpack_require__(90),
+	    marks = __webpack_require__(69);
 	
 	function CanvasRenderer(loadConfig) {
 	  Renderer.call(this);
@@ -23004,10 +22705,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 93 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var load = __webpack_require__(22);
+	var load = __webpack_require__(18);
 	
 	function ImageLoader(loadConfig) {
 	  this._pending = 0;
@@ -23057,7 +22758,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	
 	function server(uri, callback) {
 	  var loader = this,
-	      image = new (__webpack_require__(90).Image)();
+	      image = new (__webpack_require__(86).Image)();
 	
 	  loader._pending += 1;
 	
@@ -23085,7 +22786,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 94 */
+/* 90 */
 /***/ function(module, exports) {
 
 	function Renderer() {
@@ -23131,23 +22832,23 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	module.exports = Renderer;
 
 /***/ },
-/* 95 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  Handler:  __webpack_require__(96),
-	  Renderer: __webpack_require__(97),
+	  Handler:  __webpack_require__(92),
+	  Renderer: __webpack_require__(93),
 	  string: {
-	    Renderer : __webpack_require__(99)
+	    Renderer : __webpack_require__(95)
 	  }
 	};
 
 /***/ },
-/* 96 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DOM = __webpack_require__(71),
-	    Handler = __webpack_require__(72);
+	var DOM = __webpack_require__(67),
+	    Handler = __webpack_require__(68);
 	
 	function SVGHandler() {
 	  Handler.call(this);
@@ -23213,16 +22914,16 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 97 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ImageLoader = __webpack_require__(93),
-	    Renderer = __webpack_require__(94),
-	    text = __webpack_require__(91),
-	    DOM = __webpack_require__(71),
-	    SVG = __webpack_require__(77),
+	var ImageLoader = __webpack_require__(89),
+	    Renderer = __webpack_require__(90),
+	    text = __webpack_require__(87),
+	    DOM = __webpack_require__(67),
+	    SVG = __webpack_require__(73),
 	    ns = SVG.metadata.xmlns,
-	    marks = __webpack_require__(98);
+	    marks = __webpack_require__(94);
 	
 	function SVGRenderer(loadConfig) {
 	  Renderer.call(this);
@@ -23642,11 +23343,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 98 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var text = __webpack_require__(91),
-	    SVG = __webpack_require__(77),
+	var text = __webpack_require__(87),
+	    SVG = __webpack_require__(73),
 	    textAlign = SVG.textAlign,
 	    path = SVG.path;
 	
@@ -23793,17 +23494,17 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 99 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Renderer = __webpack_require__(94),
-	    ImageLoader = __webpack_require__(93),
-	    SVG = __webpack_require__(77),
-	    text = __webpack_require__(91),
-	    DOM = __webpack_require__(71),
+	var Renderer = __webpack_require__(90),
+	    ImageLoader = __webpack_require__(89),
+	    SVG = __webpack_require__(73),
+	    text = __webpack_require__(87),
+	    DOM = __webpack_require__(67),
 	    openTag = DOM.openTag,
 	    closeTag = DOM.closeTag,
-	    MARKS = __webpack_require__(98);
+	    MARKS = __webpack_require__(94);
 	
 	function SVGStringRenderer(loadConfig) {
 	  Renderer.call(this);
@@ -24041,7 +23742,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 100 */
+/* 96 */
 /***/ function(module, exports) {
 
 	function Item(mark) {
@@ -24094,7 +23795,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	module.exports = Item;
 
 /***/ },
-/* 101 */
+/* 97 */
 /***/ function(module, exports) {
 
 	var gradient_id = 0;
@@ -24122,10 +23823,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	module.exports = Gradient;
 
 /***/ },
-/* 102 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var bound = __webpack_require__(87);
+	var bound = __webpack_require__(83);
 	
 	var sets = [
 	  'items',
@@ -24184,10 +23885,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 103 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5);
+	var d3 = __webpack_require__(2);
 	
 	function parseBg(bg) {
 	  // return null if input is null or undefined
@@ -24202,13 +23903,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 104 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    log = __webpack_require__(12),
-	    parseTransforms = __webpack_require__(105),
-	    parseModify = __webpack_require__(137);
+	var dl = __webpack_require__(12),
+	    log = __webpack_require__(8),
+	    parseTransforms = __webpack_require__(101),
+	    parseModify = __webpack_require__(133);
 	
 	function parseData(model, spec, callback) {
 	  var config = model.config(),
@@ -24359,11 +24060,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 105 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    transforms = __webpack_require__(106);
+	var dl = __webpack_require__(12),
+	    transforms = __webpack_require__(102);
 	
 	function parseTransforms(model, def) {
 	  var transform = transforms[def.type],
@@ -24408,47 +24109,47 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 106 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  aggregate:    __webpack_require__(107),
-	  bin:          __webpack_require__(111),
-	  cross:        __webpack_require__(113),
-	  countpattern: __webpack_require__(114),
-	  linkpath:     __webpack_require__(115),
-	  facet:        __webpack_require__(116),
-	  filter:       __webpack_require__(117),
-	  fold:         __webpack_require__(118),
-	  force:        __webpack_require__(119),
-	  formula:      __webpack_require__(121),
-	  geo:          __webpack_require__(122),
-	  geopath:      __webpack_require__(123),
-	  hierarchy:    __webpack_require__(124),
-	  impute:       __webpack_require__(125),
-	  lookup:       __webpack_require__(126),
-	  pie:          __webpack_require__(127),
-	  rank:         __webpack_require__(128),
-	  sort:         __webpack_require__(129),
-	  stack:        __webpack_require__(130),
-	  treeify:      __webpack_require__(131),
-	  treemap:      __webpack_require__(132),
-	  voronoi:      __webpack_require__(133),
-	  wordcloud:    __webpack_require__(134)
+	  aggregate:    __webpack_require__(103),
+	  bin:          __webpack_require__(107),
+	  cross:        __webpack_require__(109),
+	  countpattern: __webpack_require__(110),
+	  linkpath:     __webpack_require__(111),
+	  facet:        __webpack_require__(112),
+	  filter:       __webpack_require__(113),
+	  fold:         __webpack_require__(114),
+	  force:        __webpack_require__(115),
+	  formula:      __webpack_require__(117),
+	  geo:          __webpack_require__(118),
+	  geopath:      __webpack_require__(119),
+	  hierarchy:    __webpack_require__(120),
+	  impute:       __webpack_require__(121),
+	  lookup:       __webpack_require__(122),
+	  pie:          __webpack_require__(123),
+	  rank:         __webpack_require__(124),
+	  sort:         __webpack_require__(125),
+	  stack:        __webpack_require__(126),
+	  treeify:      __webpack_require__(127),
+	  treemap:      __webpack_require__(128),
+	  voronoi:      __webpack_require__(129),
+	  wordcloud:    __webpack_require__(130)
 	};
 
 /***/ },
-/* 107 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    df = __webpack_require__(8),
-	    log = __webpack_require__(12),
+	var dl = __webpack_require__(12),
+	    df = __webpack_require__(4),
+	    log = __webpack_require__(8),
 	    ChangeSet = df.ChangeSet,
 	    Tuple = df.Tuple,
 	    Deps = df.Dependencies,
-	    Transform = __webpack_require__(108),
-	    Facetor = __webpack_require__(110);
+	    Transform = __webpack_require__(104),
+	    Facetor = __webpack_require__(106);
 	
 	function Aggregate(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -24711,13 +24412,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 108 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var df = __webpack_require__(8),
+	var df = __webpack_require__(4),
 	    Base = df.Node.prototype, // jshint ignore:line
 	    Deps = df.Dependencies,
-	    Parameter = __webpack_require__(109);
+	    Parameter = __webpack_require__(105);
 	
 	function Transform(graph) {
 	  if (graph) Base.init.call(this, graph);
@@ -24777,11 +24478,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 109 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    Deps = __webpack_require__(8).Dependencies;
+	var dl = __webpack_require__(12),
+	    Deps = __webpack_require__(4).Dependencies;
 	
 	var arrayType = /array/i,
 	    dataType  = /data/i,
@@ -24922,15 +24623,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 110 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
+	var dl = __webpack_require__(12),
 	    Aggregator = dl.Aggregator,
 	    Base = Aggregator.prototype,
-	    df = __webpack_require__(8),
+	    df = __webpack_require__(4),
 	    Tuple = df.Tuple,
-	    log = __webpack_require__(12),
+	    log = __webpack_require__(8),
 	    facetID = 0;
 	
 	function Facetor() {
@@ -25026,14 +24727,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 111 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var dl = __webpack_require__(12),
+	    Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Bin(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
@@ -25189,10 +24890,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 112 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Base = __webpack_require__(108).prototype;
+	var Base = __webpack_require__(104).prototype;
 	
 	function BatchTransform() {
 	  // Nearest appropriate collector.
@@ -25219,16 +24920,16 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 113 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    df = __webpack_require__(8),
+	var dl = __webpack_require__(12),
+	    df = __webpack_require__(4),
 	    ChangeSet = df.ChangeSet,
 	    Tuple = df.Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Cross(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
@@ -25466,13 +25167,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 114 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var df = __webpack_require__(8),
+	var df = __webpack_require__(4),
 	    Tuple = df.Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108);
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104);
 	
 	function CountPattern(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -25636,12 +25337,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 115 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108);
+	var Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104);
 	
 	function LinkPath(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -25828,11 +25529,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 116 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Transform = __webpack_require__(108),
-	    Aggregate = __webpack_require__(107);
+	var Transform = __webpack_require__(104),
+	    Aggregate = __webpack_require__(103);
 	
 	function Facet(graph) {
 	  Transform.addParameters(this, {
@@ -25842,7 +25543,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	        return (this._transform._pipeline = pipeline, this._transform);
 	      },
 	      get: function() {
-	        var parse = __webpack_require__(105),
+	        var parse = __webpack_require__(101),
 	            facet = this._transform;
 	        return facet._pipeline.map(function(t) {
 	          return parse(facet._graph, t);
@@ -25878,7 +25579,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	
 	module.exports = Facet;
 	
-	var dl = __webpack_require__(16);
+	var dl = __webpack_require__(12);
 	
 	Facet.schema = {
 	  "$schema": "http://json-schema.org/draft-04/schema#",
@@ -25895,12 +25596,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 117 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var df = __webpack_require__(8),
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108);
+	var df = __webpack_require__(4),
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104);
 	
 	function Filter(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -25969,13 +25670,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 118 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var df = __webpack_require__(8),
+	var df = __webpack_require__(4),
 	    Tuple = df.Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108);
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104);
 	
 	function Fold(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -26079,15 +25780,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 119 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    df = __webpack_require__(8),
+	var d3 = __webpack_require__(2),
+	    df = __webpack_require__(4),
 	    Tuple = df.Tuple,
 	    ChangeSet = df.ChangeSet,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108);
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104);
 	
 	function Force(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -26100,7 +25801,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	  this._layout = d3.layout.force();
 	
 	  Transform.addParameters(this, {
-	    size: {type: 'array<value>', default: __webpack_require__(120).size},
+	    size: {type: 'array<value>', default: __webpack_require__(116).size},
 	    bound: {type: 'value', default: true},
 	    links: {type: 'data'},
 	
@@ -26388,7 +26089,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 120 */
+/* 116 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -26401,13 +26102,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 121 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var df = __webpack_require__(8),
+	var df = __webpack_require__(4),
 	    Tuple = df.Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108);
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104);
 	
 	function Formula(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -26465,14 +26166,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 122 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    dl = __webpack_require__(16),
-	    Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108);
+	var d3 = __webpack_require__(2),
+	    dl = __webpack_require__(12),
+	    Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104);
 	
 	function Geo(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -26492,7 +26193,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	Geo.Parameters = {
 	  projection: {type: 'value', default: 'mercator'},
 	  center:     {type: 'array<value>'},
-	  translate:  {type: 'array<value>', default: __webpack_require__(120).center},
+	  translate:  {type: 'array<value>', default: __webpack_require__(116).center},
 	  rotate:     {type: 'array<value>'},
 	  scale:      {type: 'value'},
 	  precision:  {type: 'value'},
@@ -26640,15 +26341,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 123 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    dl = __webpack_require__(16),
-	    Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Geo = __webpack_require__(122),
-	    Transform = __webpack_require__(108);
+	var d3 = __webpack_require__(2),
+	    dl = __webpack_require__(12),
+	    Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Geo = __webpack_require__(118),
+	    Transform = __webpack_require__(104);
 	
 	function GeoPath(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -26715,15 +26416,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 124 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    dl = __webpack_require__(16),
-	    Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var d3 = __webpack_require__(2),
+	    dl = __webpack_require__(12),
+	    Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Hierarchy(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
@@ -26735,7 +26436,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    field: {type: 'value', default: null},
 	    // layout parameters
 	    mode: {type: 'value', default: 'tidy'}, // tidy, cluster, partition
-	    size: {type: 'array<value>', default: __webpack_require__(120).size},
+	    size: {type: 'array<value>', default: __webpack_require__(116).size},
 	    nodesize: {type: 'array<value>', default: null},
 	    orient: {type: 'value', default: 'cartesian'}
 	  });
@@ -26909,14 +26610,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 125 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    log = __webpack_require__(12),
-	    Tuple = __webpack_require__(8).Tuple,
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var dl = __webpack_require__(12),
+	    log = __webpack_require__(8),
+	    Tuple = __webpack_require__(4).Tuple,
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Impute(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
@@ -27072,12 +26773,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 126 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108);
+	var Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104);
 	
 	function Lookup(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -27183,14 +26884,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 127 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var dl = __webpack_require__(12),
+	    Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Pie(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
@@ -27306,13 +27007,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 128 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Rank(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
@@ -27395,12 +27096,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 129 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    log  = __webpack_require__(12),
-	    Transform = __webpack_require__(108);
+	var dl = __webpack_require__(12),
+	    log  = __webpack_require__(8),
+	    Transform = __webpack_require__(104);
 	
 	function Sort(graph) {
 	  Transform.prototype.init.call(this, graph);
@@ -27442,14 +27143,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 130 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var dl = __webpack_require__(12),
+	    Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Stack(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
@@ -27596,14 +27297,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 131 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var dl = __webpack_require__(12),
+	    Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Treeify(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
@@ -27696,15 +27397,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 132 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    dl = __webpack_require__(16),
-	    Tuple = __webpack_require__(8).Tuple,
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var d3 = __webpack_require__(2),
+	    dl = __webpack_require__(12),
+	    Tuple = __webpack_require__(4).Tuple,
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	var defaultRatio = 0.5 * (1 + Math.sqrt(5));
 	
@@ -27717,7 +27418,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    parent: {type: 'field', default: 'parent'},
 	    field: {type: 'field', default: 'value'},
 	    // treemap parameters
-	    size: {type: 'array<value>', default: __webpack_require__(120).size},
+	    size: {type: 'array<value>', default: __webpack_require__(116).size},
 	    round: {type: 'value', default: true},
 	    sticky: {type: 'value', default: false},
 	    ratio: {type: 'value', default: defaultRatio},
@@ -27885,19 +27586,19 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 133 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    Tuple = __webpack_require__(13),
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var d3 = __webpack_require__(2),
+	    Tuple = __webpack_require__(9),
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Voronoi(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
 	  Transform.addParameters(this, {
-	    clipExtent: {type: 'array<value>', default: __webpack_require__(120).extent},
+	    clipExtent: {type: 'array<value>', default: __webpack_require__(116).extent},
 	    x: {type: 'field', default: 'layout_x'},
 	    y: {type: 'field', default: 'layout_y'}
 	  });
@@ -27988,22 +27689,22 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 134 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    d3 = __webpack_require__(5),
-	    d3_cloud = __webpack_require__(135),
-	    canvas = __webpack_require__(63).canvas,
-	    Tuple = __webpack_require__(13),
-	    log = __webpack_require__(12),
-	    Transform = __webpack_require__(108),
-	    BatchTransform = __webpack_require__(112);
+	var dl = __webpack_require__(12),
+	    d3 = __webpack_require__(2),
+	    d3_cloud = __webpack_require__(131),
+	    canvas = __webpack_require__(59).canvas,
+	    Tuple = __webpack_require__(9),
+	    log = __webpack_require__(8),
+	    Transform = __webpack_require__(104),
+	    BatchTransform = __webpack_require__(108);
 	
 	function Wordcloud(graph) {
 	  BatchTransform.prototype.init.call(this, graph);
 	  Transform.addParameters(this, {
-	    size: {type: 'array<value>', default: __webpack_require__(120).size},
+	    size: {type: 'array<value>', default: __webpack_require__(116).size},
 	    text: {type: 'field', default: 'data'},
 	    rotate: {type: 'field|value', default: 0},
 	    font: {type: 'field|value', default: {value: 'sans-serif'}},
@@ -28101,7 +27802,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	
 	module.exports = Wordcloud;
 	
-	var Parameter = __webpack_require__(109);
+	var Parameter = __webpack_require__(105);
 	Wordcloud.schema = {
 	  "$schema": "http://json-schema.org/draft-04/schema#",
 	  "title": "Wordcloud transform",
@@ -28198,13 +27899,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 135 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Word cloud layout by Jason Davies, https://www.jasondavies.com/wordcloud/
 	// Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
 	
-	var dispatch = __webpack_require__(136).dispatch;
+	var dispatch = __webpack_require__(132).dispatch;
 	
 	var cloudRadians = Math.PI / 180,
 	    cw = 1 << 11 >> 5,
@@ -28603,7 +28304,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 136 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
@@ -28712,12 +28413,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	}));
 
 /***/ },
-/* 137 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    log = __webpack_require__(12),
-	    df = __webpack_require__(8),
+	var dl = __webpack_require__(12),
+	    log = __webpack_require__(8),
+	    df = __webpack_require__(4),
 	    Node = df.Node, // jshint ignore:line
 	    Tuple = df.Tuple,
 	    Deps = df.Dependencies;
@@ -28901,7 +28602,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 138 */
+/* 134 */
 /***/ function(module, exports) {
 
 	module.exports = (function() {
@@ -30090,12 +29791,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 139 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
+	var dl = __webpack_require__(12),
 	    template = dl.template,
-	    expr = __webpack_require__(140),
+	    expr = __webpack_require__(136),
 	    args = ['datum', 'event', 'signals'];
 	
 	var compile = expr.compiler(args, {
@@ -30220,11 +29921,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 140 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var parser = __webpack_require__(141),
-	    codegen = __webpack_require__(142);
+	var parser = __webpack_require__(137),
+	    codegen = __webpack_require__(138);
 	
 	var expr = module.exports = {
 	  parse: function(input, opt) {
@@ -30251,12 +29952,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	      compile.codegen = generator;
 	      return compile;
 	    },
-	  functions: __webpack_require__(144),
-	  constants: __webpack_require__(143)
+	  functions: __webpack_require__(140),
+	  constants: __webpack_require__(139)
 	};
 
 /***/ },
-/* 141 */
+/* 137 */
 /***/ function(module, exports) {
 
 	/*
@@ -32588,7 +32289,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	})();
 
 /***/ },
-/* 142 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	function toMap(list) {
@@ -32605,8 +32306,8 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	
 	module.exports = function(opt) {
 	  opt = opt || {};
-	  var constants = opt.constants || __webpack_require__(143),
-	      functions = (opt.functions || __webpack_require__(144))(codegen),
+	  var constants = opt.constants || __webpack_require__(139),
+	      functions = (opt.functions || __webpack_require__(140))(codegen),
 	      functionDefs = opt.functionDefs ? opt.functionDefs(codegen) : {},
 	      idWhiteList = opt.idWhiteList ? toMap(opt.idWhiteList) : null,
 	      idBlackList = opt.idBlackList ? toMap(opt.idBlackList) : null,
@@ -32735,7 +32436,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 143 */
+/* 139 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -32751,7 +32452,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 
 /***/ },
-/* 144 */
+/* 140 */
 /***/ function(module, exports) {
 
 	module.exports = function(codegen) {
@@ -32864,10 +32565,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 145 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var lgnd = __webpack_require__(146);
+	var lgnd = __webpack_require__(142);
 	
 	function parseLegends(model, spec, legends, group) {
 	  (spec || []).forEach(function(def, index) {
@@ -32950,15 +32651,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 146 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    dl = __webpack_require__(16),
-	    Gradient = __webpack_require__(63).Gradient,
-	    parseProperties = __webpack_require__(60),
-	    parseMark = __webpack_require__(59),
-	    util = __webpack_require__(61);
+	var d3 = __webpack_require__(2),
+	    dl = __webpack_require__(12),
+	    Gradient = __webpack_require__(59).Gradient,
+	    parseProperties = __webpack_require__(56),
+	    parseMark = __webpack_require__(55),
+	    util = __webpack_require__(57);
 	
 	function lgnd(model) {
 	  var size  = null,
@@ -33502,11 +33203,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 147 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var parseMark = __webpack_require__(59),
-	    parseProperties = __webpack_require__(60);
+	var parseMark = __webpack_require__(55),
+	    parseProperties = __webpack_require__(56);
 	
 	function parseRootMark(model, spec, width, height) {
 	  return {
@@ -33624,10 +33325,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 148 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16);
+	var dl = __webpack_require__(12);
 	
 	function parsePadding(pad) {
 	  return pad == null ? 'auto' :
@@ -33660,10 +33361,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 149 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16);
+	var dl = __webpack_require__(12);
 	
 	var types = {
 	  '=':   parseComparator,
@@ -33952,12 +33653,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 150 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    expr = __webpack_require__(139),
-	    SIGNALS = __webpack_require__(8).Dependencies.SIGNALS;
+	var dl = __webpack_require__(12),
+	    expr = __webpack_require__(135),
+	    SIGNALS = __webpack_require__(4).Dependencies.SIGNALS;
 	
 	var RESERVED = ['datum', 'event', 'signals', 'width', 'height', 'padding']
 	    .concat(dl.keys(expr.codegen.functions));
@@ -34080,13 +33781,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 151 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl  = __webpack_require__(16),
-	    log = __webpack_require__(12),
-	    Model = __webpack_require__(152),
-	    View  = __webpack_require__(160);
+	var dl  = __webpack_require__(12),
+	    log = __webpack_require__(8),
+	    Model = __webpack_require__(148),
+	    View  = __webpack_require__(156);
 	
 	/**
 	 * Parse graph specification
@@ -34128,7 +33829,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	      // protect against subsequent spec modification
 	      spec = dl.duplicate(spec);
 	
-	      var parsers = __webpack_require__(56),
+	      var parsers = __webpack_require__(52),
 	          width   = spec.width || 500,
 	          height  = spec.height || 500,
 	          padding = parsers.padding(spec.padding);
@@ -34229,18 +33930,18 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 152 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    df = __webpack_require__(8),
+	var dl = __webpack_require__(12),
+	    df = __webpack_require__(4),
 	    ChangeSet = df.ChangeSet,
 	    Base = df.Graph.prototype,
 	    Node  = df.Node, // jshint ignore:line
-	    GroupBuilder = __webpack_require__(153),
-	    visit = __webpack_require__(158),
-	    compiler = __webpack_require__(139),
-	    config = __webpack_require__(159);
+	    GroupBuilder = __webpack_require__(149),
+	    visit = __webpack_require__(154),
+	    compiler = __webpack_require__(135),
+	    config = __webpack_require__(155);
 	
 	function Model(cfg) {
 	  this._defs = {};
@@ -34397,20 +34098,20 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 153 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    df = __webpack_require__(8),
+	var dl = __webpack_require__(12),
+	    df = __webpack_require__(4),
 	    Node  = df.Node, // jshint ignore:line
 	    Deps  = df.Dependencies,
 	    Tuple = df.Tuple,
 	    Collector = df.Collector,
-	    log = __webpack_require__(12),
-	    Builder = __webpack_require__(154),
-	    Scale = __webpack_require__(157),
-	    parseAxes = __webpack_require__(57),
-	    parseLegends = __webpack_require__(145);
+	    log = __webpack_require__(8),
+	    Builder = __webpack_require__(150),
+	    Scale = __webpack_require__(153),
+	    parseAxes = __webpack_require__(53),
+	    parseLegends = __webpack_require__(141);
 	
 	function GroupBuilder() {
 	  this._children = {};
@@ -34690,21 +34391,21 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	module.exports = GroupBuilder;
 
 /***/ },
-/* 154 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    log = __webpack_require__(12),
-	    Item = __webpack_require__(63).Item,
-	    df = __webpack_require__(8),
+	var dl = __webpack_require__(12),
+	    log = __webpack_require__(8),
+	    Item = __webpack_require__(59).Item,
+	    df = __webpack_require__(4),
 	    Node = df.Node, // jshint ignore:line
 	    Deps = df.Dependencies,
 	    Tuple = df.Tuple,
 	    ChangeSet = df.ChangeSet,
 	    Sentinel = {},
-	    Encoder  = __webpack_require__(155),
-	    Bounder  = __webpack_require__(156),
-	    parseData = __webpack_require__(104);
+	    Encoder  = __webpack_require__(151),
+	    Bounder  = __webpack_require__(152),
+	    parseData = __webpack_require__(100);
 	
 	function Builder() {
 	  return arguments.length ? this.init.apply(this, arguments) : this;
@@ -35003,15 +34704,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 155 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    log = __webpack_require__(12),
-	    df = __webpack_require__(8),
+	var dl = __webpack_require__(12),
+	    log = __webpack_require__(8),
+	    df = __webpack_require__(4),
 	    Node = df.Node, // jshint ignore:line
 	    Deps = df.Dependencies,
-	    bound = __webpack_require__(63).bound;
+	    bound = __webpack_require__(59).bound;
 	
 	var EMPTY = {};
 	
@@ -35088,7 +34789,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    else if (!input.trans) items.pop();
 	  }
 	
-	  var update_status = __webpack_require__(154).STATUS.UPDATE;
+	  var update_status = __webpack_require__(150).STATUS.UPDATE;
 	  for (i=0, len=input.add.length; i<len; ++i) {
 	    item = input.add[i];
 	    if (enter)  encode.call(this, enter,  item, input.trans, db, sg, preds, dirty);
@@ -35195,17 +34896,17 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 156 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    df = __webpack_require__(8),
-	    scene = __webpack_require__(63),
+	var dl = __webpack_require__(12),
+	    df = __webpack_require__(4),
+	    scene = __webpack_require__(59),
 	    Node = df.Node, // jshint ignore:line
-	    log = __webpack_require__(12),
+	    log = __webpack_require__(8),
 	    bound = scene.bound,
 	    Bounds = scene.Bounds,
-	    Encoder = __webpack_require__(155);
+	    Encoder = __webpack_require__(151);
 	
 	function Bounder(graph, mark) {
 	  this._mark = mark;
@@ -35269,16 +34970,16 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 157 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    dl = __webpack_require__(16),
-	    df = __webpack_require__(8),
-	    log = __webpack_require__(12),
+	var d3 = __webpack_require__(2),
+	    dl = __webpack_require__(12),
+	    df = __webpack_require__(4),
+	    log = __webpack_require__(8),
 	    Node = df.Node, // jshint ignore:line
 	    Deps = df.Dependencies,
-	    Aggregate = __webpack_require__(107);
+	    Aggregate = __webpack_require__(103);
 	
 	var Properties = {
 	  width: 1,
@@ -35841,7 +35542,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	            "type": "object",
 	            "properties": {
 	              "field": {"type": "string"},
-	              "op": {"enum": __webpack_require__(107).VALID_OPS}
+	              "op": {"enum": __webpack_require__(103).VALID_OPS}
 	            }
 	          }]
 	        }
@@ -35982,7 +35683,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 158 */
+/* 154 */
 /***/ function(module, exports) {
 
 	module.exports = function visit(node, func) {
@@ -36001,10 +35702,10 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 159 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
+	var d3 = __webpack_require__(2),
 	    config = {};
 	
 	config.load = {
@@ -36122,18 +35823,18 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 160 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    dl = __webpack_require__(16),
-	    df = __webpack_require__(8),
-	    sg = __webpack_require__(63).render,
-	    log = __webpack_require__(12),
+	var d3 = __webpack_require__(2),
+	    dl = __webpack_require__(12),
+	    df = __webpack_require__(4),
+	    sg = __webpack_require__(59).render,
+	    log = __webpack_require__(8),
 	    Deps = df.Dependencies,
-	    parseStreams = __webpack_require__(161),
-	    Encoder = __webpack_require__(155),
-	    Transition = __webpack_require__(162);
+	    parseStreams = __webpack_require__(157),
+	    Encoder = __webpack_require__(151),
+	    Transition = __webpack_require__(158);
 	
 	function View(el, width, height) {
 	  this._el    = null;
@@ -36562,7 +36263,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	};
 	
 	View.factory = function(model) {
-	  var HeadlessView = __webpack_require__(163);
+	  var HeadlessView = __webpack_require__(159);
 	  return function(opt) {
 	    opt = opt || {};
 	    var defs = model.defs();
@@ -36617,14 +36318,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 161 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    dl = __webpack_require__(16),
-	    df = __webpack_require__(8),
-	    selector = __webpack_require__(138),
-	    parseSignals = __webpack_require__(150);
+	var d3 = __webpack_require__(2),
+	    dl = __webpack_require__(12),
+	    df = __webpack_require__(4),
+	    selector = __webpack_require__(134),
+	    parseSignals = __webpack_require__(146);
 	
 	var GATEKEEPER = '_vgGATEKEEPER',
 	    EVALUATOR  = '_vgEVALUATOR';
@@ -36876,13 +36577,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 162 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    bound = __webpack_require__(63).bound,
-	    Tuple = __webpack_require__(8).Tuple,
-	    Status = __webpack_require__(154).STATUS;
+	var d3 = __webpack_require__(2),
+	    bound = __webpack_require__(59).bound,
+	    Tuple = __webpack_require__(4).Tuple,
+	    Status = __webpack_require__(150).STATUS;
 	
 	function Transition(duration, ease) {
 	  this.duration = duration || 500;
@@ -36985,13 +36686,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 163 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var sg = __webpack_require__(63).render,
+	var sg = __webpack_require__(59).render,
 	    canvas = sg.canvas,
 	    svg = sg.svg.string,
-	    View = __webpack_require__(160);
+	    View = __webpack_require__(156);
 	
 	function HeadlessView(width, height, model) {
 	  View.call(this, width, height, model);
@@ -37054,13 +36755,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 164 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dl = __webpack_require__(16),
-	    parse = __webpack_require__(56),
-	    Scale = __webpack_require__(157),
-	    config = __webpack_require__(159);
+	var dl = __webpack_require__(12),
+	    parse = __webpack_require__(52),
+	    Scale = __webpack_require__(153),
+	    config = __webpack_require__(155);
 	
 	function compile(module, opt, schema) {
 	  var s = module.schema;
@@ -37106,22 +36807,22 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 165 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var vlBin = __webpack_require__(166);
-	var vlChannel = __webpack_require__(167);
-	var vlData = __webpack_require__(169);
-	var vlEncoding = __webpack_require__(171);
-	var vlFieldDef = __webpack_require__(172);
-	var vlCompile = __webpack_require__(175);
-	var vlShorthand = __webpack_require__(200);
-	var vlSpec = __webpack_require__(201);
-	var vlTimeUnit = __webpack_require__(174);
-	var vlType = __webpack_require__(170);
-	var vlValidate = __webpack_require__(202);
-	var vlUtil = __webpack_require__(168);
+	var vlBin = __webpack_require__(162);
+	var vlChannel = __webpack_require__(163);
+	var vlData = __webpack_require__(165);
+	var vlEncoding = __webpack_require__(167);
+	var vlFieldDef = __webpack_require__(168);
+	var vlCompile = __webpack_require__(171);
+	var vlShorthand = __webpack_require__(196);
+	var vlSpec = __webpack_require__(197);
+	var vlTimeUnit = __webpack_require__(170);
+	var vlType = __webpack_require__(166);
+	var vlValidate = __webpack_require__(198);
+	var vlUtil = __webpack_require__(164);
 	exports.bin = vlBin;
 	exports.channel = vlChannel;
 	exports.compile = vlCompile.compile;
@@ -37138,11 +36839,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=vl.js.map
 
 /***/ },
-/* 166 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
+	var channel_1 = __webpack_require__(163);
 	function autoMaxBins(channel) {
 	    switch (channel) {
 	        case channel_1.ROW:
@@ -37158,11 +36859,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=bin.js.map
 
 /***/ },
-/* 167 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var util_1 = __webpack_require__(168);
+	var util_1 = __webpack_require__(164);
 	(function (Channel) {
 	    Channel[Channel["X"] = 'x'] = "X";
 	    Channel[Channel["Y"] = 'y'] = "Y";
@@ -37265,11 +36966,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=channel.js.map
 
 /***/ },
-/* 168 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var util_1 = __webpack_require__(17);
+	var util_1 = __webpack_require__(13);
 	exports.keys = util_1.keys;
 	exports.extend = util_1.extend;
 	exports.duplicate = util_1.duplicate;
@@ -37278,7 +36979,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	exports.truncate = util_1.truncate;
 	exports.toMap = util_1.toMap;
 	exports.isObject = util_1.isObject;
-	var generate_1 = __webpack_require__(43);
+	var generate_1 = __webpack_require__(39);
 	exports.range = generate_1.range;
 	function contains(array, item) {
 	    return array.indexOf(item) > -1;
@@ -37387,7 +37088,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	    }
 	    return dest;
 	}
-	var dlBin = __webpack_require__(46);
+	var dlBin = __webpack_require__(42);
 	function getbins(stats, maxbins) {
 	    return dlBin({
 	        min: stats.min,
@@ -37403,11 +37104,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=util.js.map
 
 /***/ },
-/* 169 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var type_1 = __webpack_require__(170);
+	var type_1 = __webpack_require__(166);
 	(function (DataFormat) {
 	    DataFormat[DataFormat["JSON"] = 'json'] = "JSON";
 	    DataFormat[DataFormat["CSV"] = 'csv'] = "CSV";
@@ -37428,7 +37129,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=data.js.map
 
 /***/ },
-/* 170 */
+/* 166 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -37464,12 +37165,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=type.js.map
 
 /***/ },
-/* 171 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var util_1 = __webpack_require__(168);
+	var channel_1 = __webpack_require__(163);
+	var util_1 = __webpack_require__(164);
 	function countRetinal(encoding) {
 	    var count = 0;
 	    if (encoding.color) {
@@ -37576,14 +37277,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=encoding.js.map
 
 /***/ },
-/* 172 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var aggregate_1 = __webpack_require__(173);
-	var timeunit_1 = __webpack_require__(174);
-	var type_1 = __webpack_require__(170);
-	var util_1 = __webpack_require__(168);
+	var aggregate_1 = __webpack_require__(169);
+	var timeunit_1 = __webpack_require__(170);
+	var type_1 = __webpack_require__(166);
+	var util_1 = __webpack_require__(164);
 	exports.aggregate = {
 	    type: 'string',
 	    enum: aggregate_1.AGGREGATE_OPS,
@@ -37695,7 +37396,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=fielddef.js.map
 
 /***/ },
-/* 173 */
+/* 169 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -37758,7 +37459,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=aggregate.js.map
 
 /***/ },
-/* 174 */
+/* 170 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -37810,23 +37511,23 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=timeunit.js.map
 
 /***/ },
-/* 175 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Model_1 = __webpack_require__(176);
-	var axis_1 = __webpack_require__(188);
-	var data_1 = __webpack_require__(189);
-	var layout_1 = __webpack_require__(190);
-	var facet_1 = __webpack_require__(191);
-	var legend_1 = __webpack_require__(192);
-	var mark_1 = __webpack_require__(193);
-	var scale_1 = __webpack_require__(187);
-	var common_1 = __webpack_require__(184);
-	var util_1 = __webpack_require__(168);
-	var data_2 = __webpack_require__(169);
-	var channel_1 = __webpack_require__(167);
-	var Model_2 = __webpack_require__(176);
+	var Model_1 = __webpack_require__(172);
+	var axis_1 = __webpack_require__(184);
+	var data_1 = __webpack_require__(185);
+	var layout_1 = __webpack_require__(186);
+	var facet_1 = __webpack_require__(187);
+	var legend_1 = __webpack_require__(188);
+	var mark_1 = __webpack_require__(189);
+	var scale_1 = __webpack_require__(183);
+	var common_1 = __webpack_require__(180);
+	var util_1 = __webpack_require__(164);
+	var data_2 = __webpack_require__(165);
+	var channel_1 = __webpack_require__(163);
+	var Model_2 = __webpack_require__(172);
 	exports.Model = Model_2.Model;
 	function compile(spec) {
 	    var model = new Model_1.Model(spec);
@@ -37882,24 +37583,24 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=compile.js.map
 
 /***/ },
-/* 176 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var config_1 = __webpack_require__(177);
-	var channel_1 = __webpack_require__(167);
-	var data_1 = __webpack_require__(169);
-	var fielddef_1 = __webpack_require__(172);
-	var vlEncoding = __webpack_require__(171);
-	var mark_1 = __webpack_require__(181);
-	var type_1 = __webpack_require__(170);
-	var util_1 = __webpack_require__(168);
-	var config_2 = __webpack_require__(182);
-	var stack_1 = __webpack_require__(183);
-	var scale_1 = __webpack_require__(187);
-	var scale_2 = __webpack_require__(178);
-	var aggregate_1 = __webpack_require__(173);
-	var channel_2 = __webpack_require__(167);
+	var config_1 = __webpack_require__(173);
+	var channel_1 = __webpack_require__(163);
+	var data_1 = __webpack_require__(165);
+	var fielddef_1 = __webpack_require__(168);
+	var vlEncoding = __webpack_require__(167);
+	var mark_1 = __webpack_require__(177);
+	var type_1 = __webpack_require__(166);
+	var util_1 = __webpack_require__(164);
+	var config_2 = __webpack_require__(178);
+	var stack_1 = __webpack_require__(179);
+	var scale_1 = __webpack_require__(183);
+	var scale_2 = __webpack_require__(174);
+	var aggregate_1 = __webpack_require__(169);
+	var channel_2 = __webpack_require__(163);
 	;
 	var Model = (function () {
 	    function Model(spec) {
@@ -38073,13 +37774,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=Model.js.map
 
 /***/ },
-/* 177 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var scale_1 = __webpack_require__(178);
-	var axis_1 = __webpack_require__(179);
-	var legend_1 = __webpack_require__(180);
+	var scale_1 = __webpack_require__(174);
+	var axis_1 = __webpack_require__(175);
+	var legend_1 = __webpack_require__(176);
 	exports.defaultCellConfig = {
 	    width: 200,
 	    height: 200
@@ -38162,7 +37863,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=config.js.map
 
 /***/ },
-/* 178 */
+/* 174 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -38206,7 +37907,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=scale.js.map
 
 /***/ },
-/* 179 */
+/* 175 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -38234,7 +37935,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=axis.js.map
 
 /***/ },
-/* 180 */
+/* 176 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -38245,7 +37946,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=legend.js.map
 
 /***/ },
-/* 181 */
+/* 177 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -38271,15 +37972,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=mark.js.map
 
 /***/ },
-/* 182 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var encoding_1 = __webpack_require__(171);
-	var fielddef_1 = __webpack_require__(172);
-	var mark_1 = __webpack_require__(181);
-	var util_1 = __webpack_require__(168);
+	var channel_1 = __webpack_require__(163);
+	var encoding_1 = __webpack_require__(167);
+	var fielddef_1 = __webpack_require__(168);
+	var mark_1 = __webpack_require__(177);
+	var util_1 = __webpack_require__(164);
 	function compileMarkConfig(mark, encoding, config, stack) {
 	    return util_1.extend(['filled', 'opacity', 'orient', 'align'].reduce(function (cfg, property) {
 	        var value = config.mark[property];
@@ -38318,19 +38019,19 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=config.js.map
 
 /***/ },
-/* 183 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var scale_1 = __webpack_require__(178);
-	var config_1 = __webpack_require__(177);
-	var mark_1 = __webpack_require__(181);
-	var fielddef_1 = __webpack_require__(172);
-	var encoding_1 = __webpack_require__(171);
-	var util_1 = __webpack_require__(168);
-	var common_1 = __webpack_require__(184);
-	var scale_2 = __webpack_require__(187);
+	var channel_1 = __webpack_require__(163);
+	var scale_1 = __webpack_require__(174);
+	var config_1 = __webpack_require__(173);
+	var mark_1 = __webpack_require__(177);
+	var fielddef_1 = __webpack_require__(168);
+	var encoding_1 = __webpack_require__(167);
+	var util_1 = __webpack_require__(164);
+	var common_1 = __webpack_require__(180);
+	var scale_2 = __webpack_require__(183);
 	function compileStackProperties(mark, encoding, scale, config) {
 	    var stackFields = getStackFields(mark, encoding, scale);
 	    if (stackFields.length > 0 &&
@@ -38417,16 +38118,16 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=stack.js.map
 
 /***/ },
-/* 184 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var fielddef_1 = __webpack_require__(172);
-	var sort_1 = __webpack_require__(185);
-	var type_1 = __webpack_require__(170);
-	var time_1 = __webpack_require__(186);
-	var util_1 = __webpack_require__(168);
+	var channel_1 = __webpack_require__(163);
+	var fielddef_1 = __webpack_require__(168);
+	var sort_1 = __webpack_require__(181);
+	var type_1 = __webpack_require__(166);
+	var time_1 = __webpack_require__(182);
+	var util_1 = __webpack_require__(164);
 	exports.FILL_STROKE_CONFIG = ['fill', 'fillOpacity',
 	    'stroke', 'strokeWidth', 'strokeDash', 'strokeDashOffset', 'strokeOpacity',
 	    'opacity'];
@@ -38533,7 +38234,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=common.js.map
 
 /***/ },
-/* 185 */
+/* 181 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -38546,13 +38247,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=sort.js.map
 
 /***/ },
-/* 186 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var util_1 = __webpack_require__(168);
-	var channel_1 = __webpack_require__(167);
-	var timeunit_1 = __webpack_require__(174);
+	var util_1 = __webpack_require__(164);
+	var channel_1 = __webpack_require__(163);
+	var timeunit_1 = __webpack_require__(170);
 	function format(timeUnit, abbreviated) {
 	    if (abbreviated === void 0) { abbreviated = false; }
 	    if (!timeUnit) {
@@ -38705,21 +38406,21 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=time.js.map
 
 /***/ },
-/* 187 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var util_1 = __webpack_require__(168);
-	var aggregate_1 = __webpack_require__(173);
-	var channel_1 = __webpack_require__(167);
-	var data_1 = __webpack_require__(169);
-	var type_1 = __webpack_require__(170);
-	var mark_1 = __webpack_require__(181);
-	var time_1 = __webpack_require__(186);
-	var scale_1 = __webpack_require__(178);
-	var config_1 = __webpack_require__(177);
-	var timeunit_1 = __webpack_require__(174);
-	var fielddef_1 = __webpack_require__(172);
+	var util_1 = __webpack_require__(164);
+	var aggregate_1 = __webpack_require__(169);
+	var channel_1 = __webpack_require__(163);
+	var data_1 = __webpack_require__(165);
+	var type_1 = __webpack_require__(166);
+	var mark_1 = __webpack_require__(177);
+	var time_1 = __webpack_require__(182);
+	var scale_1 = __webpack_require__(174);
+	var config_1 = __webpack_require__(173);
+	var timeunit_1 = __webpack_require__(170);
+	var fielddef_1 = __webpack_require__(168);
 	exports.COLOR_LEGEND = 'color_legend';
 	exports.COLOR_LEGEND_LABEL = 'color_legend_label';
 	function compileScales(model) {
@@ -39047,16 +38748,16 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=scale.js.map
 
 /***/ },
-/* 188 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var axis_1 = __webpack_require__(179);
-	var channel_1 = __webpack_require__(167);
-	var fielddef_1 = __webpack_require__(172);
-	var type_1 = __webpack_require__(170);
-	var util_1 = __webpack_require__(168);
-	var common_1 = __webpack_require__(184);
+	var axis_1 = __webpack_require__(175);
+	var channel_1 = __webpack_require__(163);
+	var fielddef_1 = __webpack_require__(168);
+	var type_1 = __webpack_require__(166);
+	var util_1 = __webpack_require__(164);
+	var common_1 = __webpack_require__(180);
 	function compileInnerAxis(channel, model) {
 	    var isCol = channel === channel_1.COLUMN, isRow = channel === channel_1.ROW, type = isCol ? 'x' : isRow ? 'y' : channel;
 	    var def = {
@@ -39280,21 +38981,21 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=axis.js.map
 
 /***/ },
-/* 189 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var vlFieldDef = __webpack_require__(172);
-	var util_1 = __webpack_require__(168);
-	var scale_1 = __webpack_require__(178);
-	var bin_1 = __webpack_require__(166);
-	var channel_1 = __webpack_require__(167);
-	var data_1 = __webpack_require__(169);
-	var fielddef_1 = __webpack_require__(172);
-	var type_1 = __webpack_require__(170);
-	var scale_2 = __webpack_require__(187);
-	var time_1 = __webpack_require__(186);
-	var aggregate_1 = __webpack_require__(173);
+	var vlFieldDef = __webpack_require__(168);
+	var util_1 = __webpack_require__(164);
+	var scale_1 = __webpack_require__(174);
+	var bin_1 = __webpack_require__(162);
+	var channel_1 = __webpack_require__(163);
+	var data_1 = __webpack_require__(165);
+	var fielddef_1 = __webpack_require__(168);
+	var type_1 = __webpack_require__(166);
+	var scale_2 = __webpack_require__(183);
+	var time_1 = __webpack_require__(182);
+	var aggregate_1 = __webpack_require__(169);
 	var DEFAULT_NULL_FILTERS = {
 	    nominal: false,
 	    ordinal: false,
@@ -39577,14 +39278,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=data.js.map
 
 /***/ },
-/* 190 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var data_1 = __webpack_require__(169);
-	var mark_1 = __webpack_require__(181);
-	var time_1 = __webpack_require__(186);
+	var channel_1 = __webpack_require__(163);
+	var data_1 = __webpack_require__(165);
+	var mark_1 = __webpack_require__(177);
+	var time_1 = __webpack_require__(182);
 	function compileLayoutData(model) {
 	    var distinctSummary = [channel_1.X, channel_1.Y, channel_1.ROW, channel_1.COLUMN].reduce(function (summary, channel) {
 	        if (model.has(channel) && model.isOrdinalScale(channel)) {
@@ -39679,17 +39380,17 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=layout.js.map
 
 /***/ },
-/* 191 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var util = __webpack_require__(168);
-	var util_1 = __webpack_require__(168);
-	var channel_1 = __webpack_require__(167);
-	var fielddef_1 = __webpack_require__(172);
-	var axis_1 = __webpack_require__(188);
-	var scale_1 = __webpack_require__(187);
-	var common_1 = __webpack_require__(184);
+	var util = __webpack_require__(164);
+	var util_1 = __webpack_require__(164);
+	var channel_1 = __webpack_require__(163);
+	var fielddef_1 = __webpack_require__(168);
+	var axis_1 = __webpack_require__(184);
+	var scale_1 = __webpack_require__(183);
+	var common_1 = __webpack_require__(180);
 	function facetMixins(model, marks) {
 	    var hasRow = model.has(channel_1.ROW), hasCol = model.has(channel_1.COLUMN);
 	    if (model.has(channel_1.ROW) && !fielddef_1.isDimension(model.encoding().row)) {
@@ -39932,17 +39633,17 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=facet.js.map
 
 /***/ },
-/* 192 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var fielddef_1 = __webpack_require__(172);
-	var mark_1 = __webpack_require__(181);
-	var util_1 = __webpack_require__(168);
-	var common_1 = __webpack_require__(184);
-	var type_1 = __webpack_require__(170);
-	var scale_1 = __webpack_require__(187);
+	var channel_1 = __webpack_require__(163);
+	var fielddef_1 = __webpack_require__(168);
+	var mark_1 = __webpack_require__(177);
+	var util_1 = __webpack_require__(164);
+	var common_1 = __webpack_require__(180);
+	var type_1 = __webpack_require__(166);
+	var scale_1 = __webpack_require__(183);
 	function compileLegends(model) {
 	    var defs = [];
 	    if (model.has(channel_1.COLOR) && model.legend(channel_1.COLOR)) {
@@ -40092,21 +39793,21 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=legend.js.map
 
 /***/ },
-/* 193 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var mark_1 = __webpack_require__(181);
-	var stack_1 = __webpack_require__(183);
-	var util_1 = __webpack_require__(168);
-	var area_1 = __webpack_require__(194);
-	var bar_1 = __webpack_require__(195);
-	var line_1 = __webpack_require__(196);
-	var point_1 = __webpack_require__(197);
-	var text_1 = __webpack_require__(198);
-	var tick_1 = __webpack_require__(199);
-	var common_1 = __webpack_require__(184);
+	var channel_1 = __webpack_require__(163);
+	var mark_1 = __webpack_require__(177);
+	var stack_1 = __webpack_require__(179);
+	var util_1 = __webpack_require__(164);
+	var area_1 = __webpack_require__(190);
+	var bar_1 = __webpack_require__(191);
+	var line_1 = __webpack_require__(192);
+	var point_1 = __webpack_require__(193);
+	var text_1 = __webpack_require__(194);
+	var tick_1 = __webpack_require__(195);
+	var common_1 = __webpack_require__(180);
 	var markCompiler = {
 	    area: area_1.area,
 	    bar: bar_1.bar,
@@ -40222,13 +39923,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=mark.js.map
 
 /***/ },
-/* 194 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var fielddef_1 = __webpack_require__(172);
-	var common_1 = __webpack_require__(184);
+	var channel_1 = __webpack_require__(163);
+	var fielddef_1 = __webpack_require__(168);
+	var common_1 = __webpack_require__(180);
 	var area;
 	(function (area) {
 	    function markType() {
@@ -40318,13 +40019,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=area.js.map
 
 /***/ },
-/* 195 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var fielddef_1 = __webpack_require__(172);
-	var common_1 = __webpack_require__(184);
+	var channel_1 = __webpack_require__(163);
+	var fielddef_1 = __webpack_require__(168);
+	var common_1 = __webpack_require__(180);
 	var bar;
 	(function (bar) {
 	    function markType() {
@@ -40505,12 +40206,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=bar.js.map
 
 /***/ },
-/* 196 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var common_1 = __webpack_require__(184);
+	var channel_1 = __webpack_require__(163);
+	var common_1 = __webpack_require__(180);
 	var line;
 	(function (line) {
 	    function markType() {
@@ -40550,12 +40251,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=line.js.map
 
 /***/ },
-/* 197 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var common_1 = __webpack_require__(184);
+	var channel_1 = __webpack_require__(163);
+	var common_1 = __webpack_require__(180);
 	var point;
 	(function (point) {
 	    function markType() {
@@ -40654,14 +40355,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=point.js.map
 
 /***/ },
-/* 198 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var common_1 = __webpack_require__(184);
-	var util_1 = __webpack_require__(168);
-	var type_1 = __webpack_require__(170);
+	var channel_1 = __webpack_require__(163);
+	var common_1 = __webpack_require__(180);
+	var util_1 = __webpack_require__(164);
+	var type_1 = __webpack_require__(166);
 	var text;
 	(function (text) {
 	    function markType() {
@@ -40755,12 +40456,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=text.js.map
 
 /***/ },
-/* 199 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var common_1 = __webpack_require__(184);
+	var channel_1 = __webpack_require__(163);
+	var common_1 = __webpack_require__(180);
 	var tick;
 	(function (tick) {
 	    function markType() {
@@ -40832,15 +40533,15 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=tick.js.map
 
 /***/ },
-/* 200 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var aggregate_1 = __webpack_require__(173);
-	var timeunit_1 = __webpack_require__(174);
-	var type_1 = __webpack_require__(170);
-	var vlEncoding = __webpack_require__(171);
-	var mark_1 = __webpack_require__(181);
+	var aggregate_1 = __webpack_require__(169);
+	var timeunit_1 = __webpack_require__(170);
+	var type_1 = __webpack_require__(166);
+	var vlEncoding = __webpack_require__(167);
+	var mark_1 = __webpack_require__(177);
 	exports.DELIM = '|';
 	exports.ASSIGN = '=';
 	exports.TYPE = ',';
@@ -40926,14 +40627,14 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=shorthand.js.map
 
 /***/ },
-/* 201 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var channel_1 = __webpack_require__(167);
-	var vlEncoding = __webpack_require__(171);
-	var mark_1 = __webpack_require__(181);
-	var util_1 = __webpack_require__(168);
+	var channel_1 = __webpack_require__(163);
+	var vlEncoding = __webpack_require__(167);
+	var mark_1 = __webpack_require__(177);
+	var util_1 = __webpack_require__(164);
 	function alwaysNoOcclusion(spec) {
 	    return vlEncoding.isAggregate(spec.encoding);
 	}
@@ -40968,12 +40669,12 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=spec.js.map
 
 /***/ },
-/* 202 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var util_1 = __webpack_require__(168);
-	var mark_1 = __webpack_require__(181);
+	var util_1 = __webpack_require__(164);
+	var mark_1 = __webpack_require__(177);
 	exports.DEFAULT_REQUIRED_CHANNEL_MAP = {
 	    text: ['text'],
 	    line: ['x', 'y'],
@@ -41017,11 +40718,11 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 	//# sourceMappingURL=validate.js.map
 
 /***/ },
-/* 203 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(5),
-	    $ = __webpack_require__(7).util.mutator;
+	var d3 = __webpack_require__(2),
+	    $ = __webpack_require__(3).util.mutator;
 	
 	module.exports = {
 	  init: function(el, param, spec) {
@@ -41206,7 +40907,7 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 204 */
+/* 200 */
 /***/ function(module, exports) {
 
 	// open editor url in a new window, and pass a message
@@ -41237,16 +40938,16 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_205__, __
 
 
 /***/ },
-/* 205 */
+/* 201 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_205__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_201__;
 
 /***/ },
-/* 206 */
+/* 202 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_206__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_202__;
 
 /***/ }
 /******/ ])});;
