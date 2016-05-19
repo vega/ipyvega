@@ -14,9 +14,10 @@ class VegaBase(object):
     DEFAULTS = {}
     JS_TEMPLATE = "static/vega.js"
     HTML_TEMPLATE = "static/vega.html"
-    render_type = '' # vega or vega-lite
+    render_type = ''  # vega or vega-lite
 
     def __init__(self, spec, data=None):
+        """Initialize the visualization object."""
         spec = self._prepare_spec(spec, data)
         self.spec = utils.update(spec, self.DEFAULTS, overwrite=False)
 
@@ -41,14 +42,14 @@ class VegaBase(object):
         """Display the visualization in the Jupyter notebook."""
         id = uuid.uuid4()
         publish_display_data(
-            {'text/html':self._generate_html(id)},
+            {'text/html': self._generate_html(id)},
             metadata={'jupyter-vega': '#{0}'.format(id)}
         )
         publish_display_data(
             {'application/javascript': self._generate_js(id)},
             metadata={'jupyter-vega': '#{0}'.format(id)}
         )
-    
-    def display(self):
-        display(self)
 
+    def display(self):
+        """Render the visualization."""
+        display(self)

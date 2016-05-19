@@ -1,7 +1,5 @@
 from __future__ import absolute_import
 
-from IPython.display import display, publish_display_data
-
 from .base import VegaBase
 
 

@@ -4,13 +4,11 @@ import collections
 import os.path
 import copy
 
-import pandas as pd
-
 
 def update(d, u, overwrite=True):
     """Update dictionary.
-    
-    If overwrite is False, then existing keys in d won't be overwriten
+
+    If overwrite is False, then existing keys in d won't be overwritten
     by values in u.
     """
     for k, v in u.items():
@@ -43,7 +41,7 @@ def escape(string):
 
 def sanitize_dataframe(df):
     """Sanitize a DataFrame to prepare it for serialization.
-    
+
     * Make a copy.
     * Raise ValueError if it has a hierarchical index.
     * Convert categoricals to strings.
@@ -52,7 +50,7 @@ def sanitize_dataframe(df):
     """
     import pandas as pd
     df = df.copy()
-    
+
     if isinstance(df.index, pd.core.index.MultiIndex):
         raise ValueError('Hierarchical indices not supported')
     if isinstance(df.columns, pd.core.index.MultiIndex):
@@ -75,7 +73,7 @@ def sanitize_dataframe(df):
 
 def prepare_spec(spec, data=None):
     """Prepare a Vega-Lite spec for sending to the frontend.
-    
+
     This allows data to be passed in either as part of the spec
     or separately. If separately, the data is assumed to be a
     pandas DataFrame or object that can be converted to to a DataFrame.
