@@ -5,7 +5,7 @@ import os.path
 import copy
 
 
-def update(d, u, overwrite=True):
+def update(d, u):
     """Update dictionary.
 
     If overwrite is False, then existing keys in d won't be overwritten
@@ -13,10 +13,10 @@ def update(d, u, overwrite=True):
     """
     for k, v in u.items():
         if isinstance(v, collections.Mapping):
-            r = update(d.get(k, {}), v, overwrite=overwrite)
+            r = update(d.get(k, {}), v)
             d[k] = r
         else:
-            if overwrite or k not in d:
+            if k not in d:
                 d[k] = u[k]
     return d
 
