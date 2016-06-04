@@ -2,22 +2,15 @@ import cgi
 import codecs
 import collections
 import os.path
-import copy
 
 
-def update(d, u, overwrite=True):
-    """Update dictionary.
-
-    If overwrite is False, then existing keys in d won't be overwritten
-    by values in u.
-    """
+def nested_update(d, u):
+    """Update nested dictionary d (in-place) with keys from u."""
     for k, v in u.items():
         if isinstance(v, collections.Mapping):
-            r = update(d.get(k, {}), v, overwrite=overwrite)
-            d[k] = r
+            d[k] = nested_update(d.get(k, {}), v)
         else:
-            if overwrite or k not in d:
-                d[k] = u[k]
+            d[k] = v
     return d
 
 
@@ -77,13 +70,14 @@ def prepare_spec(spec, data=None):
     This allows data to be passed in either as part of the spec
     or separately. If separately, the data is assumed to be a
     pandas DataFrame or object that can be converted to to a DataFrame.
+
+    Note that if data is not None, this modifies spec in-place
     """
     import pandas as pd
 
     if isinstance(data, pd.DataFrame):
         # We have to do the isinstance test first because we can't
         # compare a DataFrame to None.
-        spec = copy.deepcopy(spec)
         data = sanitize_dataframe(data)
         spec['data'] = {'values': data.to_dict(orient='records')}
     elif data is None:
@@ -93,7 +87,6 @@ def prepare_spec(spec, data=None):
     else:
         # As a last resort try to pass the data to a DataFrame and use it
         data = pd.DataFrame(data)
-        spec = copy.deepcopy(spec)
         data = sanitize_dataframe(data)
         spec['data'] = {'values': data.to_dict(orient='records')}
     return spec

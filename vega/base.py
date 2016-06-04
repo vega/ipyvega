@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import json
 import uuid
+import copy
 
 from IPython.display import display, publish_display_data
 
@@ -18,8 +19,8 @@ class VegaBase(object):
 
     def __init__(self, spec, data=None):
         """Initialize the visualization object."""
-        spec = self._prepare_spec(spec, data)
-        self.spec = utils.update(spec, self.DEFAULTS, overwrite=False)
+        self.spec = utils.nested_update(copy.deepcopy(self.DEFAULTS),
+                                        self._prepare_spec(spec, data))
 
     def _prepare_spec(self, spec, data):
         return spec
