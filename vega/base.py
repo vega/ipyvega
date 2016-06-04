@@ -19,8 +19,8 @@ class VegaBase(object):
 
     def __init__(self, spec, data=None):
         """Initialize the visualization object."""
-        self.spec = utils.nested_update(copy.deepcopy(self.DEFAULTS),
-                                        self._prepare_spec(spec, data))
+        spec = utils.nested_update(copy.deepcopy(self.DEFAULTS), spec)
+        self.spec = self._prepare_spec(spec, data)
 
     def _prepare_spec(self, spec, data):
         return spec
