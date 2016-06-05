@@ -42,13 +42,16 @@ def escape(string):
 def sanitize_dataframe(df):
     """Sanitize a DataFrame to prepare it for serialization.
 
-    * Make a copy.
+    * Make a copy
     * Raise ValueError if it has a hierarchical index.
     * Convert categoricals to strings.
-    * Convert datetimes to strings.
+    * Convert np.int dtypes to Python int objects
     * Convert floats to objects and replace NaNs by None.
+    * Convert DateTime dtypes into appropriate string representations
     """
     import pandas as pd
+    import numpy as np
+
     df = df.copy()
 
     if isinstance(df.index, pd.core.index.MultiIndex):
@@ -61,13 +64,17 @@ def sanitize_dataframe(df):
             # XXXX: work around bug in to_json for categorical types
             # https://github.com/pydata/pandas/issues/10778
             df[col_name] = df[col_name].astype(str)
-        if str(dtype).startswith('datetime'):
+        elif np.issubdtype(dtype, np.integer):
+            # convert integers to objects; np.int is not JSON serializable
+            df[col_name] = df[col_name].astype(object)
+        elif np.issubdtype(dtype, np.floating):
+            # For floats, convert nan->None: np.float is not JSON serializable
+            col = df[col_name].astype(object)
+            df[col_name] = col.where(col.notnull(), None)
+        elif str(dtype).startswith('datetime'):
             # Convert datetimes to strings
+            # astype(str) will choose the appropriate resolution
             df[col_name] = df[col_name].astype(str).replace('NaT', '')
-        if str(dtype).startswith('float'):
-            # For floats, convert nan->None
-            s = df[col_name].astype(object)
-            df[col_name] = s.where(s.notnull(), None)
     return df
 
 
