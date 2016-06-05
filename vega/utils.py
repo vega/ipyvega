@@ -49,6 +49,9 @@ def sanitize_dataframe(df):
     * Convert floats to objects and replace NaNs by None.
     * Convert DateTime dtypes into appropriate string representations
     """
+    import pandas as pd
+    import numpy as np
+
     df = df.copy()
 
     if isinstance(df.index, pd.core.index.MultiIndex):
