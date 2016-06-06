@@ -2,17 +2,19 @@ LONG_DESCRIPTION = """
 IPython Vega
 ============
 
-IPython/Jupyter notebook module for `Vega<https://github.com/vega/vega-lite>`_
-and `Vega-Lite<https://github.com/vega/vega-lite>`_`,
-`Polestar<https://github.com/vega/polestar>`_,
-and `Voyager<https://github.com/vega/voyager>`_.
+IPython/Jupyter notebook module for `Vega <https://github.com/vega/vega-lite/>`_
+and `Vega-Lite <https://github.com/vega/vega-lite/>`_,
+`Polestar <https://github.com/vega/polestar/>`_,
+and `Voyager <https://github.com/vega/voyager/>`_.
 Notebooks with embedded visualizations can be viewed on github and nbviewer.
+
+For more information, see https://github.com/vega/ipyvega/.
 
 Installation Notes
 ------------------
 When installing from PyPI, extra steps are required to enable the Jupyter
 notebook extension. For more information, see the
-`IPyVega github page<https://github.com/vega/ipyvega>`_.
+`github page <https://github.com/vega/ipyvega/>`_.
 """
 
 DESCRIPTION         = "IPyVega: An IPython/Jupyter widget for Vega and Vega-Lite"
