@@ -8,11 +8,11 @@ from .. import Vega, VegaLite
 PANDAS_DATA = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 5, 6]})
 JSON_DATA = {
     "values": [
-      {"x": 1, "y": 4},
-      {"x": 2, "y": 5},
-      {"x": 3, "y": 6}
-     ]
-  }
+        {"x": 1, "y": 4},
+        {"x": 2, "y": 5},
+        {"x": 3, "y": 6}
+    ]
+}
 
 VEGALITE_SPEC = {
     "mark": "circle",
