@@ -8,6 +8,8 @@ from .vegalite import VegaLite
 
 __all__ = ['Vega', 'VegaLite']
 
+__version__ = '0.4.dev0'
+
 
 def _jupyter_nbextension_paths():
     """Return metadata for the jupyter-vega nbextension."""

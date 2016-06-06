@@ -2,5 +2,8 @@ include LICENSE
 include *.txt
 include *.md
 include *.json
-include *.ipynb
+include *.cfg
+include *.py
+recursive-include src *.js
+recursive-include notebooks *.ipynb
 recursive-include vega *.py *.js *.html *.js.map
