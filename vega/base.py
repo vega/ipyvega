@@ -29,12 +29,12 @@ class VegaBase(object):
         template = utils.get_content(self.HTML_TEMPLATE)
         return template.format(id=id)
 
-    def _generate_js(self, id):
+    def _generate_js(self, id, **kwds):
         template = utils.get_content(self.JS_TEMPLATE)
         selector = '#{0}'.format(id)
         payload = template.format(
             selector=selector,
-            spec=json.dumps(self.spec),
+            spec=json.dumps(self.spec, **kwds),
             type=self.render_type
         )
         return payload
