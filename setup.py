@@ -24,8 +24,8 @@ PACKAGES            = ['vega',
 PACKAGE_DATA        = {'vega': ['static/*.js',
                                 'static/*.js.map',
                                 'static/*.html']}
-AUTHOR              = 'Dominik Moritz',
-AUTHOR_EMAIL        = 'domoritz@gmail.com',
+AUTHOR              = 'Dominik Moritz'
+AUTHOR_EMAIL        = 'domoritz@gmail.com'
 URL                 = 'http://github.com/vega/ipyvega/'
 DOWNLOAD_URL        = 'http://github.com/vega/ipyvega'
 LICENSE             = 'BSD 3-clause'
