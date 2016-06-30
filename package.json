@@ -1,6 +1,6 @@
 {
   "name": "jupyter-vega",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "IPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "dependencies": {
     "vega-embed": "^2.0.0",
     "vega": "^2.5.0",
-    "vega-lite": "^1.0.10",
+    "vega-lite": "^1.0.12",
     "d3": "^3.5.16"
   },
   "devDependencies": {
