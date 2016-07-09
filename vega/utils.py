@@ -90,7 +90,11 @@ def prepare_spec(spec, data=None):
     elif data is None:
         # Data is either passed in spec or error
         if 'data' not in spec:
-            raise ValueError('No data provided')
+            if 'layers' in spec:
+                if not all('data' in layer for layer in spec['layers']):
+                    raise ValueError('Data missing from a layer')
+            else:
+                raise ValueError('No data provided')
     else:
         # As a last resort try to pass the data to a DataFrame and use it
         data = pd.DataFrame(data)
