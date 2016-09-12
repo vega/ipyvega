@@ -58,7 +58,7 @@ python setup.py develop
 jupyter nbextension install --py --symlink vega
 ```
 
-Run kernel: `jypyter notebook`
+Run kernel: `jupyter notebook`
 
 To rebuild the javascript continuously, run `npm run watch`.
 
