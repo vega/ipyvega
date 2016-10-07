@@ -8,7 +8,7 @@ from .vegalite import VegaLite
 
 __all__ = ['Vega', 'VegaLite']
 
-__version__ = '0.4.2'
+__version__ = '0.4.3'
 
 
 def _jupyter_nbextension_paths():
