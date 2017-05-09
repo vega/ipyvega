@@ -25,7 +25,8 @@ To install ``vega`` and its dependencies from the Python Package Index using
 
 ```sh
 pip install jupyter pandas vega
-jupyter nbextension install --py vega
+pip install --upgrade notebook  # need jupyter_client >= 4.2 for sys-prefix below
+jupyter nbextension install --sys-prefix --py vega
 ```
 
 ### From Source
