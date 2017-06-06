@@ -26,10 +26,11 @@ function imageIndex(selector, outputs) {
   return -1;
 }
 
-function render(selector, spec, type, output_area) {
+function render(selector, spec, type, renderer, output_area) {
   var embedSpec = {
     mode: type,
-    spec: spec
+    spec: spec,
+    renderer: renderer
   };
 
   // Find the indices of this visualizations JS and PNG
