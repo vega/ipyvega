@@ -17,10 +17,11 @@ class VegaBase(object):
     HTML_TEMPLATE = "static/vega.html"
     render_type = ''  # vega or vega-lite
 
-    def __init__(self, spec, data=None):
+    def __init__(self, spec, data=None, renderer='canvas'):
         """Initialize the visualization object."""
         spec = utils.nested_update(copy.deepcopy(self.DEFAULTS), spec)
         self.spec = self._prepare_spec(spec, data)
+        self.renderer = renderer
 
     def _prepare_spec(self, spec, data):
         return spec
@@ -35,7 +36,8 @@ class VegaBase(object):
         payload = template.format(
             selector=selector,
             spec=json.dumps(self.spec, **kwds),
-            type=self.render_type
+            type=self.render_type,
+            renderer=self.renderer
         )
         return payload
 
@@ -51,6 +53,8 @@ class VegaBase(object):
             metadata={'jupyter-vega': '#{0}'.format(id)}
         )
 
-    def display(self):
+    def display(self, renderer=None):
         """Render the visualization."""
+        if renderer:
+            self.renderer = renderer
         display(self)
