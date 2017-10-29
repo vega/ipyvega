@@ -1,4 +1,4 @@
-# IPython Vega 3 [![PyPI](https://img.shields.io/pypi/v/vega.svg?maxAge=2592000)](https://pypi.python.org/pypi/vega) [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
+# IPython Vega 3 [![PyPI](https://img.shields.io/pypi/v/vega3.svg?maxAge=2592000)](https://pypi.python.org/pypi/vega3) [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=vega3)](https://travis-ci.org/vega/ipyvega)
 
 IPython/Jupyter notebook module for [Vega 3](https://github.com/vega/vega), and [Vega-Lite 2](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on github and nbviewer.
 
@@ -62,8 +62,7 @@ Publish a new version to pypi with `python3 setup.py sdist upload`.
 * Rebuild the javascript with `npm run build`
 * Make sure that everything still works (launch notebook and try the examples)
 * Update the version number in `package.json` and `__index__.py`
-* Commit and add a version tag of the form `v0.0.0`
-* `git push --tags && git push`
+* `git push`
 * Run `python setup.py sdist upload` to update https://pypi.python.org/pypi?%3Aaction=pkg_edit&name=vega3
 
 ## Resources
