@@ -7,6 +7,8 @@ Available on [pypi](https://pypi.python.org/pypi/vega) and [conda-forge](https:/
 ![screenshot](https://raw.githubusercontent.com/vega/ipyvega/master/screenshot.png "Screenshot of the Vega-Lite module")
 
 
+**Note:** Jupyter Lab will come with Vega and Vega-Lite installed by default so this package will not be necessary anymore. If you want to use Vega 3 or Vega-Lite 2, use https://github.com/vega/ipyvega/tree/vega3 but note that I am not frequently updating it.
+
 ## Install and run
 
 ### Conda (Recommended)
