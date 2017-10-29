@@ -4,7 +4,7 @@ IPython/Jupyter notebook module for [Vega 3](https://github.com/vega/vega), and 
 
 Available on [pypi](https://pypi.python.org/pypi/vega) and [conda-forge](https://github.com/conda-forge/vega-feedstock).
 
-![screenshot](https://raw.githubusercontent.com/vega/ipyvega/master/screenshot.png "Screenshot of the Vega-Lite module")
+![screenshot](https://raw.githubusercontent.com/vega/ipyvega/vega3/screenshot.png "Screenshot of the Vega-Lite module")
 
 
 ## Install and run
@@ -33,9 +33,9 @@ Once the package is installed, run
 jupyter notebook
 ```
 to launch the Jupyter notebook server, and use ``vega`` within the notebook.
-See the example notebooks for [Vega-Lite](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [Vega](https://github.com/vega/ipyvega/blob/master/notebooks/Vega.ipynb).
+See the example notebooks for [Vega-Lite](https://github.com/vega/ipyvega/blob/vega3/notebooks/VegaLite.ipynb) and [Vega](https://github.com/vega/ipyvega/blob/vega3/notebooks/Vega.ipynb).
 
-To run the notebooks yourself, you need to get the file [`cars.json`](https://raw.githubusercontent.com/vega/ipyvega/master/notebooks/cars.json).
+To run the notebooks yourself, you need to get the file [`cars.json`](https://raw.githubusercontent.com/vega/ipyvega/vega3/notebooks/cars.json).
 
 
 ## Developers
