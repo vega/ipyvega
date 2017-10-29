@@ -1,6 +1,6 @@
 # IPython Vega [![PyPI](https://img.shields.io/pypi/v/vega.svg?maxAge=2592000)](https://pypi.python.org/pypi/vega) [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
 
-IPython/Jupyter notebook module for [Vega](https://github.com/vega/vega-lite), and [Vega-Lite](https://github.com/vega/vega-lite), [Polestar](https://github.com/vega/polestar), and [Voyager](https://github.com/vega/voyager). Notebooks with embedded visualizations can be viewed on github and nbviewer.
+IPython/Jupyter notebook module for [Vega](https://github.com/vega/vega), and [Vega-Lite](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on github and nbviewer.
 
 Available on [pypi](https://pypi.python.org/pypi/vega) and [conda-forge](https://github.com/conda-forge/vega-feedstock).
 
