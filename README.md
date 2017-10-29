@@ -2,7 +2,7 @@
 
 IPython/Jupyter notebook module for [Vega 3](https://github.com/vega/vega), and [Vega-Lite 2](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on github and nbviewer.
 
-Available on [pypi](https://pypi.python.org/pypi/vega) and [conda-forge](https://github.com/conda-forge/vega-feedstock).
+Available on [pypi](https://pypi.python.org/pypi/vega3).
 
 ![screenshot](https://raw.githubusercontent.com/vega/ipyvega/vega3/screenshot.png "Screenshot of the Vega-Lite module")
 
