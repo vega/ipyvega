@@ -44,11 +44,11 @@ class VegaBase(object):
         id = uuid.uuid4()
         publish_display_data(
             {'text/html': self._generate_html(id)},
-            metadata={'jupyter-vega': '#{0}'.format(id)}
+            metadata={'jupyter-vega3': '#{0}'.format(id)}
         )
         publish_display_data(
             {'application/javascript': self._generate_js(id)},
-            metadata={'jupyter-vega': '#{0}'.format(id)}
+            metadata={'jupyter-vega3': '#{0}'.format(id)}
         )
 
     def display(self):

@@ -8,19 +8,19 @@ from .vegalite import VegaLite
 
 __all__ = ['Vega', 'VegaLite']
 
-__version__ = '0.5.0'
+__version__ = '0.1.0'
 
 
 def _jupyter_nbextension_paths():
-    """Return metadata for the jupyter-vega nbextension."""
+    """Return metadata for the jupyter-vega3 nbextension."""
     return [dict(
         section="notebook",
         # the path is relative to the `vega` directory
         src="static",
         # directory in the `nbextension/` namespace
-        dest="jupyter-vega",
+        dest="jupyter-vega3",
         # _also_ in the `nbextension/` namespace
-        require="jupyter-vega/index")]
+        require="jupyter-vega3/index")]
 
 
 def find_static_assets():

@@ -1,4 +1,4 @@
-var embed = require('vega-embed');
+var embed = require('vega-embed').default;
 var $ = require('jquery');
 var events = require('base/js/events');
 
@@ -6,7 +6,7 @@ function javascriptIndex(selector, outputs) {
   // Return the index in the output array of the JS repr of this viz
   for (var i = 0; i < outputs.length; i++) {
     var item = outputs[i];
-    if (item.metadata['jupyter-vega'] === selector &&
+    if (item.metadata['jupyter-vega3'] === selector &&
         item.data['application/javascript'] !== undefined) {
       return i;
     }
@@ -18,7 +18,7 @@ function imageIndex(selector, outputs) {
   // Return the index in the output array of the PNG repr of this viz
   for (var i = 0; i < outputs.length; i++) {
     var item = outputs[i];
-    if (item.metadata['jupyter-vega'] === selector &&
+    if (item.metadata['jupyter-vega3'] === selector &&
         item.data['image/png'] !== undefined) {
       return i;
     }
@@ -27,11 +27,6 @@ function imageIndex(selector, outputs) {
 }
 
 function render(selector, spec, type, output_area) {
-  var embedSpec = {
-    mode: type,
-    spec: spec
-  };
-
   // Find the indices of this visualizations JS and PNG
   // representation.
   var imgIndex = imageIndex(selector, output_area.outputs);
@@ -46,21 +41,22 @@ function render(selector, spec, type, output_area) {
   // Never been rendered, so render JS and append the PNG to the
   // outputs for the cell
   var el = $.find(selector);
-  embed(el[0], embedSpec, function(error, result) {
-    var imageData = result.view.toImageURL();
-    if (output_area!==undefined) {
-      var output = {
-          data: {
-            'image/png': imageData.split(',')[1]
-          },
-          metadata: {'jupyter-vega': selector},
-          output_type: 'display_data'
-      };
-      // This appends the PNG output, but doesn't render it this time
-      // as the JS version will be rendered already.
-      output_area.outputs.push(output);
-    }
-  });
+  embed(el[0], spec, {mode: type}).then(function(result) {
+    var imageData = result.view.toImageURL('png').then(function(imageData) {
+        if (output_area!==undefined) {
+            var output = {
+                data: {
+                  'image/png': imageData.split(',')[1]
+                },
+                metadata: {'jupyter-vega3': selector},
+                output_type: 'display_data'
+            };
+            // This appends the PNG output, but doesn't render it this time
+            // as the JS version will be rendered already.
+            output_area.outputs.push(output);
+          }
+    }).catch(console.warn);
+  }).catch(console.warn);
 }
 
 exports.render = render;

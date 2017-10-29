@@ -1,26 +1,26 @@
 {
-  "name": "jupyter-vega",
-  "version": "0.5.0",
-  "description": "IPython/Jupyter notebook module for [Vega](/vega/vega-lite), and [Vega-Lite](/vega/vega-lite), [Polestar](/vega/polestar), and [Voyager](/vega/voyager).",
+  "name": "jupyter-vega3",
+  "version": "0.1.0",
+  "description": "IPython/Jupyter notebook module for [Vega](/vega/vega), and [Vega-Lite](/vega/vega-lite).",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/uwdata/ipyvega.git"
+    "url": "git+https://github.com/vega/ipyvega.git"
   },
   "author": "",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/uwdata/ipyvega/issues"
+    "url": "https://github.com/vega/ipyvega/issues"
   },
-  "homepage": "https://github.com/uwdata/ipyvega#readme",
+  "homepage": "https://github.com/vega/ipyvega#readme",
   "scripts": {
-    "build": "PROD_ENV=1 webpack --display-error-details",
-    "watch": "PROD_ENV=0 webpack --watch"
+    "build": "webpack --display-error-details",
+    "watch": "webpack --watch"
   },
   "dependencies": {
-    "d3": "3.5.17",
-    "vega": "^2.6.5",
-    "vega-embed": "^2.2.0",
-    "vega-lite": "^1.3.1"
+    "d3": "^4.11.0",
+    "vega": "^3.0.7",
+    "vega-embed": "^3.0.0-rc6",
+    "vega-lite": "^2.0.0-rc5"
   },
   "devDependencies": {
     "css-loader": "^0.25.0",

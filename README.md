@@ -1,6 +1,6 @@
-# IPython Vega [![PyPI](https://img.shields.io/pypi/v/vega.svg?maxAge=2592000)](https://pypi.python.org/pypi/vega) [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
+# IPython Vega 3 [![PyPI](https://img.shields.io/pypi/v/vega.svg?maxAge=2592000)](https://pypi.python.org/pypi/vega) [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
 
-IPython/Jupyter notebook module for [Vega](https://github.com/vega/vega-lite), and [Vega-Lite](https://github.com/vega/vega-lite), [Polestar](https://github.com/vega/polestar), and [Voyager](https://github.com/vega/voyager). Notebooks with embedded visualizations can be viewed on github and nbviewer.
+IPython/Jupyter notebook module for [Vega 3](https://github.com/vega/vega), and [Vega-Lite 2](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on github and nbviewer.
 
 Available on [pypi](https://pypi.python.org/pypi/vega) and [conda-forge](https://github.com/conda-forge/vega-feedstock).
 
@@ -9,24 +9,14 @@ Available on [pypi](https://pypi.python.org/pypi/vega) and [conda-forge](https:/
 
 ## Install and run
 
-### Conda (Recommended)
-If you are using [conda](http://conda.pydata.org) you can install the most
-recent release of this package
-from the [conda-forge](http://conda-forge.github.io) channel as follows:
-```sh
-conda install vega --channel conda-forge
-```
-The above command automatically installs all dependencies and enables
-the ipyvega Jupyter notebook extension.
-
 ### Python Package Index
 To install ``vega`` and its dependencies from the Python Package Index using
 ``pip``, use the following commands:
 
 ```sh
-pip install jupyter pandas vega
+pip install jupyter pandas vega3
 pip install --upgrade notebook  # need jupyter_client >= 4.2 for sys-prefix below
-jupyter nbextension install --sys-prefix --py vega
+jupyter nbextension install --sys-prefix --py vega3
 ```
 
 ### From Source
@@ -56,7 +46,7 @@ Symlink files instead of copying files:
 
 ```sh
 python setup.py develop
-jupyter nbextension install --py --symlink vega
+jupyter nbextension install --py --symlink vega3
 ```
 
 Run kernel: `jupyter notebook`
@@ -74,7 +64,7 @@ Publish a new version to pypi with `python3 setup.py sdist upload`.
 * Update the version number in `package.json` and `__index__.py`
 * Commit and add a version tag of the form `v0.0.0`
 * `git push --tags && git push`
-* Run `python setup.py sdist upload` to update https://pypi.python.org/pypi?%3Aaction=pkg_edit&name=vega
+* Run `python setup.py sdist upload` to update https://pypi.python.org/pypi?%3Aaction=pkg_edit&name=vega3
 
 ## Resources
 

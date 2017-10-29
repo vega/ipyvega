@@ -4,14 +4,7 @@ from .base import VegaBase
 from .utils import prepare_spec
 
 
-DEFAULTS = {
-    "config": {
-        "cell": {
-            "width": 500,
-            "height": 350
-        }
-    }
-}
+DEFAULTS = {}
 
 
 class VegaLite(VegaBase):
