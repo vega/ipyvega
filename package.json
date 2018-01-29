@@ -1,6 +1,6 @@
 {
   "name": "jupyter-vega3",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "IPython/Jupyter notebook module for [Vega](/vega/vega), and [Vega-Lite](/vega/vega-lite).",
   "repository": {
     "type": "git",
