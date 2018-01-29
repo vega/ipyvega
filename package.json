@@ -17,18 +17,17 @@
     "watch": "webpack --watch"
   },
   "dependencies": {
-    "d3": "^4.11.0",
-    "vega": "^3.0.7",
-    "vega-embed": "^3.0.0-rc6",
-    "vega-lite": "^2.0.0-rc5"
+    "vega": "^3.0.10",
+    "vega-embed": "^3.0.0",
+    "vega-lite": "^2.1.2"
   },
   "devDependencies": {
-    "css-loader": "^0.25.0",
-    "exorcist": "^0.4.0",
-    "json-loader": "^0.5.4",
+    "css-loader": "^0.28.9",
+    "exorcist": "^1.0.0",
+    "json-loader": "^0.5.7",
     "jstransform": "^11.0.3",
-    "style-loader": "^0.13.2",
-    "watchify": "^3.9.0",
-    "webpack": "^1.15.0"
+    "style-loader": "^0.20.1",
+    "watchify": "^3.10.0",
+    "webpack": "^1.0.0"
   }
 }

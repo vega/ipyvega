@@ -4,7 +4,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'index.js',
-    path: './vega3/static',
+    path: __dirname + '/vega3/static',
     libraryTarget: 'amd'
   },
   devtool: 'source-map',
