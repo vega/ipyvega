@@ -63,7 +63,7 @@ Publish a new version to pypi with `python3 setup.py sdist upload`.
 * Make sure that everything still works (launch notebook and try the examples)
 * Update the version number in `package.json` and `__index__.py`
 * `git push`
-* Run `python setup.py sdist upload` to update https://pypi.python.org/pypi?%3Aaction=pkg_edit&name=vega3
+* Run `python setup.py sdist upload` to update https://pypi.python.org/pypi/vega3
 
 ## Resources
 
