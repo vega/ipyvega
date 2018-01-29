@@ -1,13 +1,14 @@
 # IPython Vega [![PyPI](https://img.shields.io/pypi/v/vega.svg?maxAge=2592000)](https://pypi.python.org/pypi/vega) [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
 
+**Note:** Jupyter Lab will come with Vega and Vega-Lite installed by default so this package will not be necessary anymore. If you want to use **Vega 3** or **Vega-Lite 2**, use https://github.com/vega/ipyvega/tree/vega3.
+
+---
+
 IPython/Jupyter notebook module for [Vega](https://github.com/vega/vega), and [Vega-Lite](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on github and nbviewer.
 
 Available on [pypi](https://pypi.python.org/pypi/vega) and [conda-forge](https://github.com/conda-forge/vega-feedstock).
 
 ![screenshot](https://raw.githubusercontent.com/vega/ipyvega/master/screenshot.png "Screenshot of the Vega-Lite module")
-
-
-**Note:** Jupyter Lab will come with Vega and Vega-Lite installed by default so this package will not be necessary anymore. If you want to use Vega 3 or Vega-Lite 2, use https://github.com/vega/ipyvega/tree/vega3 but note that I am not frequently updating it.
 
 ## Install and run
 
