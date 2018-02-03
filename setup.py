@@ -27,7 +27,13 @@ AUTHOR_EMAIL        = 'domoritz@gmail.com'
 URL                 = 'http://github.com/vega/ipyvega/tree/vega3'
 DOWNLOAD_URL        = 'http://github.com/vega/ipyvega/tree/vega3'
 LICENSE             = 'BSD 3-clause'
-
+DATA_FILES          = [
+                            ('share/jupyter/nbextensions/jupyter-vega3', [
+                             'vega3/static/index.js',
+                             'vega3/static/index.js.map',
+                            ]),
+                            ('etc/jupyter/nbconfig/notebook.d' , ['vega3.json'])
+                        ]
 import io
 import os
 import re
@@ -71,6 +77,8 @@ setup(name=NAME,
       license=LICENSE,
       packages=PACKAGES,
       package_data=PACKAGE_DATA,
+      data_files=DATA_FILES,
+      include_package_data=True,
       classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
