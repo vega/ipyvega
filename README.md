@@ -10,16 +10,18 @@ Available on [pypi](https://pypi.python.org/pypi/vega3).
 ## Install and run
 
 ### Python Package Index
+
 To install ``vega`` and its dependencies from the Python Package Index using
 ``pip``, use the following commands:
 
 ```sh
 pip install jupyter pandas vega3
 pip install --upgrade notebook  # need jupyter_client >= 4.2 for sys-prefix below
-jupyter nbextension install --sys-prefix --py vega3
+jupyter nbextension install --sys-prefix --py vega3  # not needed in notebook >= 5.3
 ```
 
 ### From Source
+
 To install from source, make sure you have ``jupyter`` and ``pandas`` installed,
 then download this repository and run
 ```sh
@@ -46,7 +48,7 @@ Symlink files instead of copying files:
 
 ```sh
 python setup.py develop
-jupyter nbextension install --py --symlink vega3
+jupyter nbextension install --py --symlink vega3  # not needed in notebook >= 5.3
 ```
 
 Run kernel: `jupyter notebook`
