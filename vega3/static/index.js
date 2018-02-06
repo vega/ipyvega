@@ -1,4 +1,4 @@
-define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_141__, __WEBPACK_EXTERNAL_MODULE_142__) { return /******/ (function(modules) { // webpackBootstrap
+define(function() { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -45,14 +45,13 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_141__, __
 /***/ (function(module, exports, __webpack_require__) {
 
 	var embed = __webpack_require__(1).default;
-	var $ = __webpack_require__(141);
-	var events = __webpack_require__(142);
 	
 	function javascriptIndex(selector, outputs) {
 	  // Return the index in the output array of the JS repr of this viz
 	  for (var i = 0; i < outputs.length; i++) {
 	    var item = outputs[i];
-	    if (item.metadata['jupyter-vega3'] === selector &&
+	    if (item.metadata &&
+	        item.metadata['jupyter-vega3'] === selector &&
 	        item.data['application/javascript'] !== undefined) {
 	      return i;
 	    }
@@ -64,7 +63,8 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_141__, __
 	  // Return the index in the output array of the PNG repr of this viz
 	  for (var i = 0; i < outputs.length; i++) {
 	    var item = outputs[i];
-	    if (item.metadata['jupyter-vega3'] === selector &&
+	    if (item.metadata &&
+	        item.metadata['jupyter-vega3'] === selector &&
 	        item.data['image/png'] !== undefined) {
 	      return i;
 	    }
@@ -86,8 +86,8 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_141__, __
 	
 	  // Never been rendered, so render JS and append the PNG to the
 	  // outputs for the cell
-	  var el = $.find(selector);
-	  embed(el[0], spec, {mode: type}).then(function(result) {
+	  var el = document.getElementById(selector.substring(1));
+	  embed(el, spec, {mode: type}).then(function(result) {
 	    var imageData = result.view.toImageURL('png').then(function(imageData) {
 	        if (output_area!==undefined) {
 	            var output = {
@@ -54923,18 +54923,6 @@ define(["jquery","base/js/events"], function(__WEBPACK_EXTERNAL_MODULE_141__, __
 	}
 	exports.post = post;
 	//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicG9zdC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9wb3N0LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUE7O0dBRUc7QUFDSCxjQUFxQixNQUFjLEVBQUUsR0FBVyxFQUFFLElBQVM7SUFDekQsSUFBTSxNQUFNLEdBQUcsTUFBTSxDQUFDLElBQUksQ0FBQyxHQUFHLENBQUMsQ0FBQztJQUNoQyxJQUFNLElBQUksR0FBRyxLQUFLLENBQUM7SUFDbkIsSUFBTSxJQUFJLEdBQUcsR0FBRyxDQUFDO0lBQ2pCLElBQUksS0FBSyxHQUFHLENBQUMsQ0FBQyxDQUFDLElBQUksR0FBRyxJQUFJLENBQUMsQ0FBQztJQUU1QixnQkFBZ0IsR0FBRztRQUNqQixFQUFFLENBQUMsQ0FBQyxHQUFHLENBQUMsTUFBTSxLQUFLLE1BQU0sQ0FBQyxDQUFDLENBQUM7WUFDMUIsS0FBSyxHQUFHLENBQUMsQ0FBQztZQUNWLE1BQU0sQ0FBQyxtQkFBbUIsQ0FBQyxTQUFTLEVBQUUsTUFBTSxFQUFFLEtBQUssQ0FBQyxDQUFDO1FBQ3ZELENBQUM7SUFDSCxDQUFDO0lBQ0QsTUFBTSxDQUFDLGdCQUFnQixDQUFDLFNBQVMsRUFBRSxNQUFNLEVBQUUsS0FBSyxDQUFDLENBQUM7SUFFbEQsZUFBZTtJQUNmLG9EQUFvRDtJQUNwRDtRQUNFLEVBQUUsQ0FBQyxDQUFDLEtBQUssSUFBSSxDQUFDLENBQUMsQ0FBQyxDQUFDO1lBQ2YsTUFBTSxDQUFDO1FBQ1QsQ0FBQztRQUNELE1BQU0sQ0FBQyxXQUFXLENBQUMsSUFBSSxFQUFFLEdBQUcsQ0FBQyxDQUFDO1FBQzlCLFVBQVUsQ0FBQyxJQUFJLEVBQUUsSUFBSSxDQUFDLENBQUM7UUFDdkIsS0FBSyxJQUFJLENBQUMsQ0FBQztJQUNiLENBQUM7SUFDRCxVQUFVLENBQUMsSUFBSSxFQUFFLElBQUksQ0FBQyxDQUFDO0FBQ3pCLENBQUM7QUF6QkQsb0JBeUJDIn0=
-
-/***/ }),
-/* 141 */
-/***/ (function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_141__;
-
-/***/ }),
-/* 142 */
-/***/ (function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_142__;
 
 /***/ })
 /******/ ])});;

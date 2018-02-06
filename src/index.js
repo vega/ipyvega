@@ -1,12 +1,11 @@
 var embed = require('vega-embed').default;
-var $ = require('jquery');
-var events = require('base/js/events');
 
 function javascriptIndex(selector, outputs) {
   // Return the index in the output array of the JS repr of this viz
   for (var i = 0; i < outputs.length; i++) {
     var item = outputs[i];
-    if (item.metadata['jupyter-vega3'] === selector &&
+    if (item.metadata &&
+        item.metadata['jupyter-vega3'] === selector &&
         item.data['application/javascript'] !== undefined) {
       return i;
     }
@@ -18,7 +17,8 @@ function imageIndex(selector, outputs) {
   // Return the index in the output array of the PNG repr of this viz
   for (var i = 0; i < outputs.length; i++) {
     var item = outputs[i];
-    if (item.metadata['jupyter-vega3'] === selector &&
+    if (item.metadata &&
+        item.metadata['jupyter-vega3'] === selector &&
         item.data['image/png'] !== undefined) {
       return i;
     }
@@ -40,8 +40,8 @@ function render(selector, spec, type, output_area) {
 
   // Never been rendered, so render JS and append the PNG to the
   // outputs for the cell
-  var el = $.find(selector);
-  embed(el[0], spec, {mode: type}).then(function(result) {
+  var el = document.getElementById(selector.substring(1));
+  embed(el, spec, {mode: type}).then(function(result) {
     var imageData = result.view.toImageURL('png').then(function(imageData) {
         if (output_area!==undefined) {
             var output = {
