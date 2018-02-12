@@ -30,6 +30,10 @@ URL                 = 'http://github.com/vega/ipyvega/'
 DOWNLOAD_URL        = 'http://github.com/vega/ipyvega'
 LICENSE             = 'BSD 3-clause'
 
+ENTRY_POINTS        = {'altair.vegalite.v1.renderer': ['notebook=vega.vegalite:entry_point_renderer'],
+                       'altair.vega.v2.renderer': ['notebook=vega.vega:entry_point_renderer']
+                      }
+
 import io
 import os
 import re
@@ -73,6 +77,7 @@ setup(name=NAME,
       license=LICENSE,
       packages=PACKAGES,
       package_data=PACKAGE_DATA,
+      entry_points=ENTRY_POINTS,
       classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
