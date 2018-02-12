@@ -13,4 +13,10 @@ class Vega(VegaBase):
     render_type = 'vega'
 
 
-__all__ = ['Vega']
+def entry_point_renderer(spec):
+    vl = Vega(spec)
+    vl.display()
+    return {}
+
+
+__all__ = ['Vega', 'entry_point_renderer']

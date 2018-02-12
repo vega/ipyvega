@@ -17,4 +17,10 @@ class VegaLite(VegaBase):
         return prepare_spec(spec, data)
 
 
-__all__ = ['VegaLite']
+def entry_point_renderer(spec):
+    vl = VegaLite(spec)
+    vl.display()
+    return {}
+
+
+__all__ = ['VegaLite', 'entry_point_renderer']

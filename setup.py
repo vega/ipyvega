@@ -34,6 +34,11 @@ DATA_FILES          = [
                             ]),
                             ('etc/jupyter/nbconfig/notebook.d' , ['vega3.json'])
                         ]
+ENTRY_POINTS        = {'altair.vegalite.v2.renderer': ['notebook=vega3.vegalite:entry_point_renderer'],
+                       'altair.vega.v3.renderer': ['notebook=vega3.vega:entry_point_renderer']
+                      }
+
+
 import io
 import os
 import re
@@ -78,6 +83,7 @@ setup(name=NAME,
       packages=PACKAGES,
       package_data=PACKAGE_DATA,
       data_files=DATA_FILES,
+      entry_points=ENTRY_POINTS,
       include_package_data=True,
       classifiers=[
         'Development Status :: 4 - Beta',
