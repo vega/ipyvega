@@ -1,7 +1,7 @@
 {
   "name": "jupyter-vega3",
-  "version": "0.3.0",
-  "description": "IPython/Jupyter notebook module for [Vega](/vega/vega), and [Vega-Lite](/vega/vega-lite).",
+  "version": "0.4.0",
+  "description": "IPython/Jupyter notebook module for [Vega](https://vega.github.io/vega), and [Vega-Lite](https://vega.github.io/vega-lite).",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vega/ipyvega.git"
@@ -28,6 +28,6 @@
     "jstransform": "^11.0.3",
     "style-loader": "^0.20.1",
     "watchify": "^3.10.0",
-    "webpack": "^1.0.0"
+    "webpack": "^3.11.0"
   }
 }
