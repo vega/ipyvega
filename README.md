@@ -66,11 +66,3 @@ Publish a new version to pypi with `python3 setup.py sdist upload`.
 * Update the version number in `package.json` and `__index__.py`
 * `git push`
 * Run `python setup.py sdist upload` to update https://pypi.python.org/pypi/vega3
-
-## Resources
-
-How to implement an nbextension.
-
-* https://github.com/ipython-contrib/IPython-notebook-extensions/blob/master/nbextensions/styling/table_beautifier/main.js
-* https://ipywidgets.readthedocs.org/en/latest/index.html
-* https://github.com/jovyan/pythreejs
