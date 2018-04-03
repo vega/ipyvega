@@ -1,9 +1,12 @@
-var embed = require('vega-embed').default;
+import { IOutputAreaModel } from '@jupyterlab/outputarea';
+import { Spec } from 'vega-lib';
+import vegaEmbed, { Mode } from 'vega-embed';
+import { TopLevelSpec } from 'vega-lite';
 
-function javascriptIndex(selector, outputs) {
+function javascriptIndex(selector, outputs: IOutputAreaModel) {
   // Return the index in the output array of the JS repr of this viz
-  for (var i = 0; i < outputs.length; i++) {
-    var item = outputs[i];
+  for (let i = 0; i < outputs.length; i++) {
+    const item = outputs[i];
     if (item.metadata &&
         item.metadata['jupyter-vega3'] === selector &&
         item.data['application/javascript'] !== undefined) {
@@ -13,10 +16,10 @@ function javascriptIndex(selector, outputs) {
   return -1;
 }
 
-function imageIndex(selector, outputs) {
+function imageIndex(selector, outputs: IOutputAreaModel) {
   // Return the index in the output array of the PNG repr of this viz
-  for (var i = 0; i < outputs.length; i++) {
-    var item = outputs[i];
+  for (let i = 0; i < outputs.length; i++) {
+    const item = outputs[i];
     if (item.metadata &&
         item.metadata['jupyter-vega3'] === selector &&
         item.data['image/png'] !== undefined) {
@@ -26,11 +29,11 @@ function imageIndex(selector, outputs) {
   return -1;
 }
 
-function render(selector, spec, type, output_area) {
+export function render(selector, spec: Spec | TopLevelSpec, type: Mode, output_area) {
   // Find the indices of this visualizations JS and PNG
   // representation.
-  var imgIndex = imageIndex(selector, output_area.outputs);
-  var jsIndex = javascriptIndex(selector, output_area.outputs);
+  const imgIndex = imageIndex(selector, output_area.outputs);
+  const jsIndex = javascriptIndex(selector, output_area.outputs);
 
   // If we have already rendered a static image, don't render
   // the JS version or append a new PNG version
@@ -40,11 +43,11 @@ function render(selector, spec, type, output_area) {
 
   // Never been rendered, so render JS and append the PNG to the
   // outputs for the cell
-  var el = document.getElementById(selector.substring(1));
-  embed(el, spec, {mode: type}).then(function(result) {
-    var imageData = result.view.toImageURL('png').then(function(imageData) {
-        if (output_area!==undefined) {
-            var output = {
+  const el = document.getElementById(selector.substring(1));
+  vegaEmbed(el, spec, {mode: type}).then(function(result) {
+    const imageData = result.view.toImageURL('png').then(function(imageData) {
+        if (output_area !== undefined) {
+            const output = {
                 data: {
                   'image/png': imageData.split(',')[1]
                 },
@@ -58,5 +61,3 @@ function render(selector, spec, type, output_area) {
     }).catch(console.warn);
   }).catch(console.warn);
 }
-
-exports.render = render;
