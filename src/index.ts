@@ -29,8 +29,6 @@ function imageIndex(selector, outputs) {
 }
 
 export function render(selector, spec: Spec | TopLevelSpec, type: Mode, output_area) {
-  console.log('foo')
-
   // Find the indices of this visualizations JS and PNG
   // representation.
   const imgIndex = imageIndex(selector, output_area.outputs);
