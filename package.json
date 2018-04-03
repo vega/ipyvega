@@ -20,7 +20,6 @@
     "vega-embed": "^3.4.0"
   },
   "devDependencies": {
-    "@jupyterlab/outputarea": "^0.15.6",
     "awesome-typescript-loader": "^4.0.1",
     "css-loader": "^0.28.10",
     "exorcist": "^1.0.1",

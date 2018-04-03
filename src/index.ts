@@ -1,9 +1,8 @@
-import { IOutputAreaModel } from '@jupyterlab/outputarea';
 import { Spec } from 'vega-lib';
 import vegaEmbed, { Mode } from 'vega-embed';
 import { TopLevelSpec } from 'vega-lite';
 
-function javascriptIndex(selector, outputs: IOutputAreaModel) {
+function javascriptIndex(selector, outputs) {
   // Return the index in the output array of the JS repr of this viz
   for (let i = 0; i < outputs.length; i++) {
     const item = outputs[i];
@@ -16,7 +15,7 @@ function javascriptIndex(selector, outputs: IOutputAreaModel) {
   return -1;
 }
 
-function imageIndex(selector, outputs: IOutputAreaModel) {
+function imageIndex(selector, outputs) {
   // Return the index in the output array of the PNG repr of this viz
   for (let i = 0; i < outputs.length; i++) {
     const item = outputs[i];
