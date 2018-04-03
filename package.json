@@ -17,9 +17,7 @@
     "watch": "webpack --watch"
   },
   "dependencies": {
-    "vega-embed": "^3.2.0",
-    "vega-lib": "^3.2.1",
-    "vega-lite": "^2.3.1"
+    "vega-embed": "^3.3.0"
   },
   "devDependencies": {
     "css-loader": "^0.28.10",

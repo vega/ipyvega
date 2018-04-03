@@ -30407,6 +30407,41 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var versionCompare = __webpack_require__(386);
 var d3 = __webpack_require__(387);
@@ -30437,125 +30472,133 @@ var PREPROCESSOR = {
  * @param opt       A JavaScript object containing options for embedding.
  */
 function embed(el, spec, opt) {
-    try {
-        opt = opt || {};
-        var actions = opt.actions !== undefined ? opt.actions : true;
-        var loader = opt.loader || exports.vega.loader();
-        var renderer = opt.renderer || 'canvas';
-        var logLevel = opt.logLevel || exports.vega.Warn;
-        // Load the visualization specification.
-        if (exports.vega.isString(spec)) {
-            return loader.load(spec).then(function (data) { return embed(el, JSON.parse(data), opt); }).catch(Promise.reject);
-        }
-        // Load Vega theme/configuration.
-        var config = opt.config;
-        if (exports.vega.isString(config)) {
-            return loader.load(config).then(function (data) { return embed(el, spec, __assign({}, opt, { config: JSON.parse(data) })); }).catch(Promise.reject);
-        }
-        // Decide mode
-        var parsed = void 0;
-        var mode_1;
-        if (spec.$schema) {
-            parsed = vega_schema_url_parser_1.default(spec.$schema);
-            if (opt.mode && opt.mode !== parsed.library) {
-                console.warn("The given visualization spec is written in " + NAMES[parsed.library] + ", but mode argument sets " + NAMES[opt.mode] + ".");
+    return __awaiter(this, void 0, void 0, function () {
+        var actions, loader, renderer, logLevel, data, config, data, parsed, mode, vgSpec, div, runtime, view, ctrl, ext_1, editorUrl_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    opt = opt || {};
+                    actions = opt.actions !== undefined ? opt.actions : true;
+                    loader = opt.loader || exports.vega.loader();
+                    renderer = opt.renderer || 'canvas';
+                    logLevel = opt.logLevel || exports.vega.Warn;
+                    if (!exports.vega.isString(spec)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, loader.load(spec)];
+                case 1:
+                    data = _a.sent();
+                    return [2 /*return*/, embed(el, JSON.parse(data), opt)];
+                case 2:
+                    config = opt.config;
+                    if (!exports.vega.isString(config)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, loader.load(config)];
+                case 3:
+                    data = _a.sent();
+                    return [2 /*return*/, embed(el, spec, __assign({}, opt, { config: JSON.parse(data) }))];
+                case 4:
+                    if (spec.$schema) {
+                        parsed = vega_schema_url_parser_1.default(spec.$schema);
+                        if (opt.mode && opt.mode !== parsed.library) {
+                            console.warn("The given visualization spec is written in " + NAMES[parsed.library] + ", but mode argument sets " + NAMES[opt.mode] + ".");
+                        }
+                        mode = parsed.library;
+                        if (versionCompare(parsed.version, VERSION[mode]) > 0) {
+                            console.warn("The input spec uses " + mode + " " + parsed.version + ", but the current version of " + NAMES[mode] + " is " + VERSION[mode] + ".");
+                        }
+                    }
+                    else {
+                        mode = opt.mode || 'vega';
+                    }
+                    vgSpec = PREPROCESSOR[mode](spec, config);
+                    if (mode === 'vega-lite') {
+                        if (vgSpec.$schema) {
+                            parsed = vega_schema_url_parser_1.default(vgSpec.$schema);
+                            if (versionCompare(parsed.version, VERSION.vega) > 0) {
+                                console.warn("The compiled spec uses Vega " + parsed.version + ", but current version is " + VERSION.vega + ".");
+                            }
+                        }
+                    }
+                    div = d3.select(el) // d3.select supports elements and strings
+                        .classed('vega-embed', true)
+                        .html('');
+                    if (opt.onBeforeParse) {
+                        // Allow Vega spec to be modified before being used
+                        vgSpec = opt.onBeforeParse(vgSpec);
+                    }
+                    runtime = exports.vega.parse(vgSpec, mode === 'vega-lite' ? {} : config);
+                    view = new exports.vega.View(runtime, { loader: loader, logLevel: logLevel, renderer: renderer })
+                        .initialize(el);
+                    // Vega-Lite does not need hover so we can improve perf by not activating it
+                    if (mode !== 'vega-lite') {
+                        view.hover();
+                    }
+                    if (opt) {
+                        if (opt.width) {
+                            view.width(opt.width);
+                        }
+                        if (opt.height) {
+                            view.height(opt.height);
+                        }
+                        if (opt.padding) {
+                            view.padding(opt.padding);
+                        }
+                    }
+                    if (!opt.runAsync) return [3 /*break*/, 6];
+                    return [4 /*yield*/, view.runAsync()];
+                case 5:
+                    _a.sent();
+                    return [3 /*break*/, 7];
+                case 6:
+                    view.run();
+                    _a.label = 7;
+                case 7:
+                    if (actions !== false) {
+                        ctrl = div.append('div')
+                            .attr('class', 'vega-actions');
+                        // add 'Export' action
+                        if (actions === true || actions.export !== false) {
+                            ext_1 = renderer === 'canvas' ? 'png' : 'svg';
+                            ctrl.append('a')
+                                .text("Export as " + ext_1.toUpperCase())
+                                .attr('href', '#')
+                                .attr('target', '_blank')
+                                .attr('download', "visualization." + ext_1)
+                                .on('mousedown', function () {
+                                var _this = this;
+                                view.toImageURL(ext_1).then(function (url) {
+                                    _this.href = url;
+                                }).catch(function (error) { throw error; });
+                                d3.event.preventDefault();
+                            });
+                        }
+                        // add 'View Source' action
+                        if (actions === true || actions.source !== false) {
+                            ctrl.append('a')
+                                .text('View Source')
+                                .attr('href', '#')
+                                .on('click', function () {
+                                viewSource(JSON.stringify(spec, null, 2), opt.sourceHeader || '', opt.sourceFooter || '');
+                                d3.event.preventDefault();
+                            });
+                        }
+                        // add 'Open in Vega Editor' action
+                        if (actions === true || actions.editor !== false) {
+                            editorUrl_1 = opt.editorUrl || 'https://vega.github.io/editor/';
+                            ctrl.append('a')
+                                .text('Open in Vega Editor')
+                                .attr('href', '#')
+                                .on('click', function () {
+                                post_1.post(window, editorUrl_1, {
+                                    mode: mode,
+                                    spec: JSON.stringify(spec, null, 2),
+                                });
+                                d3.event.preventDefault();
+                            });
+                        }
+                    }
+                    return [2 /*return*/, { view: view, spec: spec }];
             }
-            mode_1 = parsed.library;
-            if (versionCompare(parsed.version, VERSION[mode_1]) > 0) {
-                console.warn("The input spec uses " + mode_1 + " " + parsed.version + ", but the current version of " + NAMES[mode_1] + " is " + VERSION[mode_1] + ".");
-            }
-        }
-        else {
-            mode_1 = opt.mode || 'vega';
-        }
-        var vgSpec = PREPROCESSOR[mode_1](spec, config);
-        if (mode_1 === 'vega-lite') {
-            if (vgSpec.$schema) {
-                parsed = vega_schema_url_parser_1.default(vgSpec.$schema);
-                if (versionCompare(parsed.version, VERSION.vega) > 0) {
-                    console.warn("The compiled spec uses Vega " + parsed.version + ", but current version is " + VERSION.vega + ".");
-                }
-            }
-        }
-        // ensure container div has class 'vega-embed'
-        var div = d3.select(el) // d3.select supports elements and strings
-            .classed('vega-embed', true)
-            .html(''); // clear container
-        if (opt.onBeforeParse) {
-            // Allow Vega spec to be modified before being used
-            vgSpec = opt.onBeforeParse(vgSpec);
-        }
-        // Do not apply the config to Vega when we have already applied it to Vega-Lite.
-        // This call may throw an Error if parsing fails.
-        var runtime = exports.vega.parse(vgSpec, mode_1 === 'vega-lite' ? {} : config);
-        var view_1 = new exports.vega.View(runtime, { loader: loader, logLevel: logLevel, renderer: renderer })
-            .initialize(el);
-        // Vega-Lite does not need hover so we can improve perf by not activating it
-        if (mode_1 !== 'vega-lite') {
-            view_1.hover();
-        }
-        if (opt) {
-            if (opt.width) {
-                view_1.width(opt.width);
-            }
-            if (opt.height) {
-                view_1.height(opt.height);
-            }
-            if (opt.padding) {
-                view_1.padding(opt.padding);
-            }
-        }
-        view_1.run();
-        if (actions !== false) {
-            // add child div to house action links
-            var ctrl = div.append('div')
-                .attr('class', 'vega-actions');
-            // add 'Export' action
-            if (actions === true || actions.export !== false) {
-                var ext_1 = renderer === 'canvas' ? 'png' : 'svg';
-                ctrl.append('a')
-                    .text("Export as " + ext_1.toUpperCase())
-                    .attr('href', '#')
-                    .attr('target', '_blank')
-                    .attr('download', "visualization." + ext_1)
-                    .on('mousedown', function () {
-                    var _this = this;
-                    view_1.toImageURL(ext_1).then(function (url) {
-                        _this.href = url;
-                    }).catch(function (error) { throw error; });
-                    d3.event.preventDefault();
-                });
-            }
-            // add 'View Source' action
-            if (actions === true || actions.source !== false) {
-                ctrl.append('a')
-                    .text('View Source')
-                    .attr('href', '#')
-                    .on('click', function () {
-                    viewSource(JSON.stringify(spec, null, 2), opt.sourceHeader || '', opt.sourceFooter || '');
-                    d3.event.preventDefault();
-                });
-            }
-            // add 'Open in Vega Editor' action
-            if (actions === true || actions.editor !== false) {
-                var editorUrl_1 = opt.editorUrl || 'https://vega.github.io/editor/';
-                ctrl.append('a')
-                    .text('Open in Vega Editor')
-                    .attr('href', '#')
-                    .on('click', function () {
-                    post_1.post(window, editorUrl_1, {
-                        mode: mode_1,
-                        spec: JSON.stringify(spec, null, 2),
-                    });
-                    d3.event.preventDefault();
-                });
-            }
-        }
-        return Promise.resolve({ view: view_1, spec: spec });
-    }
-    catch (err) {
-        return Promise.reject(err);
-    }
+        });
+    });
 }
 exports.default = embed;
 function viewSource(source, sourceHeader, sourceFooter) {
@@ -30565,7 +30608,7 @@ function viewSource(source, sourceHeader, sourceFooter) {
     win.document.write(header + source + footer);
     win.document.title = 'Vega JSON Source';
 }
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZW1iZWQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvZW1iZWQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7OztBQUFBLGlEQUFtRDtBQUNuRCxpQ0FBbUM7QUFDbkMscUNBQXVDO0FBQ3ZDLG9DQUFzQztBQUN0QyxpRUFBa0Q7QUFJbEQsK0JBQThCO0FBRWpCLFFBQUEsSUFBSSxHQUFHLFVBQVUsQ0FBQztBQUNsQixRQUFBLEVBQUUsR0FBRyxRQUFRLENBQUM7QUFvQjNCLElBQU0sS0FBSyxHQUFHO0lBQ1osTUFBTSxFQUFPLE1BQU07SUFDbkIsV0FBVyxFQUFFLFdBQVc7Q0FDekIsQ0FBQztBQUVGLElBQU0sT0FBTyxHQUFHO0lBQ2QsTUFBTSxFQUFPLFlBQUksQ0FBQyxPQUFPO0lBQ3pCLFdBQVcsRUFBRSxVQUFFLENBQUMsQ0FBQyxDQUFDLFVBQUUsQ0FBQyxPQUFPLENBQUMsQ0FBQyxDQUFDLGVBQWU7Q0FDL0MsQ0FBQztBQUVGLElBQU0sWUFBWSxHQUFHO0lBQ25CLE1BQU0sRUFBTyxVQUFDLE1BQU0sRUFBRSxDQUFDLElBQUssT0FBQSxNQUFNLEVBQU4sQ0FBTTtJQUNsQyxXQUFXLEVBQUUsVUFBQyxNQUFNLEVBQUUsTUFBTSxJQUFLLE9BQUEsVUFBRSxDQUFDLE9BQU8sQ0FBQyxNQUFNLEVBQUUsRUFBQyxNQUFNLFFBQUEsRUFBQyxDQUFDLENBQUMsSUFBSSxFQUFqQyxDQUFpQztDQUNuRSxDQUFDO0FBTUY7Ozs7Ozs7R0FPRztBQUNILGVBQThCLEVBQTRCLEVBQUUsSUFBZ0MsRUFBRSxHQUFpQjtJQUM3RyxJQUFJLENBQUM7UUFDSCxHQUFHLEdBQUcsR0FBRyxJQUFJLEVBQUUsQ0FBQztRQUNoQixJQUFNLE9BQU8sR0FBSSxHQUFHLENBQUMsT0FBTyxLQUFLLFNBQVMsQ0FBQyxDQUFDLENBQUMsR0FBRyxDQUFDLE9BQU8sQ0FBQyxDQUFDLENBQUMsSUFBSSxDQUFDO1FBRWhFLElBQU0sTUFBTSxHQUFXLEdB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
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZW1iZWQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvZW1iZWQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQUEsaURBQW1EO0FBQ25ELGlDQUFtQztBQUNuQyxxQ0FBdUM7QUFDdkMsb0NBQXNDO0FBQ3RDLGlFQUFrRDtBQUlsRCwrQkFBOEI7QUFFakIsUUFBQSxJQUFJLEdBQUcsVUFBVSxDQUFDO0FBQ2xCLFFBQUEsRUFBRSxHQUFHLFFBQVEsQ0FBQztBQXFCM0IsSUFBTSxLQUFLLEdBQUc7SUFDWixNQUFNLEVBQU8sTUFBTTtJQUNuQixXQUFXLEVBQUUsV0FBVztDQUN6QixDQUFDO0FBRUYsSUFBTSxPQUFPLEdBQUc7SUFDZCxNQUFNLEVBQU8sWUFBSSxDQUFDLE9BQU87SUFDekIsV0FBVyxFQUFFLFVBQUUsQ0FBQyxDQUFDLENBQUMsVUFBRSxDQUFDLE9BQU8sQ0FBQyxDQUFDLENBQUMsZUFBZTtDQUMvQyxDQUFDO0FBRUYsSUFBTSxZQUFZLEdBQUc7SUFDbkIsTUFBTSxFQUFPLFVBQUMsTUFBTSxFQUFFLENBQUMsSUFBSyxPQUFBLE1BQU0sRUFBTixDQUFNO0lBQ2xDLFdBQVcsRUFBRSxVQUFDLE1BQU0sRUFBRSxNQUFNLElBQUssT0FBQSxVQUFFLENBQUMsT0FBTyxDQUFDLE1BQU0sRUFBRSxFQUFDLE1BQU0sUUFBQSxFQUFDLENBQUMsQ0FBQyxJQUFJLEVBQWpDLENBQWlDO0NBQ25FLENBQUM7QUFTRjs7Ozs7OztHQU9HO0FBQ0gsZUFBb0MsRUFBNEIsRUFBRSxJQUFnQyxFQUFFLEdBQWlCOzs7Ozs7b0JBQ25ILEdBQUcsR0FBRyxHQUFHLElBQUksRUFBRSxDQUFDO29CQUNWLE9BQU8sR0FBSSxHQUFHLENBQUMsT0FBTyxLQUFLLFNBQVMsQ0FBQyxDQUFDLENBQUMsR0FBRyxDQUFDLE9BQU8sQ0FBQyxDQUFDLENBQUMsSUFBSSxDQUFDO29C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
 
 /***/ }),
 /* 386 */
@@ -35424,7 +35467,7 @@ function fromByteArray (uint8) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
-  var eLen = nBytes * 8 - mLen - 1
+  var eLen = (nBytes * 8) - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var nBits = -7
@@ -35437,12 +35480,12 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   e = s & ((1 << (-nBits)) - 1)
   s >>= (-nBits)
   nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
   m = e & ((1 << (-nBits)) - 1)
   e >>= (-nBits)
   nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
   if (e === 0) {
     e = 1 - eBias
@@ -35457,7 +35500,7 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
 
 exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
+  var eLen = (nBytes * 8) - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
@@ -35490,7 +35533,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
       m = 0
       e = eMax
     } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
+      m = ((value * c) - 1) * Math.pow(2, mLen)
       e = e + eBias
     } else {
       m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
@@ -67263,7 +67306,7 @@ function post(window, url, data) {
     setTimeout(send, step);
 }
 exports.post = post;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicG9zdC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9wb3N0LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBRUE7O0dBRUc7QUFDSCxjQUFxQixNQUFjLEVBQUUsR0FBVyxFQUFFLElBQWdDO0lBQ2hGLElBQU0sTUFBTSxHQUFHLE1BQU0sQ0FBQyxJQUFJLENBQUMsR0FBRyxDQUFDLENBQUM7SUFDaEMsSUFBTSxJQUFJLEdBQUcsS0FBSyxDQUFDO0lBQ25CLElBQU0sSUFBSSxHQUFHLEdBQUcsQ0FBQztJQUNqQixJQUFJLEtBQUssR0FBRyxDQUFDLENBQUMsQ0FBQyxJQUFJLEdBQUcsSUFBSSxDQUFDLENBQUM7SUFFNUIsZ0JBQWdCLEdBQUc7UUFDakIsRUFBRSxDQUFDLENBQUMsR0FBRyxDQUFDLE1BQU0sS0FBSyxNQUFNLENBQUMsQ0FBQyxDQUFDO1lBQzFCLEtBQUssR0FBRyxDQUFDLENBQUM7WUFDVixNQUFNLENBQUMsbUJBQW1CLENBQUMsU0FBUyxFQUFFLE1BQU0sRUFBRSxLQUFLLENBQUMsQ0FBQztRQUN2RCxDQUFDO0lBQ0gsQ0FBQztJQUNELE1BQU0sQ0FBQyxnQkFBZ0IsQ0FBQyxTQUFTLEVBQUUsTUFBTSxFQUFFLEtBQUssQ0FBQyxDQUFDO0lBRWxELGVBQWU7SUFDZixvREFBb0Q7SUFDcEQ7UUFDRSxFQUFFLENBQUMsQ0FBQyxLQUFLLElBQUksQ0FBQyxDQUFDLENBQUMsQ0FBQztZQUNmLE1BQU0sQ0FBQztRQUNULENBQUM7UUFDRCxNQUFNLENBQUMsV0FBVyxDQUFDLElBQUksRUFBRSxHQUFHLENBQUMsQ0FBQztRQUM5QixVQUFVLENBQUMsSUFBSSxFQUFFLElBQUksQ0FBQyxDQUFDO1FBQ3ZCLEtBQUssSUFBSSxDQUFDLENBQUM7SUFDYixDQUFDO0lBQ0QsVUFBVSxDQUFDLElBQUksRUFBRSxJQUFJLENBQUMsQ0FBQztBQUN6QixDQUFDO0FBekJELG9CQXlCQyJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicG9zdC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9wb3N0LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBRUE7O0dBRUc7QUFDSCxjQUFxQixNQUFjLEVBQUUsR0FBVyxFQUFFLElBQWdDO0lBQ2hGLElBQU0sTUFBTSxHQUFHLE1BQU0sQ0FBQyxJQUFJLENBQUMsR0FBRyxDQUFDLENBQUM7SUFDaEMsSUFBTSxJQUFJLEdBQUcsS0FBSyxDQUFDO0lBQ25CLElBQU0sSUFBSSxHQUFHLEdBQUcsQ0FBQztJQUNqQixJQUFJLEtBQUssR0FBRyxDQUFDLENBQUMsQ0FBQyxJQUFJLEdBQUcsSUFBSSxDQUFDLENBQUM7SUFFNUIsZ0JBQWdCLEdBQUc7UUFDakIsSUFBSSxHQUFHLENBQUMsTUFBTSxLQUFLLE1BQU0sRUFBRTtZQUN6QixLQUFLLEdBQUcsQ0FBQyxDQUFDO1lBQ1YsTUFBTSxDQUFDLG1CQUFtQixDQUFDLFNBQVMsRUFBRSxNQUFNLEVBQUUsS0FBSyxDQUFDLENBQUM7U0FDdEQ7SUFDSCxDQUFDO0lBQ0QsTUFBTSxDQUFDLGdCQUFnQixDQUFDLFNBQVMsRUFBRSxNQUFNLEVBQUUsS0FBSyxDQUFDLENBQUM7SUFFbEQsZUFBZTtJQUNmLG9EQUFvRDtJQUNwRDtRQUNFLElBQUksS0FBSyxJQUFJLENBQUMsRUFBRTtZQUNkLE9BQU87U0FDUjtRQUNELE1BQU0sQ0FBQyxXQUFXLENBQUMsSUFBSSxFQUFFLEdBQUcsQ0FBQyxDQUFDO1FBQzlCLFVBQVUsQ0FBQyxJQUFJLEVBQUUsSUFBSSxDQUFDLENBQUM7UUFDdkIsS0FBSyxJQUFJLENBQUMsQ0FBQztJQUNiLENBQUM7SUFDRCxVQUFVLENBQUMsSUFBSSxFQUFFLElBQUksQ0FBQyxDQUFDO0FBQ3pCLENBQUM7QUF6QkQsb0JBeUJDIn0=
 
 /***/ })
 /******/ ])});;
