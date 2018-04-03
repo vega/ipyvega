@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "outDir": "./vega3/static/",
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
-    "declaration": true,
+    "declaration": false,
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
     "preserveConstEnums": true,
     "noEmitOnError": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
+    "sourceMap": true,
     "lib": ["es6", "dom"]
   },
   "include": [

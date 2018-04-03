@@ -28,6 +28,16 @@ function imageIndex(selector, outputs) {
   return -1;
 }
 
+function showError(el: HTMLElement, error) {
+  el.innerHTML = `<div class="error">
+    <p>Javascript Error: ${error.message}</p>
+    <p>This usually means there's a typo in your chart specification.
+    See the JavaScript console for the full traceback.</p>
+  </div>`;
+
+  throw error;
+}
+
 export function render(selector, spec: Spec | TopLevelSpec, type: Mode, output_area) {
   // Find the indices of this visualizations JS and PNG
   // representation.
@@ -43,8 +53,8 @@ export function render(selector, spec: Spec | TopLevelSpec, type: Mode, output_a
   // Never been rendered, so render JS and append the PNG to the
   // outputs for the cell
   const el = document.getElementById(selector.substring(1));
-  vegaEmbed(el, spec, { mode: type }).then(function (result) {
-    const imageData = result.view.toImageURL('png').then(function (imageData) {
+  vegaEmbed(el, spec, { mode: type }).then((result) => {
+    const imageData = result.view.toImageURL('png').then((imageData) => {
       if (output_area !== undefined) {
         const output = {
           data: {
@@ -57,6 +67,6 @@ export function render(selector, spec: Spec | TopLevelSpec, type: Mode, output_a
         // as the JS version will be rendered already.
         output_area.outputs.push(output);
       }
-    }).catch(console.warn);
-  }).catch(console.warn);
+    }).catch(error => showError(el, error));
+  }).catch(error => showError(el, error));
 }

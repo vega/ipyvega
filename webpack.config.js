@@ -1,7 +1,6 @@
 var webpack = require('webpack');
 
 module.exports = {
-  mode: 'production',
   entry: './src/index.ts',
   output: {
     filename: 'index.js',
@@ -16,8 +15,7 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
-        query: {useCache: true}
+        loader: 'ts-loader'
       }
     ]
   }

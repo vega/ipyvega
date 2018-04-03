@@ -13,14 +13,14 @@
   },
   "homepage": "https://github.com/vega/ipyvega#readme",
   "scripts": {
-    "build": "webpack",
-    "watch": "webpack --watch"
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch"
   },
   "dependencies": {
     "vega-embed": "^3.4.0"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "^4.0.1",
+    "ts-loader": "^4.1.0",
     "typescript": "^2.8.1",
     "webpack": "^4.4.1",
     "webpack-cli": "^2.0.13"
