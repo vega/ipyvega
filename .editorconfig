@@ -12,3 +12,6 @@ insert_final_newline = true
 
 [*.js]
 indent_size = 2
+
+[*.ts]
+indent_size = 2

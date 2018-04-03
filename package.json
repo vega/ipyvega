@@ -21,13 +21,8 @@
   },
   "devDependencies": {
     "awesome-typescript-loader": "^4.0.1",
-    "css-loader": "^0.28.10",
-    "exorcist": "^1.0.1",
-    "json-loader": "^0.5.7",
-    "jstransform": "^11.0.3",
-    "style-loader": "^0.20.3",
     "typescript": "^2.8.1",
-    "watchify": "^3.11.0",
-    "webpack": "^3.10.0"
+    "webpack": "^4.4.1",
+    "webpack-cli": "^2.0.13"
   }
 }
