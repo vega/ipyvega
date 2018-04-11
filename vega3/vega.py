@@ -16,7 +16,7 @@ class Vega(VegaBase):
 def entry_point_renderer(spec):
     vl = Vega(spec)
     vl.display()
-    return {}
+    return {'text/plain': ''}
 
 
 __all__ = ['Vega', 'entry_point_renderer']

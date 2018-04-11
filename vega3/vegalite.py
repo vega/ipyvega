@@ -20,7 +20,7 @@ class VegaLite(VegaBase):
 def entry_point_renderer(spec):
     vl = VegaLite(spec)
     vl.display()
-    return {}
+    return {'text/plain': ''}
 
 
 __all__ = ['VegaLite', 'entry_point_renderer']
