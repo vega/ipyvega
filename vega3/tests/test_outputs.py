@@ -46,11 +46,6 @@ def test_vegalite_output():
     js3 = obj3._generate_js(id='ABC', sort_keys=True)
     assert js1 == js2 == js3
 
-    # Check for error when no data is provided
-    with pytest.raises(ValueError) as err:
-        VegaLite(VEGALITE_SPEC)
-    assert str(err.value) == 'No data provided'
-
 
 def test_vega_output():
     # TODO: use an actual vega spec
