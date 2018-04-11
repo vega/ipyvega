@@ -83,9 +83,3 @@ def test_prepare_spec():
 
     # all three approaches should match
     assert spec1 == spec2 == spec3
-
-    # Check for error when no data is provided
-    spec4 = copy.deepcopy(VEGALITE_SPEC)
-    with pytest.raises(ValueError) as err:
-        prepare_spec(spec4)
-    assert str(err.value) == 'No data provided'
