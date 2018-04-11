@@ -88,9 +88,8 @@ def prepare_spec(spec, data=None):
         data = sanitize_dataframe(data)
         spec['data'] = {'values': data.to_dict(orient='records')}
     elif data is None:
-        # Data is either passed in spec or error
-        if 'data' not in spec:
-            raise ValueError('No data provided')
+        # Assume data is within spec & do nothing
+        # It may be deep in the spec rather than at the top level
     else:
         # As a last resort try to pass the data to a DataFrame and use it
         data = pd.DataFrame(data)
