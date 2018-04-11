@@ -90,6 +90,7 @@ def prepare_spec(spec, data=None):
     elif data is None:
         # Assume data is within spec & do nothing
         # It may be deep in the spec rather than at the top level
+        pass
     else:
         # As a last resort try to pass the data to a DataFrame and use it
         data = pd.DataFrame(data)
