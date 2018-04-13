@@ -53,15 +53,15 @@ jupyter nbextension install --py --symlink vega3  # not needed in notebook >= 5.
 
 Run kernel: `jupyter notebook`
 
-To rebuild the javascript continuously, run `npm run watch`.
+To rebuild the javascript continuously, run `yarn watch`.
 
 Publish a new version to pypi with `python3 setup.py sdist upload`.
 
 ### How to make a release
 
 * Update the javascript dependendencies by changing `package.json`
-* Run `npm update`
-* Rebuild the javascript with `npm run build`
+* Run `yarn`
+* Rebuild the javascript with `yarn build`
 * Make sure that everything still works (launch notebook and try the examples)
 * Update the version number in `package.json` and `__index__.py`
 * `git push`
