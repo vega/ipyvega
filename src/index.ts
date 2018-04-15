@@ -1,4 +1,4 @@
-import vegaEmbed, { Mode } from 'vega-embed';
+import vegaEmbed, { Mode, EmbedOptions } from 'vega-embed';
 import { Spec } from 'vega-lib';
 import { TopLevelSpec } from 'vega-lite';
 
@@ -38,7 +38,7 @@ function showError(el: HTMLElement, error) {
   throw error;
 }
 
-export function render(selector, spec: Spec | TopLevelSpec, type: Mode, output_area) {
+export function render(selector, spec: Spec | TopLevelSpec, type: Mode, opt: EmbedOptions, output_area) {
   // Find the indices of this visualizations JS and PNG
   // representation.
   const imgIndex = imageIndex(selector, output_area.outputs);
@@ -53,7 +53,7 @@ export function render(selector, spec: Spec | TopLevelSpec, type: Mode, output_a
   // Never been rendered, so render JS and append the PNG to the
   // outputs for the cell
   const el = document.getElementById(selector.substring(1));
-  vegaEmbed(el, spec, { mode: type }).then((result) => {
+  vegaEmbed(el, spec, { ...opt, mode: type }).then((result) => {
     const imageData = result.view.toImageURL('png').then((imageData) => {
       if (output_area !== undefined) {
         const output = {

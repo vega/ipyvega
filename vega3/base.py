@@ -17,9 +17,10 @@ class VegaBase(object):
     HTML_TEMPLATE = "static/vega.html"
     render_type = ''  # vega or vega-lite
 
-    def __init__(self, spec, data=None):
+    def __init__(self, spec, data=None, opt=None):
         """Initialize the visualization object."""
         spec = utils.nested_update(copy.deepcopy(self.DEFAULTS), spec)
+        self.opt = opt or {}
         self.spec = self._prepare_spec(spec, data)
 
     def _prepare_spec(self, spec, data):
@@ -35,6 +36,7 @@ class VegaBase(object):
         payload = template.format(
             selector=selector,
             spec=json.dumps(self.spec, **kwds),
+            opt=json.dumps(self.opt, **kwds),
             type=self.render_type
         )
         return payload
