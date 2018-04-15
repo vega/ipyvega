@@ -1,12 +1,22 @@
 <div class="vega-embed" id="{id}"></div>
 
 <style>
-.vega-embed svg, .vega-embed canvas {{
-    border: 1px dotted gray;
+.vega-embed .vega-actions > a {{
+    transition: opacity 200ms ease-in;
+    opacity: 0.3;
+    margin-right: 0.6em;
+    color: #444;
+    text-decoration: none;
 }}
 
-.vega-embed .vega-actions a {{
-    margin-right: 6px;
+.vega-embed .vega-actions > a:hover {{
+    color: #000;
+    text-decoration: underline;
+}}
+
+.vega-embed:hover .vega-actions > a {{
+    opacity: 1;
+    transition: 0s;
 }}
 
 .vega-embed .error p {{
