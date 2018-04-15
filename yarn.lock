@@ -4527,16 +4527,16 @@ vega-dataflow@3:
     vega-loader "2"
     vega-util "1"
 
-vega-embed@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-3.4.0.tgz#2e00bdc0ae00de31ee737c57c293f62f5080ff1b"
+vega-embed@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-3.5.0.tgz#7c6df22f29ffec6a658af469462e1f916471fe98"
   dependencies:
     compare-versions "^3.1.0"
     d3-selection "^1.3.0"
     vega-lib "^3.2.1"
     vega-lite "^2.3.1"
     vega-schema-url-parser "^1.0.0"
-    vega-typings "^0.2.11"
+    vega-typings "^0.2.13"
 
 vega-encode@2:
   version "2.0.7"
@@ -4705,7 +4705,7 @@ vega-transforms@^1.2:
     vega-statistics "^1.2"
     vega-util "1"
 
-vega-typings@*, vega-typings@^0.2.11:
+vega-typings@*, vega-typings@^0.2.11, vega-typings@^0.2.13:
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/vega-typings/-/vega-typings-0.2.13.tgz#809077cb8737bb6383cf5b6d71f86f85e108218c"
 
