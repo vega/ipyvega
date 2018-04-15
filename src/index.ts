@@ -2,7 +2,7 @@ import vegaEmbed, { Mode, EmbedOptions } from 'vega-embed';
 import { Spec } from 'vega-lib';
 import { TopLevelSpec } from 'vega-lite';
 
-function javascriptIndex(selector, outputs) {
+function javascriptIndex(selector: string, outputs) {
   // Return the index in the output array of the JS repr of this viz
   for (let i = 0; i < outputs.length; i++) {
     const item = outputs[i];
@@ -15,7 +15,7 @@ function javascriptIndex(selector, outputs) {
   return -1;
 }
 
-function imageIndex(selector, outputs) {
+function imageIndex(selector: string, outputs) {
   // Return the index in the output array of the PNG repr of this viz
   for (let i = 0; i < outputs.length; i++) {
     const item = outputs[i];
@@ -38,7 +38,7 @@ function showError(el: HTMLElement, error) {
   throw error;
 }
 
-export function render(selector, spec: Spec | TopLevelSpec, type: Mode, opt: EmbedOptions, output_area) {
+export function render(selector: string, spec: Spec | TopLevelSpec, type: Mode, opt: EmbedOptions, output_area) {
   // Find the indices of this visualizations JS and PNG
   // representation.
   const imgIndex = imageIndex(selector, output_area.outputs);
