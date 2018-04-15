@@ -7,7 +7,7 @@ import pandas as pd
 
 import pytest
 
-from ..utils import sanitize_dataframe, nested_update, prepare_spec
+from ..utils import sanitize_dataframe, prepare_spec
 
 PANDAS_DATA = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 5, 6]})
 JSON_DATA = {
@@ -25,14 +25,6 @@ VEGALITE_SPEC = {
         "y": {"field": "y", "type": "quantitative"}
     }
 }
-
-
-def test_nested_update():
-    D = {'A': {'a': 4, 'b': 5}}
-    U = {'A': {'a': 40, 'c': 6}, 'B': {'foo': 'bar'}}
-    output = nested_update(D, U)
-    assert output is D
-    assert D == {'A': {'a': 40, 'b': 5, 'c': 6}, 'B': {'foo': 'bar'}}
 
 
 def test_sanitize_dataframe():

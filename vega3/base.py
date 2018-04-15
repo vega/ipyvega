@@ -12,14 +12,13 @@ from . import utils
 class VegaBase(object):
     """A custom Vega-Lite display object."""
 
-    DEFAULTS = {}
     JS_TEMPLATE = "static/vega.js"
     HTML_TEMPLATE = "static/vega.html"
     render_type = ''  # vega or vega-lite
 
     def __init__(self, spec, data=None, opt=None):
         """Initialize the visualization object."""
-        spec = utils.nested_update(copy.deepcopy(self.DEFAULTS), spec)
+        spec = spec
         self.opt = opt or {}
         self.spec = self._prepare_spec(spec, data)
 

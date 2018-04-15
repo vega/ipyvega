@@ -4,16 +4,6 @@ import collections
 import os.path
 
 
-def nested_update(d, u):
-    """Update nested dictionary d (in-place) with keys from u."""
-    for k, v in u.items():
-        if isinstance(v, collections.Mapping):
-            d[k] = nested_update(d.get(k, {}), v)
-        else:
-            d[k] = v
-    return d
-
-
 def abs_path(path):
     """Make path absolute."""
     return os.path.join(

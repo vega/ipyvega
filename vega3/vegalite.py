@@ -4,13 +4,9 @@ from .base import VegaBase
 from .utils import prepare_spec
 
 
-DEFAULTS = {}
-
-
 class VegaLite(VegaBase):
     """Display a Vega-Lite visualization in the Jupyter Notebook."""
 
-    DEFAULTS = DEFAULTS
     render_type = 'vega-lite'
 
     def _prepare_spec(self, spec, data):
