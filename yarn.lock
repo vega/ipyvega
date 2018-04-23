@@ -762,8 +762,8 @@ babylon@^6.17.3, babylon@^6.18.0:
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
 
 babylon@^7.0.0-beta.30:
-  version "7.0.0-beta.44"
-  resolved "https://registry.yarnpkg.com/babylon/-/babylon-7.0.0-beta.44.tgz#89159e15e6e30c5096e22d738d8c0af8a0e8ca1d"
+  version "7.0.0-beta.46"
+  resolved "https://registry.yarnpkg.com/babylon/-/babylon-7.0.0-beta.46.tgz#b6ddaba81bbb130313932757ff9c195d527088b6"
 
 balanced-match@^1.0.0:
   version "1.0.0"
@@ -1069,8 +1069,8 @@ cli-width@^2.0.0:
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.2.0.tgz#ff19ede8a9a5e579324147b0c11f0fbcbabed639"
 
 cliui@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/cliui/-/cliui-4.0.0.tgz#743d4650e05f36d1ed2575b59638d87322bfbbcc"
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/cliui/-/cliui-4.1.0.tgz#348422dbe82d800b3022eef4f6ac10bf2e4d1b49"
   dependencies:
     string-width "^2.1.1"
     strip-ansi "^4.0.0"
@@ -1150,10 +1150,6 @@ commander@~2.13.0:
 commondir@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
-
-compare-versions@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/compare-versions/-/compare-versions-3.1.0.tgz#43310256a5c555aaed4193c04d8f154cf9c6efd5"
 
 component-emitter@^1.2.1:
   version "1.2.1"
@@ -2518,6 +2514,10 @@ json-stable-stringify@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-stable-stringify/-/json-stable-stringify-1.0.1.tgz#9a759d39c5f2ff503fd5300646ed445f88c4f9af"
   dependencies:
     jsonify "~0.0.0"
+
+json-stringify-pretty-compact@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/json-stringify-pretty-compact/-/json-stringify-pretty-compact-1.2.0.tgz#0bc316b5e6831c07041fc35612487fb4e9ab98b8"
 
 json5@^0.5.0, json5@^0.5.1:
   version "0.5.1"
@@ -4125,7 +4125,7 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@^2.8.1:
+typescript@^2.8.3:
   version "2.8.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.8.3.tgz#5d817f9b6f31bb871835f4edf0089f21abe6c170"
 
@@ -4268,16 +4268,16 @@ vega-dataflow@3, vega-dataflow@^3.1:
     vega-loader "2"
     vega-util "1"
 
-vega-embed@^3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-3.5.0.tgz#7c6df22f29ffec6a658af469462e1f916471fe98"
+vega-embed@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-3.6.2.tgz#f267c24a978e435262d0147ff069a53f1bb50b96"
   dependencies:
-    compare-versions "^3.1.0"
     d3-selection "^1.3.0"
-    vega-lib "^3.2.1"
+    json-stringify-pretty-compact "^1.2.0"
+    semver "^5.5.0"
+    vega-lib "^3.3.1"
     vega-lite "^2.3.1"
     vega-schema-url-parser "^1.0.0"
-    vega-typings "^0.2.13"
 
 vega-encode@2:
   version "2.0.8"
@@ -4328,9 +4328,9 @@ vega-hierarchy@^2.1:
     vega-dataflow "^3.1"
     vega-util "1"
 
-vega-lib@^3.2.1:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/vega-lib/-/vega-lib-3.3.0.tgz#ebfa32c1fefec9d71c1e4b58d3775be027aeb312"
+vega-lib@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/vega-lib/-/vega-lib-3.3.1.tgz#b5f09974f414ade0c5ac6c5ee250f34d61f5ff2b"
   dependencies:
     vega-crossfilter "2"
     vega-dataflow "3"
@@ -4418,8 +4418,8 @@ vega-scale@2, vega-scale@^2.1:
     vega-util "1"
 
 vega-scenegraph@2, vega-scenegraph@^2.3:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/vega-scenegraph/-/vega-scenegraph-2.4.1.tgz#25418ddbc98096937f0778aadc42ed51700719ee"
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/vega-scenegraph/-/vega-scenegraph-2.4.2.tgz#1835c63a66984a368633dfcfd8fa7495ee12ff25"
   dependencies:
     d3-path "1"
     d3-shape "1"
@@ -4446,9 +4446,9 @@ vega-transforms@^1.2:
     vega-statistics "^1.2"
     vega-util "1"
 
-vega-typings@*, vega-typings@^0.2.11, vega-typings@^0.2.13:
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/vega-typings/-/vega-typings-0.2.13.tgz#809077cb8737bb6383cf5b6d71f86f85e108218c"
+vega-typings@*, vega-typings@^0.2.11:
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/vega-typings/-/vega-typings-0.2.15.tgz#7c973f7f342efe82fb9c4ad96833431c11cd5911"
 
 vega-util@1, vega-util@^1.7, vega-util@^1.7.0:
   version "1.7.0"
@@ -4463,8 +4463,8 @@ vega-view-transforms@^1.2:
     vega-util "1"
 
 vega-view@^2.2:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/vega-view/-/vega-view-2.3.1.tgz#df22aee6b3cbe4e2de7813a5d60167357ccc79f2"
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/vega-view/-/vega-view-2.3.2.tgz#037040b8e64d9dbf7900e86bbc8e952f0b99a119"
   dependencies:
     d3-array "1"
     vega-dataflow "3"
@@ -4541,9 +4541,9 @@ webpack-addons@^1.1.5:
   dependencies:
     jscodeshift "^0.4.0"
 
-webpack-cli@^2.0.14:
-  version "2.0.14"
-  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-2.0.14.tgz#71d03d8c10547c1dfd674f71ff3b0457c33a74cd"
+webpack-cli@^2.0.15:
+  version "2.0.15"
+  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-2.0.15.tgz#7532066556b03bd3292285ac08537e28844616c2"
   dependencies:
     chalk "^2.3.2"
     cross-spawn "^6.0.5"
@@ -4579,7 +4579,7 @@ webpack-sources@^1.0.1, webpack-sources@^1.1.0:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@^4.5.0:
+webpack@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.6.0.tgz#363eafa733710eb0ed28c512b2b9b9f5fb01e69b"
   dependencies:
