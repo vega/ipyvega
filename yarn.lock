@@ -2519,6 +2519,10 @@ json-stringify-pretty-compact@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/json-stringify-pretty-compact/-/json-stringify-pretty-compact-1.2.0.tgz#0bc316b5e6831c07041fc35612487fb4e9ab98b8"
 
+json-stringify-safe@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
+
 json5@^0.5.0, json5@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-0.5.1.tgz#1eade7acc012034ad84e2396767ead9fa5495821"
@@ -4268,9 +4272,9 @@ vega-dataflow@3, vega-dataflow@^3.1:
     vega-loader "2"
     vega-util "1"
 
-vega-embed@^3.6.2:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-3.6.2.tgz#f267c24a978e435262d0147ff069a53f1bb50b96"
+vega-embed@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-3.7.0.tgz#986190b38a763ee2510edf549a83422d89f3a7ae"
   dependencies:
     d3-selection "^1.3.0"
     json-stringify-pretty-compact "^1.2.0"
@@ -4278,6 +4282,7 @@ vega-embed@^3.6.2:
     vega-lib "^3.3.1"
     vega-lite "^2.3.1"
     vega-schema-url-parser "^1.0.0"
+    vega-tooltip "^0.9.10"
 
 vega-encode@2:
   version "2.0.8"
@@ -4436,6 +4441,13 @@ vega-statistics@^1.2:
   resolved "https://registry.yarnpkg.com/vega-statistics/-/vega-statistics-1.2.1.tgz#a35b3fc3d0039f8bb0a8ba1381d42a1df79ecb34"
   dependencies:
     d3-array "1"
+
+vega-tooltip@^0.9.10:
+  version "0.9.10"
+  resolved "https://registry.yarnpkg.com/vega-tooltip/-/vega-tooltip-0.9.10.tgz#795a01d8a726cb020402109fa4eb81edde3a85fc"
+  dependencies:
+    json-stringify-safe "^5.0.1"
+    vega-util "^1.7.0"
 
 vega-transforms@^1.2:
   version "1.3.1"
