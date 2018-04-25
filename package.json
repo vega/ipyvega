@@ -1,6 +1,6 @@
 {
   "name": "jupyter-vega3",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "IPython/Jupyter notebook module for [Vega](https://vega.github.io/vega), and [Vega-Lite](https://vega.github.io/vega-lite).",
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "vega-embed": "^3.7.0"
+    "vega-embed": "^3.7.1"
   },
   "devDependencies": {
     "ts-loader": "^4.2.0",
