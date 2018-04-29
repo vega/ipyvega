@@ -28,7 +28,7 @@ function imageIndex(selector: string, outputs) {
   return -1;
 }
 
-function showError(el: HTMLElement, error) {
+function showError(el: HTMLElement, error: Error) {
   el.innerHTML = `<div class="error">
     <p>Javascript Error: ${error.message}</p>
     <p>This usually means there's a typo in your chart specification.
