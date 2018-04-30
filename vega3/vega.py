@@ -9,8 +9,8 @@ class Vega(VegaBase):
     render_type = 'vega'
 
 
-def entry_point_renderer(spec):
-    vl = Vega(spec)
+def entry_point_renderer(spec, embed_options=None):
+    vl = Vega(spec, opt=embed_options)
     vl.display()
     return {'text/plain': ''}
 
