@@ -13,8 +13,8 @@ class VegaLite(VegaBase):
         return prepare_spec(spec, data)
 
 
-def entry_point_renderer(spec):
-    vl = VegaLite(spec)
+def entry_point_renderer(spec, embed_options=None):
+    vl = VegaLite(spec, opt=embed_options)
     vl.display()
     return {'text/plain': ''}
 
