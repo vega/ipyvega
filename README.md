@@ -1,4 +1,6 @@
-# IPython Vega 3 [![PyPI](https://img.shields.io/pypi/v/vega3.svg?maxAge=2592000)](https://pypi.python.org/pypi/vega3) [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=vega3)](https://travis-ci.org/vega/ipyvega)
+# IPython Vega 3
+[![PyPI](https://img.shields.io/pypi/v/vega3.svg)](https://pypi.python.org/pypi/vega3)
+[![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=vega3)](https://travis-ci.org/vega/ipyvega)
 
 IPython/Jupyter notebook module for [Vega 3](https://github.com/vega/vega), and [Vega-Lite 2](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on [GitHub](https://github.com/vega/ipyvega/blob/vega3/notebooks/VegaLite.ipynb) and [nbviewer](https://nbviewer.jupyter.org/github/vega/ipyvega/blob/vega3/notebooks/VegaLite.ipynb).
 
