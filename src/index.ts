@@ -7,7 +7,7 @@ function javascriptIndex(selector: string, outputs) {
   for (let i = 0; i < outputs.length; i++) {
     const item = outputs[i];
     if (item.metadata &&
-      item.metadata['jupyter-vega3'] === selector &&
+      item.metadata['jupyter-vega'] === selector &&
       item.data['application/javascript'] !== undefined) {
       return i;
     }
@@ -20,7 +20,7 @@ function imageIndex(selector: string, outputs) {
   for (let i = 0; i < outputs.length; i++) {
     const item = outputs[i];
     if (item.metadata &&
-      item.metadata['jupyter-vega3'] === selector &&
+      item.metadata['jupyter-vega'] === selector &&
       item.data['image/png'] !== undefined) {
       return i;
     }
@@ -60,7 +60,7 @@ export function render(selector: string, spec: Spec | TopLevelSpec, type: Mode, 
           data: {
             'image/png': imageData.split(',')[1]
           },
-          metadata: { 'jupyter-vega3': selector },
+          metadata: { 'jupyter-vega': selector },
           output_type: 'display_data'
         };
         // This appends the PNG output, but doesn't render it this time

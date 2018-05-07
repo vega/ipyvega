@@ -4,7 +4,7 @@ module.exports = {
   entry: './src/index.ts',
   output: {
     filename: 'index.js',
-    path: __dirname + '/vega3/static',
+    path: __dirname + '/vega/static',
     libraryTarget: 'amd'
   },
   resolve: {

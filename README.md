@@ -1,12 +1,12 @@
 # IPython Vega 3
-[![PyPI](https://img.shields.io/pypi/v/vega3.svg)](https://pypi.python.org/pypi/vega3)
-[![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=vega3)](https://travis-ci.org/vega/ipyvega)
+[![PyPI](https://img.shields.io/pypi/v/vega.svg)](https://pypi.python.org/pypi/vega)
+[![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
 
-IPython/Jupyter notebook module for [Vega 3](https://github.com/vega/vega), and [Vega-Lite 2](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on [GitHub](https://github.com/vega/ipyvega/blob/vega3/notebooks/VegaLite.ipynb) and [nbviewer](https://nbviewer.jupyter.org/github/vega/ipyvega/blob/vega3/notebooks/VegaLite.ipynb).
+IPython/Jupyter notebook module for [Vega 3](https://github.com/vega/vega), and [Vega-Lite 2](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on [GitHub](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [nbviewer](https://nbviewer.jupyter.org/github/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb).
 
-Available on [pypi](https://pypi.python.org/pypi/vega3).
+Available on [pypi](https://pypi.python.org/pypi/master).
 
-![screenshot](https://raw.githubusercontent.com/vega/ipyvega/vega3/screenshot.png "Screenshot of the Vega-Lite module")
+![screenshot](https://raw.githubusercontent.com/vega/ipyvega/master/screenshot.png "Screenshot of the Vega-Lite module")
 
 
 ## Install and run
@@ -17,9 +17,9 @@ To install ``vega`` and its dependencies from the Python Package Index using
 ``pip``, use the following commands:
 
 ```sh
-pip install jupyter pandas vega3
+pip install jupyter pandas vega
 pip install --upgrade notebook  # need jupyter_client >= 4.2 for sys-prefix below
-jupyter nbextension install --sys-prefix --py vega3  # not needed in notebook >= 5.3
+jupyter nbextension install --sys-prefix --py vega  # not needed in notebook >= 5.3
 ```
 
 ### From Source
@@ -37,9 +37,9 @@ Once the package is installed, run
 jupyter notebook
 ```
 to launch the Jupyter notebook server, and use ``vega`` within the notebook.
-See the example notebooks for [Vega-Lite](https://github.com/vega/ipyvega/blob/vega3/notebooks/VegaLite.ipynb) and [Vega](https://github.com/vega/ipyvega/blob/vega3/notebooks/Vega.ipynb).
+See the example notebooks for [Vega-Lite](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [Vega](https://github.com/vega/ipyvega/blob/master/notebooks/Vega.ipynb).
 
-To run the notebooks yourself, you need to get the file [`cars.json`](https://raw.githubusercontent.com/vega/ipyvega/vega3/notebooks/cars.json).
+To run the notebooks yourself, you need to get the file [`cars.json`](https://raw.githubusercontent.com/vega/ipyvega/master/notebooks/cars.json).
 
 
 ## Developers
@@ -50,7 +50,7 @@ Symlink files instead of copying files:
 
 ```sh
 python setup.py develop
-jupyter nbextension install --py --symlink vega3  # not needed in notebook >= 5.3
+jupyter nbextension install --py --symlink vega  # not needed in notebook >= 5.3
 ```
 
 Run kernel: `jupyter notebook`
@@ -67,4 +67,4 @@ Publish a new version to pypi with `python3 setup.py sdist upload`.
 * Make sure that everything still works (launch notebook and try the examples)
 * Update the version number in `package.json` and `__index__.py`
 * `git push`
-* Run `python setup.py sdist upload` to update https://pypi.python.org/pypi/vega3
+* Run `python setup.py sdist upload` to update https://pypi.python.org/pypi/vega

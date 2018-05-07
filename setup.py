@@ -6,36 +6,36 @@ IPython/Jupyter notebook module for `Vega <https://github.com/vega/vega/>`_
 and `Vega-Lite <https://github.com/vega/vega-lite/>`_.
 Notebooks with embedded visualizations can be viewed on github and nbviewer.
 
-For more information, see https://github.com/vega/ipyvega/tree/vega3.
+For more information, see https://github.com/vega/ipyvega/tree/vega.
 
 Installation Notes
 ------------------
 When installing from PyPI, extra steps are required to enable the Jupyter
 notebook extension. For more information, see the
-`github page <https://github.com/vega/ipyvega/tree/vega3>`_.
+`github page <https://github.com/vega/ipyvega/tree/vega>`_.
 """
 
-DESCRIPTION         = "IPyVega3: An IPython/Jupyter widget for Vega 3 and Vega-Lite 2"
-NAME                = "vega3"
-PACKAGES            = ['vega3',
-                       'vega3.tests']
-PACKAGE_DATA        = {'vega3': ['static/*.js',
+DESCRIPTION         = "IPyVega: An IPython/Jupyter widget for Vega 3 and Vega-Lite 2"
+NAME                = "vega"
+PACKAGES            = ['vega',
+                       'vega.tests']
+PACKAGE_DATA        = {'vega': ['static/*.js',
                                 'static/*.js.map',
                                 'static/*.html']}
 AUTHOR              = 'Dominik Moritz'
 AUTHOR_EMAIL        = 'domoritz@gmail.com'
-URL                 = 'http://github.com/vega/ipyvega/tree/vega3'
-DOWNLOAD_URL        = 'http://github.com/vega/ipyvega/tree/vega3'
+URL                 = 'http://github.com/vega/ipyvega/tree/vega'
+DOWNLOAD_URL        = 'http://github.com/vega/ipyvega/tree/vega'
 LICENSE             = 'BSD 3-clause'
 DATA_FILES          = [
-                            ('share/jupyter/nbextensions/jupyter-vega3', [
-                             'vega3/static/index.js',
-                             'vega3/static/index.js.map',
+                            ('share/jupyter/nbextensions/jupyter-vega', [
+                             'vega/static/index.js',
+                             'vega/static/index.js.map',
                             ]),
-                            ('etc/jupyter/nbconfig/notebook.d' , ['vega3.json'])
+                            ('etc/jupyter/nbconfig/notebook.d' , ['vega.json'])
                         ]
-ENTRY_POINTS        = {'altair.vegalite.v2.renderer': ['notebook=vega3.vegalite:entry_point_renderer'],
-                       'altair.vega.v3.renderer': ['notebook=vega3.vega:entry_point_renderer']
+ENTRY_POINTS        = {'altair.vegalite.v2.renderer': ['notebook=vega.vegalite:entry_point_renderer'],
+                       'altair.vega.v3.renderer': ['notebook=vega.vega:entry_point_renderer']
                       }
 
 
@@ -68,7 +68,7 @@ def version(path):
     raise RuntimeError("Unable to find version string.")
 
 
-VERSION = version('vega3/__init__.py')
+VERSION = version('vega/__init__.py')
 
 
 setup(name=NAME,
@@ -93,5 +93,6 @@ setup(name=NAME,
         'Natural Language :: English',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5'],
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6'],
      )
