@@ -1,6 +1,6 @@
-# IPython Vega [![PyPI](https://img.shields.io/pypi/v/vega.svg?maxAge=2592000)](https://pypi.python.org/pypi/vega) [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
+# IPython Vega [![PyPI](https://img.shields.io/pypi/v/vega.svg?maxAge=2592000)](https://pypi.python.org/pypi/vega) [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=vega2)](https://travis-ci.org/vega/ipyvega)
 
-**Note:** Jupyter Lab will come with Vega and Vega-Lite installed by default so this package will not be necessary anymore. If you want to use **Vega 3** or **Vega-Lite 2**, use https://github.com/vega/ipyvega/tree/vega3.
+**Note:** This branch is for the Vega 2 and Vega-Lite 1 module. Please [go to the master branch](https://github.com/vega/ipyvega).
 
 ---
 
@@ -8,7 +8,7 @@ IPython/Jupyter notebook module for [Vega](https://github.com/vega/vega), and [V
 
 Available on [pypi](https://pypi.python.org/pypi/vega) and [conda-forge](https://github.com/conda-forge/vega-feedstock).
 
-![screenshot](https://raw.githubusercontent.com/vega/ipyvega/master/screenshot.png "Screenshot of the Vega-Lite module")
+![screenshot](https://raw.githubusercontent.com/vega/ipyvega/vega2/screenshot.png "Screenshot of the Vega-Lite module")
 
 ## Install and run
 
@@ -46,9 +46,9 @@ Once the package is installed, run
 jupyter notebook
 ```
 to launch the Jupyter notebook server, and use ``vega`` within the notebook.
-See the example notebooks for [Vega-Lite](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [Vega](https://github.com/vega/ipyvega/blob/master/notebooks/Vega.ipynb).
+See the example notebooks for [Vega-Lite](https://github.com/vega/ipyvega/blob/vega2/notebooks/VegaLite.ipynb) and [Vega](https://github.com/vega/ipyvega/blob/vega2/notebooks/Vega.ipynb).
 
-To run the notebooks yourself, you need to get the file [`cars.json`](https://raw.githubusercontent.com/vega/ipyvega/master/notebooks/cars.json).
+To run the notebooks yourself, you need to get the file [`cars.json`](https://raw.githubusercontent.com/vega/ipyvega/vega2/notebooks/cars.json).
 
 
 ## Developers
