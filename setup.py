@@ -6,13 +6,13 @@ IPython/Jupyter notebook module for `Vega <https://github.com/vega/vega/>`_
 and `Vega-Lite <https://github.com/vega/vega-lite/>`_.
 Notebooks with embedded visualizations can be viewed on github and nbviewer.
 
-For more information, see https://github.com/vega/ipyvega/tree/vega.
+For more information, see https://github.com/vega/ipyvega.
 
 Installation Notes
 ------------------
-When installing from PyPI, extra steps are required to enable the Jupyter
+When installing from PyPI, extra steps may be required to enable the Jupyter
 notebook extension. For more information, see the
-`github page <https://github.com/vega/ipyvega/tree/vega>`_.
+`github page <https://github.com/vega/ipyvega>`_.
 """
 
 DESCRIPTION         = "IPyVega: An IPython/Jupyter widget for Vega 3 and Vega-Lite 2"
@@ -24,8 +24,8 @@ PACKAGE_DATA        = {'vega': ['static/*.js',
                                 'static/*.html']}
 AUTHOR              = 'Dominik Moritz'
 AUTHOR_EMAIL        = 'domoritz@gmail.com'
-URL                 = 'http://github.com/vega/ipyvega/tree/vega'
-DOWNLOAD_URL        = 'http://github.com/vega/ipyvega/tree/vega'
+URL                 = 'http://github.com/vega/ipyvega'
+DOWNLOAD_URL        = 'http://github.com/vega/ipyvega'
 LICENSE             = 'BSD 3-clause'
 DATA_FILES          = [
                             ('share/jupyter/nbextensions/jupyter-vega', [
