@@ -86,7 +86,7 @@ setup(name=NAME,
       entry_points=ENTRY_POINTS,
       include_package_data=True,
       classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',
