@@ -6,8 +6,7 @@ IPython/Jupyter notebook module for [Vega 3](https://github.com/vega/vega), and 
 
 Available on [pypi](https://pypi.python.org/pypi/master).
 
-![screenshot](https://raw.githubusercontent.com/vega/ipyvega/master/screenshot.png "Screenshot of the Vega-Lite module")
-
+<img src="screenshot.png" width="500">
 
 ## Install and run
 
