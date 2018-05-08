@@ -12,8 +12,8 @@ Available on [pypi](https://pypi.python.org/pypi/master).
 
 ### Python Package Index
 
-To install ``vega`` and its dependencies from the Python Package Index using
-``pip``, use the following commands:
+To install `vega` and its dependencies from the Python Package Index using
+`pip`, use the following commands:
 
 ```sh
 pip install jupyter pandas vega
@@ -21,9 +21,17 @@ pip install --upgrade notebook  # need jupyter_client >= 4.2 for sys-prefix belo
 jupyter nbextension install --sys-prefix --py vega  # not needed in notebook >= 5.3
 ```
 
+### Conda Forge
+
+If you use conda, you probably already have the latest versions of the notebook and pandas installed. To install `vega` extension run:
+
+```sh
+conda install vega
+```
+
 ### From Source
 
-To install from source, make sure you have ``jupyter`` and ``pandas`` installed,
+To install from source, make sure you have `jupyter` and `pandas` installed,
 then download this repository and run
 ```sh
 python setup.py install
@@ -35,7 +43,7 @@ Once the package is installed, run
 ```sh
 jupyter notebook
 ```
-to launch the Jupyter notebook server, and use ``vega`` within the notebook.
+to launch the Jupyter notebook server, and use `vega` within the notebook.
 See the example notebooks for [Vega-Lite](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [Vega](https://github.com/vega/ipyvega/blob/master/notebooks/Vega.ipynb).
 
 To run the notebooks yourself, you need to get the file [`cars.json`](https://raw.githubusercontent.com/vega/ipyvega/master/notebooks/cars.json).
