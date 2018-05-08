@@ -1,4 +1,4 @@
-# IPython Vega 3
+# IPython Vega
 [![PyPI](https://img.shields.io/pypi/v/vega.svg)](https://pypi.python.org/pypi/vega)
 [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
 
