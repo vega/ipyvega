@@ -68,10 +68,10 @@ Publish a new version to pypi with `python3 setup.py sdist upload`.
 
 ### How to make a release
 
-* Update the javascript dependendencies by changing `package.json`
+* Update the javascript dependendencies by changing `package.json` (e.g. with [ncu](https://www.npmjs.com/package/npm-check-updates))
 * Run `yarn`
 * Rebuild the javascript with `yarn build`
 * Make sure that everything still works (launch notebook and try the examples)
-* Update the version number in `package.json` and `__index__.py`
+* Update the version number in `package.json` and `__index__.py` and add a git tag
 * `git push`
 * Run `python setup.py sdist upload` to update https://pypi.python.org/pypi/vega
