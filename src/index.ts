@@ -53,7 +53,7 @@ export function render(selector: string, spec: Spec | TopLevelSpec, type: Mode, 
   // Never been rendered, so render JS and append the PNG to the
   // outputs for the cell
   const el = document.getElementById(selector.substring(1));
-  vegaEmbed(el, spec, { ...opt, mode: type }).then((result) => {
+  vegaEmbed(el, spec, { defaultStyle: true, ...opt, mode: type }).then((result) => {
     const imageData = result.view.toImageURL('png').then((imageData) => {
       if (output_area !== undefined) {
         const output = {
