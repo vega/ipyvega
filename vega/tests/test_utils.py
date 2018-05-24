@@ -32,13 +32,16 @@ def test_sanitize_dataframe():
     df = pd.DataFrame({'s': list('abcde'),
                        'f': np.arange(5, dtype=float),
                        'i': np.arange(5, dtype=int),
+                       'b': np.array([True, False, True, True, False]),
                        'd': pd.date_range('2012-01-01', periods=5, freq='H'),
-                       'c': pd.Series(list('ababc'), dtype='category')})
+                       'c': pd.Series(list('ababc'), dtype='category'),
+                       'o': pd.Series([np.array(i) for i in range(5)])})
 
     # add some nulls
-    df.ix[0, 's'] = None
-    df.ix[0, 'f'] = np.nan
-    df.ix[0, 'd'] = pd.NaT
+    df.iloc[0, df.columns.get_loc('s')] = None
+    df.iloc[0, df.columns.get_loc('f')] = np.nan
+    df.iloc[0, df.columns.get_loc('d')] = pd.NaT
+    df.iloc[0, df.columns.get_loc('o')] = np.array(np.nan)
 
     # JSON serialize. This will fail on non-sanitized dataframes
     df_clean = sanitize_dataframe(df)
@@ -46,6 +49,9 @@ def test_sanitize_dataframe():
 
     # Re-construct pandas dataframe
     df2 = pd.read_json(s)
+
+    # Re-order the columns to match df
+    df2 = df2[df.columns]
 
     # Re-apply original types
     for col in df:
@@ -56,7 +62,16 @@ def test_sanitize_dataframe():
         else:
             df2[col] = df2[col].astype(df[col].dtype)
 
+    # pandas doesn't properly recognize np.array(np.nan), so change it here
+    df.iloc[0, df.columns.get_loc('o')] = np.nan
     assert df.equals(df2)
+
+
+def test_sanitize_dataframe_infs():
+    df = pd.DataFrame({'x': [0, 1, 2, np.inf, -np.inf, np.nan]})
+    df_clean = sanitize_dataframe(df)
+    assert list(df_clean.dtypes) == [object]
+    assert list(df_clean['x']) == [0, 1, 2, None, None, None]
 
 
 def test_prepare_spec():
