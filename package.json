@@ -17,14 +17,14 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "vega-embed": "^3.13.0"
+    "vega-embed": "^3.15.0"
   },
   "devDependencies": {
     "css-loader": "^0.28.11",
-    "ts-loader": "^4.3.0",
-    "typescript": "^2.8.3",
-    "webpack": "^4.8.3",
-    "webpack-cli": "^2.1.4"
+    "ts-loader": "^4.4.1",
+    "typescript": "^2.9.1",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.4"
   },
   "private": true
 }

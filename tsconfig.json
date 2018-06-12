@@ -11,6 +11,8 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "lib": ["es6", "dom"]
   },
   "include": [
