@@ -19,7 +19,8 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "vega-embed": "^3.16.1"
+    "vega-embed": "^3.16.1",
+    "@jupyter-widgets/base": "^1.1.10"
   },
   "devDependencies": {
     "css-loader": "^0.28.11",
