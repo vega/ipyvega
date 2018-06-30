@@ -13,7 +13,6 @@ class VegaBase(object):
     """A custom Vega-Lite display object."""
 
     JS_TEMPLATE = "static/vega.js"
-    HTML_TEMPLATE = "static/vega.html"
     render_type = ''  # vega or vega-lite
 
     def __init__(self, spec, data=None, opt=None):
@@ -25,31 +24,24 @@ class VegaBase(object):
     def _prepare_spec(self, spec, data):
         return spec
 
-    def _generate_html(self, id):
-        template = utils.get_content(self.HTML_TEMPLATE)
-        return template.format(id=id)
-
     def _generate_js(self, id, **kwds):
         template = utils.get_content(self.JS_TEMPLATE)
         selector = '#{0}'.format(id)
         payload = template.format(
             selector=selector,
+            id=json.dumps(str(id)),
             spec=json.dumps(self.spec, **kwds),
             opt=json.dumps(self.opt, **kwds),
             type=self.render_type
         )
         return payload
 
-    def _ipython_display_(self):
+    def _repr_mimebundle_(self, include=None, exclude=None):
         """Display the visualization in the Jupyter notebook."""
         id = uuid.uuid4()
-        publish_display_data(
-            {'text/html': self._generate_html(id)},
-            metadata={'jupyter-vega': '#{0}'.format(id)}
-        )
-        publish_display_data(
+        return (
             {'application/javascript': self._generate_js(id)},
-            metadata={'jupyter-vega': '#{0}'.format(id)}
+            {'jupyter-vega': '#{0}'.format(id)},
         )
 
     def display(self):
