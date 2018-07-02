@@ -36,11 +36,6 @@ def test_vegalite_output():
     obj2 = VegaLite(VEGALITE_SPEC, JSON_DATA['values'])
     obj3 = VegaLite(spec_with_data)
 
-    html1 = obj1._generate_html(id='ABC')
-    html2 = obj2._generate_html(id='ABC')
-    html3 = obj3._generate_html(id='ABC')
-    assert html1 == html2 == html3
-
     js1 = obj1._generate_js(id='ABC', sort_keys=True)
     js2 = obj2._generate_js(id='ABC', sort_keys=True)
     js3 = obj3._generate_js(id='ABC', sort_keys=True)
@@ -51,5 +46,4 @@ def test_vega_output():
     # TODO: use an actual vega spec
     data = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 5, 6]})
     obj = Vega(VEGA_SPEC, data)
-    html = obj._generate_html(id='ABC')
     js = obj._generate_js(id='ABC')
