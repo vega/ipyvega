@@ -26,10 +26,8 @@ class VegaBase(object):
 
     def _generate_js(self, id, **kwds):
         template = utils.get_content(self.JS_TEMPLATE)
-        selector = '#{0}'.format(id)
         payload = template.format(
-            selector=selector,
-            id=json.dumps(str(id)),
+            id=id,
             spec=json.dumps(self.spec, **kwds),
             opt=json.dumps(self.opt, **kwds),
             type=self.render_type

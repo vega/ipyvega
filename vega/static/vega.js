@@ -1,22 +1,22 @@
 var spec = {spec};
 var opt = {opt};
-var selector = "{selector}";
 var type = "{type}";
+var id = "{id}";
 
 var output_area = this;
 
-require(['nbextensions/jupyter-vega/index'], function(vega) {{
-  var target = document.createElement('div');
-  target.id = {id};
-  target.className = 'vega-embed';
+require(["nbextensions/jupyter-vega/index"], function(vega) {{
+  var target = document.createElement("div");
+  target.id = id;
+  target.className = "vega-embed";
 
-  var style = document.createElement('style');
+  var style = document.createElement("style");
   style.textContent = [
-    '.vega-embed .error p {{',
-    '  color: firebrick;',
-    '  font-size: 14px;',
-    '}}',
-  ].join('\\n');
+    ".vega-embed .error p {{",
+    "  color: firebrick;",
+    "  font-size: 14px;",
+    "}}",
+  ].join("\\n");
 
   // element is a jQuery wrapped DOM element inside the output area
   // see http://ipython.readthedocs.io/en/stable/api/generated/\
@@ -24,9 +24,9 @@ require(['nbextensions/jupyter-vega/index'], function(vega) {{
   element[0].appendChild(target);
   element[0].appendChild(style);
 
-  vega.render(selector, spec, type, opt, output_area);
+  vega.render("#" + id, spec, type, opt, output_area);
 }}, function (err) {{
-  if (err.requireType !== 'scripterror') {{
+  if (err.requireType !== "scripterror") {{
     throw(err);
   }}
 }});
