@@ -27,3 +27,5 @@ before_install:
 script:
   - yarn lint
   - py.test vega
+
+cache: yarn
