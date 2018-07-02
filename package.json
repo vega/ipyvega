@@ -13,6 +13,8 @@
   },
   "homepage": "https://github.com/vega/ipyvega#readme",
   "scripts": {
+    "format": "prettier --write 'src/*.ts'",
+    "lint": "prettier --list-different 'src/*.ts'",
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "css-loader": "^0.28.11",
+    "prettier": "^1.13.7",
     "ts-loader": "^4.4.1",
     "typescript": "^2.9.1",
     "webpack": "^4.12.0",

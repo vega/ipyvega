@@ -2,7 +2,7 @@ import vegaEmbed, { Mode, EmbedOptions } from "vega-embed";
 import { Spec } from "vega-lib";
 import { TopLevelSpec } from "vega-lite";
 
-export { default as vegaEmbed } from 'vega-embed';
+export { default as vegaEmbed } from "vega-embed";
 
 function javascriptIndex(selector: string, outputs) {
   // Return the index in the output array of the JS repr of this viz
