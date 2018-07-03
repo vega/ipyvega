@@ -16,7 +16,7 @@ class VegaWidget(DOMWidget):
 
     Usage with ``altair``::
 
-        widget = VegaWidget.from_cart(chart)
+        widget = VegaWidget.from_chart(chart)
 
     The chart can be updated by setting the spec properties. Changing keys
     of the spec will not be reflected.
