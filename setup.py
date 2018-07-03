@@ -37,6 +37,7 @@ DATA_FILES          = [
 ENTRY_POINTS        = {'altair.vegalite.v2.renderer': ['notebook=vega.vegalite:entry_point_renderer'],
                        'altair.vega.v3.renderer': ['notebook=vega.vega:entry_point_renderer']
                       }
+EXTRAS_REQUIRE      = {'widget': ['ipywidgets']}
 
 
 import io
@@ -84,6 +85,7 @@ setup(name=NAME,
       package_data=PACKAGE_DATA,
       data_files=DATA_FILES,
       entry_points=ENTRY_POINTS,
+      extras_require=EXTRAS_REQUIRE,
       include_package_data=True,
       classifiers=[
         'Development Status :: 5 - Production/Stable',
