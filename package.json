@@ -19,14 +19,14 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "vega-embed": "^3.19.2"
+    "vega-embed": "3.18.2"
   },
   "devDependencies": {
     "css-loader": "^1.0.0",
-    "prettier": "^1.14.2",
-    "ts-loader": "^4.5.0",
-    "typescript": "^3.0.1",
-    "webpack": "^4.17.1",
+    "prettier": "^1.14.3",
+    "ts-loader": "^5.1.1",
+    "typescript": "^3.0.3",
+    "webpack": "^4.19.1",
     "webpack-cli": "^3.1.0"
   },
   "private": true
