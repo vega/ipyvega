@@ -34,7 +34,7 @@ DATA_FILES          = [
                             ]),
                             ('etc/jupyter/nbconfig/notebook.d' , ['vega.json'])
                         ]
-ENTRY_POINTS        = {'altair.vegalite.v3.renderer': ['notebook=vega.vegalite:entry_point_renderer'],
+ENTRY_POINTS        = {'altair.vegalite.v2.renderer': ['notebook=vega.vegalite:entry_point_renderer'],
                        'altair.vega.v4.renderer': ['notebook=vega.vega:entry_point_renderer']
                       }
 
