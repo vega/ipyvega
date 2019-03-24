@@ -14,7 +14,7 @@
   "homepage": "https://github.com/vega/ipyvega#readme",
   "scripts": {
     "format": "prettier --write 'src/*.ts'",
-    "lint": "prettier --list-different 'src/*.ts'",
+    "lint": "prettier --check 'src/*.ts'",
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
