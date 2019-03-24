@@ -1,5 +1,5 @@
 import vegaEmbed, { Mode, EmbedOptions } from "vega-embed";
-import { Spec } from "vega-lib";
+import { Spec } from "vega";
 import { TopLevelSpec } from "vega-lite";
 
 export { default as vegaEmbed } from "vega-embed";
