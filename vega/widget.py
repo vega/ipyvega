@@ -1,7 +1,19 @@
 import json
 
-from ipywidgets import DOMWidget
-from traitlets import Unicode, Dict
+try:
+    from ipywidgets import DOMWidget
+    from traitlets import Unicode, Dict
+
+except ImportError as err:
+    new_err = ImportError(
+        "vega.widget requires ipywidgets, which could not be imported. "
+        "Is ipywidgets installed?"
+    )
+
+    # perform manual exception chaining for python 2 compat
+    new_err.__cause__ = err
+    raise new_err
+
 
 __all__ = ['VegaWidget']
 

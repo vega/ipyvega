@@ -92,50 +92,50 @@ export function render(
     .catch(error => showError(el, error));
 }
 
-// optionally define a Jupyter Widget if the plugin is available
-export const VegaWidget = import('@jupyter-widgets/base')
-.then(widgets => {
-  return class VegaWidget extends widgets.DOMWidgetView {
-    view: View
+// NOTE: juggle to support optional dependencies that don't break webpack and jupyter
+var VegaWidgetDef: any = null;
+if(__webpack_modules__[require.resolveWeak('@jupyter-widgets/base')]) {
+    const widgets = require('@jupyter-widgets/base');
 
-    render() {
-      const reembed = () => {
-        this.view = null;
-        const spec = JSON.parse(this.model.get('_spec_source'));
+    VegaWidgetDef = widgets.DOMWidgetView.extend({
+        render: function() {
+          const reembed = () => {
+            this.view = null;
+            const spec = JSON.parse(this.model.get('_spec_source'));
 
-        if(spec == null) {
-          return
+            if(spec == null) {
+              return
+            }
+
+            vegaEmbed(this.el, spec)
+            .then(({view}) => {
+              this.view = view;
+            })
+            .catch(err => console.error(err));
+            };
+
+            this.model.on('change:spec_source', reembed);
+            this.model.on('msg:custom', (ev: any) => {
+              if(ev.type != 'update') {
+                return;
+              }
+              if(this.view == null) {
+                console.error('no view attached to widget');
+                return
+              }
+
+              const filter = new Function('datum', 'return (' + (ev.remove || 'false') + ')');
+              const newValues = ev.insert || [];
+
+              const changeSet = this.view.changeset().insert(newValues).remove(filter);
+              this.view.change(ev.key, changeSet).run();
+            });
+
+            // initial rendering
+            reembed();
         }
+    });
+}
 
-        vegaEmbed(this.el, spec)
-        .then(({view}) => {
-          this.view = view;
-        })
-        .catch(err => console.error(err));
-        };
+export const VegaWidget = VegaWidgetDef;
 
-        this.model.on('change:spec_source', reembed);
-        this.model.on('msg:custom', ev => {
-          if(ev.type != 'update') {
-            return;
-          }
-          if(this.view == null) {
-            console.error('no view attached to widget');
-            return
-          }
-
-          const filter = new Function('datum', 'return (' + (ev.remove || 'false') + ')');
-          const newValues = ev.insert || [];
-
-          const changeSet = this.view.changeset().insert(newValues).remove(filter);
-          this.view.change(ev.key, changeSet).run();
-        });
-
-        // initial rendering
-        reembed();
-    }
-  };
-})
-.catch(err => {
-  console.log('Could not load ipywidgets JS, VegaWidget will not be available', err);
-});
