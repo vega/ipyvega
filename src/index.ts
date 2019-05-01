@@ -94,48 +94,53 @@ export function render(
 
 // NOTE: juggle to support optional dependencies that don't break webpack and jupyter
 var VegaWidgetDef: any = null;
-if(__webpack_modules__[require.resolveWeak('@jupyter-widgets/base')]) {
-    const widgets = require('@jupyter-widgets/base');
+if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
+  const widgets = require("@jupyter-widgets/base");
 
-    VegaWidgetDef = widgets.DOMWidgetView.extend({
-        render: function() {
-          const reembed = () => {
-            this.view = null;
-            const spec = JSON.parse(this.model.get('_spec_source'));
+  VegaWidgetDef = widgets.DOMWidgetView.extend({
+    render: function() {
+      const reembed = () => {
+        this.view = null;
+        const spec = JSON.parse(this.model.get("_spec_source"));
 
-            if(spec == null) {
-              return
-            }
-
-            vegaEmbed(this.el, spec)
-            .then(({view}) => {
-              this.view = view;
-            })
-            .catch(err => console.error(err));
-            };
-
-            this.model.on('change:spec_source', reembed);
-            this.model.on('msg:custom', (ev: any) => {
-              if(ev.type != 'update') {
-                return;
-              }
-              if(this.view == null) {
-                console.error('no view attached to widget');
-                return
-              }
-
-              const filter = new Function('datum', 'return (' + (ev.remove || 'false') + ')');
-              const newValues = ev.insert || [];
-
-              const changeSet = this.view.changeset().insert(newValues).remove(filter);
-              this.view.change(ev.key, changeSet).run();
-            });
-
-            // initial rendering
-            reembed();
+        if (spec == null) {
+          return;
         }
-    });
+
+        vegaEmbed(this.el, spec)
+          .then(({ view }) => {
+            this.view = view;
+          })
+          .catch(err => console.error(err));
+      };
+
+      this.model.on("change:spec_source", reembed);
+      this.model.on("msg:custom", (ev: any) => {
+        if (ev.type != "update") {
+          return;
+        }
+        if (this.view == null) {
+          console.error("no view attached to widget");
+          return;
+        }
+
+        const filter = new Function(
+          "datum",
+          "return (" + (ev.remove || "false") + ")"
+        );
+        const newValues = ev.insert || [];
+
+        const changeSet = this.view
+          .changeset()
+          .insert(newValues)
+          .remove(filter);
+        this.view.change(ev.key, changeSet).run();
+      });
+
+      // initial rendering
+      reembed();
+    }
+  });
 }
 
 export const VegaWidget = VegaWidgetDef;
-
