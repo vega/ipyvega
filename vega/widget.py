@@ -1,4 +1,9 @@
+from __future__ import print_function
+
+import contextlib
 import json
+import uuid
+import sys
 
 try:
     from ipywidgets import DOMWidget
@@ -33,10 +38,17 @@ class VegaWidget(DOMWidget):
     The chart can be updated by setting the spec properties. Changing keys
     of the spec will not be reflected.
 
-    For streaming data, setting the whole spec may be imperformant. For this
-    use case, ``VegaWidget`` offers the ``update`` method. It sends the data
-    to the client without persisting it on the Python side.
+    For streaming data, setting the whole spec may be slow. For this use case,
+    ``VegaWidget`` offers the ``update`` method. It sends the data to the
+    client without persisting it on the Python side.
     """
+    # Implementation note: there is a small delay between defining the widget
+    # and its display in the frontend. Any message sent during this time
+    # interval will be silently ignored by the client. To ensure all updates
+    # are handled, they are buffered on the python side until the widget is
+    # first displayed. The buffer is the `_pending_updates` attribute and the
+    # display state is reflected by the `_displayed` attribute.
+
     _view_name = Unicode('VegaWidget').tag(sync=True)
     _view_module = Unicode('nbextensions/jupyter-vega/index').tag(sync=True)
     _view_module_version = Unicode('0.1.0').tag(sync=True)
@@ -49,6 +61,25 @@ class VegaWidget(DOMWidget):
     def __init__(self, spec=None, **kwargs):
         super().__init__(**kwargs)
         self._spec_source = json.dumps(spec)
+        self._displayed = False
+        self._pending_updates = []
+
+        self.on_msg(self._handle_message)
+
+    def _handle_message(self, widget, msg, _):
+        if msg['type'] != "display":
+            return
+
+        if self._displayed:
+            return
+
+        self._displayed = True
+
+        if not self._pending_updates:
+            return
+
+        self.send(dict(type="update", updates=self._pending_updates))
+        self._pending_updates = []
 
     @property
     def spec(self):
@@ -57,6 +88,8 @@ class VegaWidget(DOMWidget):
     @spec.setter
     def spec(self, value):
         self._spec_source = json.dumps(value)
+        self._displayed = False
+        self._pending_updates = []
 
     def update(self, key, remove=None, insert=None):
         """Update the chart data.
@@ -73,12 +106,17 @@ class VegaWidget(DOMWidget):
         :param Optional[List[dict]] insert:
             new items to add to the chat data.
         """
-        data = dict(type='update', key=key)
+        update = dict(key=key)
 
         if remove is not None:
-            data['remove'] = remove
+            update['remove'] = remove
 
         if insert is not None:
-            data['insert'] = insert
+            update['insert'] = insert
 
-        self.send(data)
+        if self._displayed:
+            self.send(dict(type="update", updates=[update]))
+
+        else:
+            self._pending_updates.append(update)
+

@@ -92,6 +92,25 @@ export function render(
     .catch(error => showError(el, error));
 }
 
+interface WidgetUpdate {
+  key: string;
+  remove?: string;
+  insert?: any[];
+}
+
+interface WidgetUpdateMessage {
+  type: "update";
+  updates: WidgetUpdate[];
+}
+
+function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
+  if (ev.type != "update") {
+    return null;
+  }
+  // TODO: perform more checks and validate the event
+  return ev as WidgetUpdateMessage;
+}
+
 // NOTE: juggle to support optional dependencies that don't break webpack and jupyter
 var VegaWidgetDef: any = null;
 if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
@@ -110,31 +129,45 @@ if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
         vegaEmbed(this.el, spec)
           .then(({ view }) => {
             this.view = view;
+            this.send({ type: "display" });
           })
           .catch(err => console.error(err));
       };
 
-      this.model.on("change:spec_source", reembed);
-      this.model.on("msg:custom", (ev: any) => {
-        if (ev.type != "update") {
-          return;
-        }
-        if (this.view == null) {
-          console.error("no view attached to widget");
-          return;
-        }
-
+      const applyUpdate = async (update: WidgetUpdate) => {
         const filter = new Function(
           "datum",
-          "return (" + (ev.remove || "false") + ")"
+          "return (" + (update.remove || "false") + ")"
         );
-        const newValues = ev.insert || [];
-
+        const newValues = update.insert || [];
         const changeSet = this.view
           .changeset()
           .insert(newValues)
           .remove(filter);
-        this.view.change(ev.key, changeSet).run();
+
+        await this.view.change(update.key, changeSet).runAsync();
+      };
+
+      const applyUpdates = async (message: WidgetUpdateMessage) => {
+        for (const update of message.updates) {
+          await applyUpdate(update);
+        }
+      };
+
+      this.model.on("change:spec_source", reembed);
+      this.model.on("msg:custom", (ev: any) => {
+        const message = checkWidgetUpdate(ev);
+
+        if (message == null) {
+          return;
+        }
+
+        if (this.view == null) {
+          console.error("Internal error: no view attached to widget");
+          return;
+        }
+
+        applyUpdates(message).catch((err: Error) => console.error(err));
       });
 
       // initial rendering
