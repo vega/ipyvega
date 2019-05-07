@@ -118,6 +118,13 @@ if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
 
   VegaWidgetDef = widgets.DOMWidgetView.extend({
     render: function() {
+      this.viewElement = document.createElement("div");
+      this.el.appendChild(this.viewElement);
+
+      this.errorElement = document.createElement("div");
+      this.errorElement.style.color = "red";
+      this.el.appendChild(this.errorElement);
+
       const reembed = () => {
         this.view = null;
         const spec = JSON.parse(this.model.get("_spec_source"));
@@ -126,7 +133,7 @@ if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
           return;
         }
 
-        vegaEmbed(this.el, spec)
+        vegaEmbed(this.viewElement, spec)
           .then(({ view }) => {
             this.view = view;
             this.send({ type: "display" });
@@ -135,6 +142,10 @@ if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
       };
 
       const applyUpdate = async (update: WidgetUpdate) => {
+        if (this.view == null) {
+          throw new Error("Internal error: no view attached to widget");
+        }
+
         const filter = new Function(
           "datum",
           "return (" + (update.remove || "false") + ")"
@@ -157,17 +168,14 @@ if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
       this.model.on("change:spec_source", reembed);
       this.model.on("msg:custom", (ev: any) => {
         const message = checkWidgetUpdate(ev);
-
         if (message == null) {
           return;
         }
 
-        if (this.view == null) {
-          console.error("Internal error: no view attached to widget");
-          return;
-        }
-
-        applyUpdates(message).catch((err: Error) => console.error(err));
+        applyUpdates(message).catch((err: Error) => {
+          this.errorElement.textContent = "" + err;
+          console.error(err);
+        });
       });
 
       // initial rendering
