@@ -126,7 +126,10 @@ if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
       this.el.appendChild(this.errorElement);
 
       const reembed = () => {
-        this.view = null;
+	    if (this.view) {
+	    	view.finalize();
+	    	this.view = null;
+	    }
         const spec = JSON.parse(this.model.get("_spec_source"));
 
         if (spec == null) {
