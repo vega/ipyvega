@@ -103,11 +103,13 @@ interface WidgetUpdateMessage {
   updates: WidgetUpdate[];
 }
 
+// validate the ev object and cast it to the correct type
 function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
   if (ev.type != "update") {
     return null;
   }
-  // TODO: perform more checks and validate the event
+
+  // TODO: Fully validate ev and give a easy to understand error message if it is ill-formed
   return ev as WidgetUpdateMessage;
 }
 
