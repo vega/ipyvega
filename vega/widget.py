@@ -33,7 +33,7 @@ class VegaWidget(DOMWidget):
 
     Usage with ``altair``::
 
-        widget = VegaWidget.from_chart(chart)
+        widget = VegaWidget(chart.to_dict())
 
     The chart can be updated by setting the spec properties. Changing keys
     of the spec will not be reflected.
@@ -53,10 +53,6 @@ class VegaWidget(DOMWidget):
     _view_module = Unicode('nbextensions/jupyter-vega/index').tag(sync=True)
     _view_module_version = Unicode('0.1.0').tag(sync=True)
     _spec_source = Unicode('null').tag(sync=True)
-
-    @classmethod
-    def from_chart(cls, chart):
-        return cls(spec=chart.to_dict())
 
     def __init__(self, spec=None, **kwargs):
         super().__init__(**kwargs)
