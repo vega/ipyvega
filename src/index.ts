@@ -66,7 +66,6 @@ export function render(
   // outputs for the cell
   const el = document.getElementById(selector.substring(1));
   vegaEmbed(el, spec, {
-    defaultStyle: true,
     loader: { http: { credentials: "same-origin" } },
     ...opt,
     mode: type
