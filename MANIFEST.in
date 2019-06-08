@@ -2,3 +2,4 @@ include LICENSE
 include *.md
 include requirements.txt
 recursive-include vega *.py *.js *.html *.js.map
+recursive-exclude notebooks *
