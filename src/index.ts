@@ -133,12 +133,17 @@ if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
           this.view = null;
         }
         const spec = JSON.parse(this.model.get("_spec_source"));
+        const opt = JSON.parse(this.model.get("_opt_source"));
 
         if (spec == null) {
           return;
         }
 
-        vegaEmbed(this.viewElement, spec)
+        vegaEmbed(this.viewElement, spec, {
+          defaultStyle: true,
+          loader: { http: { credentials: "same-origin" } },
+          ...opt
+        })
           .then(({ view }) => {
             this.view = view;
             this.send({ type: "display" });
@@ -170,7 +175,8 @@ if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
         }
       };
 
-      this.model.on("change:spec_source", reembed);
+      this.model.on("change:_spec_source", reembed);
+      this.model.on("change:_opt_source", reembed);
       this.model.on("msg:custom", (ev: any) => {
         const message = checkWidgetUpdate(ev);
         if (message == null) {

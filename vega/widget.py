@@ -31,16 +31,26 @@ class VegaWidget(DOMWidget):
         widget = VegaWidget({...})
         widget.update(remove='datum.t < 5', insert=[{...}, {...}])
 
+    To modify the created plot, additional options can be passed as in::
+
+        widget = VegaWidget(spec, opt)
+
     Usage with ``altair``::
 
         widget = VegaWidget(chart.to_dict())
 
-    The chart can be updated by setting the spec properties. Changing keys
-    of the spec will not be reflected.
+    The chart can be updated by setting the ``spec`` property. In additon
+    embedding options, such as the used theme, can be set via the ``opt``
+    property::
+
+        widget.spec = {...}
+        widget.opt = {"theme": "dark"}
 
     For streaming data, setting the whole spec may be slow. For this use case,
     ``VegaWidget`` offers the ``update`` method. It sends the data to the
-    client without persisting it on the Python side.
+    client without persisting it on the Python side. In particular resetting
+    the ``spec`` and ``opt`` properties will lose any data changes performed
+    via ``update``.
     """
     # Implementation note: there is a small delay between defining the widget
     # and its display in the frontend. Any message sent during this time
@@ -53,10 +63,13 @@ class VegaWidget(DOMWidget):
     _view_module = Unicode('nbextensions/jupyter-vega/index').tag(sync=True)
     _view_module_version = Unicode('0.1.0').tag(sync=True)
     _spec_source = Unicode('null').tag(sync=True)
+    _opt_source = Unicode('null').tag(sync=True)
 
-    def __init__(self, spec=None, **kwargs):
+    def __init__(self, spec=None, opt=None, **kwargs):
         super().__init__(**kwargs)
         self._spec_source = json.dumps(spec)
+        self._opt_source = json.dumps(opt)
+
         self._displayed = False
         self._pending_updates = []
 
@@ -77,6 +90,10 @@ class VegaWidget(DOMWidget):
         self.send(dict(type="update", updates=self._pending_updates))
         self._pending_updates = []
 
+    def _reset(self):
+        self._displayed = False
+        self._pending_updates = []
+
     @property
     def spec(self):
         return json.loads(self._spec_source)
@@ -84,8 +101,16 @@ class VegaWidget(DOMWidget):
     @spec.setter
     def spec(self, value):
         self._spec_source = json.dumps(value)
-        self._displayed = False
-        self._pending_updates = []
+        self._reset()
+
+    @property
+    def opt(self):
+        return json.loads(self._opt_source)
+
+    @opt.setter
+    def opt(self, value):
+        self._opt_source = json.dumps(value)
+        self._reset()
 
     def update(self, key, remove=None, insert=None):
         """Update the chart data.
