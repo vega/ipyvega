@@ -140,7 +140,6 @@ if (__webpack_modules__[require.resolveWeak("@jupyter-widgets/base")]) {
         }
 
         vegaEmbed(this.viewElement, spec, {
-          defaultStyle: true,
           loader: { http: { credentials: "same-origin" } },
           ...opt
         })
