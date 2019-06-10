@@ -39,6 +39,9 @@ class VegaWidget(DOMWidget):
 
         widget = VegaWidget(chart.to_dict())
 
+    To select between vega and vega-lite use the ``$schema`` property on
+    the ``spec`` dictionary.
+
     The chart can be updated by setting the ``spec`` property. In additon
     embedding options, such as the used theme, can be set via the ``opt``
     property::
