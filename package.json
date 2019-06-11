@@ -22,7 +22,7 @@
     "vega": "5.4.0",
     "vega-lite": "3.3.0",
     "vega-embed": "4.2.0",
-    "@jupyter-widgets/base": "^1.1.10",
+    "@jupyter-widgets/base": "^1.2.5",
     "@types/webpack-env": "*"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "ts-loader": "^6.0.2",
     "typescript": "^3.5.1",
     "webpack": "^4.33.0",
-    "webpack-cli": "^3.3.3"
+    "webpack-cli": "^3.3.4"
   },
   "private": true
 }
