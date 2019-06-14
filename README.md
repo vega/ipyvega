@@ -4,7 +4,7 @@
 
 IPython/Jupyter notebook module for [Vega 5](https://github.com/vega/vega), and [Vega-Lite 3](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on [GitHub](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [nbviewer](https://nbviewer.jupyter.org/github/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb). If you use JupyterLab (not the notebook), you don't need to install this extension since JupyterLab comes with built-in support for Vega and Vega-Lite.
 
-Available on [pypi](https://pypi.python.org/pypi/vega).
+Available on [pypi](https://pypi.python.org/pypi/vega) and [Conda Forge](https://anaconda.org/conda-forge/vega) as `vega`.
 
 <img src="screenshot.png" width="500">
 
