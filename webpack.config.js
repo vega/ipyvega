@@ -8,7 +8,6 @@ module.exports = {
     library: 'nbextensions/jupyter-vega/index',
     libraryTarget: 'amd'
   },
-  externals: ['@jupyter-widgets/base'],
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
   },
