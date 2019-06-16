@@ -31,6 +31,8 @@ DATA_FILES          = [
                             ('share/jupyter/nbextensions/jupyter-vega', [
                              'vega/static/index.js',
                              'vega/static/index.js.map',
+                             'vega/static/widget.js',
+                             'vega/static/widget.js.map',
                             ]),
                             ('etc/jupyter/nbconfig/notebook.d' , ['vega.json'])
                         ]
