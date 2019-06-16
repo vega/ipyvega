@@ -16,6 +16,7 @@
     "lib": ["es6", "dom"]
   },
   "types": [
+      "webpack-env"
   ],
   "include": [
     "src/**/*.ts"
