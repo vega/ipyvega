@@ -1,51 +1,45 @@
 var webpack = require("webpack");
 
+const commonConfig = {
+  resolve: {
+    extensions: [".ts", ".tsx", ".js"]
+  },
+  devtool: "source-map",
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader"
+      }
+    ]
+  }
+};
+
+const outputPath = __dirname + "/vega/static";
+const outputLibraryTarget = "amd";
+
 module.exports = [
   // the main vega extension
-  {
+  Object.assign({}, commonConfig, {
     entry: "./src/index.ts",
     output: {
       filename: "index.js",
-      path: __dirname + "/vega/static",
       library: "nbextensions/jupyter-vega/index",
-      libraryTarget: "amd"
-    },
-    resolve: {
-      extensions: [".ts", ".tsx", ".js"]
-    },
-    devtool: "source-map",
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          loader: "ts-loader"
-        }
-      ]
+      path: outputPath,
+      libraryTarget: outputLibraryTarget
     }
-  },
+  }),
   // the widget extension
-  {
+  Object.assign({}, commonConfig, {
     entry: "./src/widget.ts",
     output: {
       filename: "widget.js",
-      path: __dirname + "/vega/static",
-      libraryTarget: "amd"
+      path: outputPath,
+      libraryTarget: outputLibraryTarget
     },
     externals: {
       "@jupyter-widgets/base": "@jupyter-widgets/base",
       "./index": "nbextensions/jupyter-vega/index"
-    },
-    resolve: {
-      extensions: [".ts", ".tsx", ".js"]
-    },
-    devtool: "source-map",
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          loader: "ts-loader"
-        }
-      ]
     }
-  }
+  })
 ];
