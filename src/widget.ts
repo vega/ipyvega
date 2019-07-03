@@ -49,7 +49,6 @@ export class VegaWidget extends DOMWidgetView {
       }
 
       vegaEmbed(this.viewElement, spec, {
-        defaultStyle: true,
         loader: { http: { credentials: "same-origin" } },
         ...opt
       })
