@@ -1,5 +1,3 @@
-var webpack = require("webpack");
-
 const commonConfig = {
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
