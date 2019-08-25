@@ -1,5 +1,5 @@
-import vegaEmbed, { Mode, EmbedOptions } from "vega-embed";
 import { Spec } from "vega";
+import vegaEmbed, { EmbedOptions, Mode } from "vega-embed";
 import { TopLevelSpec } from "vega-lite";
 
 export { default as vegaEmbed } from "vega-embed";
@@ -64,7 +64,7 @@ export function render(
 
   // Never been rendered, so render JS and append the PNG to the
   // outputs for the cell
-  const el = document.getElementById(selector.substring(1));
+  const el = document.getElementById(selector.substring(1))!;
   vegaEmbed(el, spec, {
     loader: { http: { credentials: "same-origin" } },
     ...opt,

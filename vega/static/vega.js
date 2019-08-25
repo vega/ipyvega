@@ -1,16 +1,16 @@
-var spec = {spec};
-var opt = {opt};
-var type = "{type}";
-var id = "{id}";
+const spec = {spec};
+const opt = {opt};
+const type = "{type}";
+const id = "{id}";
 
-var output_area = this;
+const output_area = this;
 
 require(["nbextensions/jupyter-vega/index"], function(vega) {{
-  var target = document.createElement("div");
+  const target = document.createElement("div");
   target.id = id;
   target.className = "vega-embed";
 
-  var style = document.createElement("style");
+  const style = document.createElement("style");
   style.textContent = [
     ".vega-embed .error p {{",
     "  color: firebrick;",

@@ -1,6 +1,6 @@
-import { vegaEmbed } from "./index";
-
 import { DOMWidgetView } from "@jupyter-widgets/base";
+import { View } from "vega";
+import { vegaEmbed } from "./index";
 
 interface WidgetUpdate {
   key: string;
@@ -24,22 +24,19 @@ function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
 }
 
 export class VegaWidget extends DOMWidgetView {
-  view: any;
-  viewElement: any;
-  errorElement: any;
+  view?: View;
+  viewElement = document.createElement("div");
+  errorElement = document.createElement("div");
 
   render() {
-    this.viewElement = document.createElement("div");
     this.el.appendChild(this.viewElement);
-
-    this.errorElement = document.createElement("div");
     this.errorElement.style.color = "red";
     this.el.appendChild(this.errorElement);
 
     const reembed = () => {
       if (this.view) {
         this.view.finalize();
-        this.view = null;
+        this.view = undefined;
       }
       const spec = JSON.parse(this.model.get("_spec_source"));
       const opt = JSON.parse(this.model.get("_opt_source"));

@@ -1,27 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
     "declaration": false,
-    "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "preserveConstEnums": true,
-    "noEmitOnError": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true,
+    "strict": true,
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
     "lib": ["es6", "dom"]
   },
   "types": [
-      "webpack-env"
+    "webpack-env"
   ],
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
+  "files": [
+    "src/index.ts",
+    "src/widget.ts"
   ]
 }
