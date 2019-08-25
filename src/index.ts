@@ -58,7 +58,7 @@ export function render(
 
   // If we have already rendered a static image, don't render
   // the JS version or append a new PNG version
-  if (imgIndex > -1 && jsIndex > -1 && imgIndex === jsIndex + 1) {
+  if (imgIndex > -1 && jsIndex > -1) {
     return;
   }
 
