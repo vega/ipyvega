@@ -1,6 +1,7 @@
 import { DOMWidgetView } from "@jupyter-widgets/base";
 import { View } from "vega";
 import { vegaEmbed } from "./index";
+import { Result } from "vega-embed";
 
 interface WidgetUpdate {
   key: string;
@@ -24,7 +25,7 @@ function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
 }
 
 export class VegaWidget extends DOMWidgetView {
-  view?: View;
+  result?: Result;
   viewElement = document.createElement("div");
   errorElement = document.createElement("div");
 
@@ -34,9 +35,9 @@ export class VegaWidget extends DOMWidgetView {
     this.el.appendChild(this.errorElement);
 
     const reembed = () => {
-      if (this.view) {
-        this.view.finalize();
-        this.view = undefined;
+      if (this.result) {
+        this.result.finalize();
+        this.result = undefined;
       }
       const spec = JSON.parse(this.model.get("_spec_source"));
       const opt = JSON.parse(this.model.get("_opt_source"));
@@ -50,14 +51,15 @@ export class VegaWidget extends DOMWidgetView {
         ...opt
       })
         .then((res: any) => {
-          this.view = res.view;
+          this.result = res;
           this.send({ type: "display" });
         })
         .catch((err: Error) => console.error(err));
     };
 
     const applyUpdate = async (update: WidgetUpdate) => {
-      if (this.view == null) {
+      const result = this.result;
+      if (result == null) {
         throw new Error("Internal error: no view attached to widget");
       }
 
@@ -66,12 +68,12 @@ export class VegaWidget extends DOMWidgetView {
         "return (" + (update.remove || "false") + ")"
       );
       const newValues = update.insert || [];
-      const changeSet = this.view
+      const changeSet = result.view
         .changeset()
         .insert(newValues)
         .remove(filter);
 
-      await this.view.change(update.key, changeSet).runAsync();
+      await result.view.change(update.key, changeSet).runAsync();
     };
 
     const applyUpdates = async (message: WidgetUpdateMessage) => {
