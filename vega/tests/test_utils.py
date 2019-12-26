@@ -1,6 +1,8 @@
 import json
 import os
 import copy
+import datetime
+from dateutil import parser
 
 import numpy as np
 import pandas as pd
@@ -28,6 +30,13 @@ VEGALITE_SPEC = {
 
 
 def test_sanitize_dataframe():
+
+    def parse_pydate(dt):
+        parsed = None
+        if dt is not None:
+            parsed = parser.parse(dt).date()
+        return parsed
+
     # create a dataframe with various types
     df = pd.DataFrame({'s': list('abcde'),
                        'f': np.arange(5, dtype=float),
@@ -35,13 +44,15 @@ def test_sanitize_dataframe():
                        'b': np.array([True, False, True, True, False]),
                        'd': pd.date_range('2012-01-01', periods=5, freq='H'),
                        'c': pd.Series(list('ababc'), dtype='category'),
-                       'o': pd.Series([np.array(i) for i in range(5)])})
+                       'o': pd.Series([np.array(i) for i in range(5)]),
+                       'od': pd.Series([datetime.date(2019, m, 1) for m in range(1, 6)])})
 
     # add some nulls
     df.iloc[0, df.columns.get_loc('s')] = None
     df.iloc[0, df.columns.get_loc('f')] = np.nan
     df.iloc[0, df.columns.get_loc('d')] = pd.NaT
     df.iloc[0, df.columns.get_loc('o')] = np.array(np.nan)
+    df.iloc[0, df.columns.get_loc('od')] = None
 
     # JSON serialize. This will fail on non-sanitized dataframes
     df_clean = sanitize_dataframe(df)
@@ -59,6 +70,8 @@ def test_sanitize_dataframe():
             # astype(datetime) introduces time-zone issues:
             # to_datetime() does not.
             df2[col] = pd.to_datetime(df2[col])
+        elif col == 'od':
+            df2[col] = df2[col].apply(parse_pydate)
         else:
             df2[col] = df2[col].astype(df[col].dtype)
 

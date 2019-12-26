@@ -1,6 +1,7 @@
 import cgi
 import codecs
 import collections
+import datetime
 import os.path
 
 
@@ -43,9 +44,11 @@ def sanitize_dataframe(df):
     if isinstance(df.columns, pd.core.index.MultiIndex):
         raise ValueError('Hierarchical indices not supported')
 
-    def to_list_if_array(val):
+    def parse_object_column_type(val):
         if isinstance(val, np.ndarray):
             return val.tolist()
+        elif isinstance(val, datetime.date):
+            return f"{val:%Y-%m-%d}"
         else:
             return val
 
@@ -72,8 +75,9 @@ def sanitize_dataframe(df):
             df[col_name] = df[col_name].astype(str).replace('NaT', '')
         elif dtype == object:
             # Convert numpy arrays saved as objects to lists
-            # Arrays are not JSON serializable
-            col = df[col_name].apply(to_list_if_array, convert_dtype=False)
+            # Handle datetime.date typed objects
+            # Arrays and datetime.date are not JSON serializable
+            col = df[col_name].apply(parse_object_column_type, convert_dtype=False)
             df[col_name] = col.where(col.notnull(), None)
     return df
 
