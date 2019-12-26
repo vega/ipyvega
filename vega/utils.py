@@ -48,7 +48,7 @@ def sanitize_dataframe(df):
         if isinstance(val, np.ndarray):
             return val.tolist()
         elif isinstance(val, datetime.date):
-            return f"{val:%Y-%m-%d}"
+            return "{dt:%Y-%m-%d}".format(dt=val)
         else:
             return val
 
