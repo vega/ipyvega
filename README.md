@@ -10,6 +10,8 @@ Available on [pypi](https://pypi.python.org/pypi/vega) and [Conda Forge](https:/
 
 ## Install and run
 
+If you are using a python kernel different than the one used by the notebook server, you will need to install `vega` on both environments.
+
 ### Python Package Index
 
 To install `vega` and its dependencies from the Python Package Index using
