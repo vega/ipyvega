@@ -89,6 +89,7 @@ setup(name=NAME,
       entry_points=ENTRY_POINTS,
       extras_require=EXTRAS_REQUIRE,
       include_package_data=True,
+      install_requires=["ipywidgets"],
       classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
