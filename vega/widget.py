@@ -5,8 +5,9 @@ import json
 import uuid
 import sys
 
+from ipywidgets import DOMWidget
+
 try:
-    from ipywidgets import DOMWidget
     from traitlets import Unicode, Dict
 
 except ImportError as err:
