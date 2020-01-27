@@ -51,20 +51,19 @@ To run the notebooks yourself, you need to get the file [`cars.json`](https://ra
 
 ## Developers
 
-Install requirements: `pip install -r requirements.txt`
+This project uses [Poetry](https://python-poetry.org/). If you prefer a local virtual environment, run `poetry config virtualenvs.in-project true` first. Install requirements: `poetry install`.
+
+Then activate the virtual environment with `poetry shell`.
 
 Symlink files instead of copying files:
 
 ```sh
-python setup.py develop
-jupyter nbextension install --py --symlink vega  # not needed in notebook >= 5.3
+jupyter nbextension install --py --symlink vega
 ```
 
-Run kernel: `jupyter notebook`
+Run kernel with `jupyter notebook`. Run the tests with `pytest` or `poetry run test`.
 
 To rebuild the JavaScript continuously, run `yarn watch`.
-
-Publish a new version to pypi with `python3 setup.py sdist upload`.
 
 ### How to make a release
 
@@ -74,4 +73,5 @@ Publish a new version to pypi with `python3 setup.py sdist upload`.
 * Make sure that everything still works (launch notebook and try the examples)
 * Update the version number in `package.json` and `__index__.py` and add a git tag
 * `git push`
-* Run `python setup.py sdist upload` to update https://pypi.python.org/pypi/vega
+* Run `poetry build` to build packages.
+* Then run `poetry publish` to update https://pypi.python.org/pypi/vega

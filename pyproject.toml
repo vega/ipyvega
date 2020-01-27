@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "ipyvega"
+version = "3.0.0"
+description = ""
+authors = ["Dominik Moritz <domoritz@gmail.com>"]
+packages = [
+    { include = "vega" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+jupyter = "^1.0.0"
+pandas = "^0.25.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[tool.poetry.scripts]
+test = 'pytest:main'
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
