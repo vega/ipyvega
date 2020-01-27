@@ -67,11 +67,10 @@ To rebuild the JavaScript continuously, run `yarn watch`.
 
 ### How to make a release
 
-* Update the javascript dependendencies by changing `package.json` (e.g. with [ncu](https://www.npmjs.com/package/npm-check-updates))
-* Run `yarn`
-* Rebuild the javascript with `yarn build`
-* Make sure that everything still works (launch notebook and try the examples)
-* Update the version number in `package.json` and `__index__.py` and add a git tag
-* `git push`
-* Run `poetry build` to build packages.
-* Then run `poetry publish` to update https://pypi.python.org/pypi/vega
+* Update the JavaScript dependendencies by changing `package.json` (e.g. with [ncu](https://www.npmjs.com/package/npm-check-updates)).
+* Run `yarn`.
+* Rebuild the JavaScript with `yarn build`.
+* Make sure that everything still works (launch notebook and try the examples).
+* Update the version number in `pyproject.toml` (with `poetry version [VERSION]`), `package.json`, and `__index__.py` and add a git tag.
+* `git push`.
+* Then run `poetry publish --build` to update https://pypi.python.org/pypi/vega.

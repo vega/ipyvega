@@ -1,10 +1,24 @@
 [tool.poetry]
-name = "ipyvega"
-version = "3.0.0"
-description = ""
+name = "vega"
+version = "3.0.1"
+license = "BSD 3-clause"
+description = "A Jupyter widget for Vega 5 and Vega-Lite 4"
 authors = ["Dominik Moritz <domoritz@gmail.com>"]
 packages = [
     { include = "vega" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8"
 ]
 
 [tool.poetry.dependencies]
@@ -15,8 +29,33 @@ pandas = "^0.25.3"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 
+[tool.poetry.extras]
+widget = [
+    "ipywidgets"
+]
+
 [tool.poetry.scripts]
 test = "pytest:main"
+
+[project]
+homepage = 'http://github.com/vega/ipyvega'
+download = 'http://github.com/vega/ipyvega'
+long_description = """
+IPython Vega
+============
+
+IPython/Jupyter notebook module for `Vega <https://github.com/vega/vega/>`_
+and `Vega-Lite <https://github.com/vega/vega-lite/>`_.
+Notebooks with embedded visualizations can be viewed on github and nbviewer.
+
+For more information, see https://github.com/vega/ipyvega.
+
+Installation Notes
+------------------
+When installing from PyPI, extra steps may be required to enable the Jupyter
+notebook extension. For more information, see the
+`github page <https://github.com/vega/ipyvega>`_.
+"""
 
 [build-system]
 requires = ["poetry>=0.12"]
