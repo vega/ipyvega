@@ -10,12 +10,11 @@ before_install:
 
 install:
   - poetry install
-  - poetry shell
-  - jupyter nbextension install vega --py --sys-prefix
+  - poetry run jupyter nbextension install vega --py --sys-prefix
   - yarn
 
 script:
   - yarn lint
-  - pytest vega
+  - poetry run pytest vega
 
 cache: yarn
