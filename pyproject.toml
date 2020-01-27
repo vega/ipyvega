@@ -20,6 +20,10 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8"
 ]
+homepage = "https://github.com/vega/ipyvega"
+repository = "https://github.com/vega/ipyvega"
+exclude = ["notebooks/*"]
+readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -36,26 +40,6 @@ widget = [
 
 [tool.poetry.scripts]
 test = "pytest:main"
-
-[project]
-homepage = 'http://github.com/vega/ipyvega'
-download = 'http://github.com/vega/ipyvega'
-long_description = """
-IPython Vega
-============
-
-IPython/Jupyter notebook module for `Vega <https://github.com/vega/vega/>`_
-and `Vega-Lite <https://github.com/vega/vega-lite/>`_.
-Notebooks with embedded visualizations can be viewed on github and nbviewer.
-
-For more information, see https://github.com/vega/ipyvega.
-
-Installation Notes
-------------------
-When installing from PyPI, extra steps may be required to enable the Jupyter
-notebook extension. For more information, see the
-`github page <https://github.com/vega/ipyvega>`_.
-"""
 
 [build-system]
 requires = ["poetry>=0.12"]
