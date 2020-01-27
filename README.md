@@ -61,7 +61,7 @@ Symlink files instead of copying files:
 jupyter nbextension install --py --symlink vega
 ```
 
-Run kernel with `jupyter notebook`. Run the tests with `pytest` or `poetry run test`.
+Run kernel with `jupyter notebook`. Run the tests with `pytest vega` or `poetry run test`.
 
 To rebuild the JavaScript continuously, run `yarn watch`.
 
