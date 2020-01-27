@@ -143,4 +143,3 @@ class VegaWidget(DOMWidget):
 
         else:
             self._pending_updates.append(update)
-

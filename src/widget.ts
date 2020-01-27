@@ -1,5 +1,4 @@
 import { DOMWidgetView } from "@jupyter-widgets/base";
-import { View } from "vega";
 import { vegaEmbed } from "./index";
 import { Result } from "vega-embed";
 

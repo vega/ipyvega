@@ -1,6 +1,6 @@
 {
   "name": "jupyter-vega",
-  "version": "2.6.0",
+  "version": "3.0.0",
   "description": "IPython/Jupyter notebook module for [Vega](https://vega.github.io/vega), and [Vega-Lite](https://vega.github.io/vega-lite).",
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "vega": "5.9.1",
-    "vega-lite": "3.4.0",
+    "vega-lite": "4.0.2",
     "vega-embed": "^6.2.2",
     "@jupyter-widgets/base": "2.0.2",
     "@types/webpack-env": "*"

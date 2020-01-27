@@ -2,7 +2,7 @@
 [![PyPI](https://img.shields.io/pypi/v/vega.svg)](https://pypi.python.org/pypi/vega)
 [![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
 
-IPython/Jupyter notebook module for [Vega 5](https://github.com/vega/vega), and [Vega-Lite 3](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on [GitHub](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [nbviewer](https://nbviewer.jupyter.org/github/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb). If you use JupyterLab (not the notebook), you don't need to install this extension since JupyterLab comes with built-in support for Vega and Vega-Lite.
+IPython/Jupyter notebook module for [Vega 5](https://github.com/vega/vega), and [Vega-Lite 4](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on [GitHub](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [nbviewer](https://nbviewer.jupyter.org/github/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb). If you use JupyterLab (not the notebook), you don't need to install this extension since JupyterLab comes with built-in support for Vega and Vega-Lite.
 
 Available on [pypi](https://pypi.python.org/pypi/vega) and [Conda Forge](https://anaconda.org/conda-forge/vega) as `vega`.
 
@@ -23,7 +23,7 @@ jupyter nbextension install --sys-prefix --py vega  # not needed in notebook >= 
 
 ### Conda Forge
 
-If you use conda, you probably already have the latest versions of the notebook and pandas installed. To install `vega` extension run:
+If you use Conda, you probably already have the latest versions of the notebook and pandas installed. To install `vega` extension run:
 
 ```sh
 conda install vega
@@ -62,7 +62,7 @@ jupyter nbextension install --py --symlink vega  # not needed in notebook >= 5.3
 
 Run kernel: `jupyter notebook`
 
-To rebuild the javascript continuously, run `yarn watch`.
+To rebuild the JavaScript continuously, run `yarn watch`.
 
 Publish a new version to pypi with `python3 setup.py sdist upload`.
 
