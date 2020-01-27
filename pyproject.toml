@@ -13,9 +13,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: BSD License",
     "Natural Language :: English",
-    "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3.4",
-    "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8"
@@ -26,7 +23,7 @@ exclude = ["notebooks/*"]
 readme = "README.rst"
 
 [tool.poetry.dependencies]
-python = ">= 2.7, >= 3"
+python = ">= 3.6"
 jupyter = "^1.0.0"
 pandas = "^0.25.3"
 
