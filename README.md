@@ -29,14 +29,6 @@ If you use Conda, you probably already have the latest versions of the notebook 
 conda install vega
 ```
 
-### From Source
-
-To install from source, make sure you have `jupyter` and `pandas` installed,
-then download this repository and run
-```sh
-python setup.py install
-```
-
 ## Usage
 
 Once the package is installed, run

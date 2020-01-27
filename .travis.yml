@@ -1,33 +1,20 @@
-dist: xenial
-
 language: python
 
 python:
-  - 2.7
-  - 3.5
   - 3.6
   - 3.7
-
-env:
-  - DEPS="pandas jupyter pytest"
-
-install:
-  - conda create -n testenv --yes python=$TRAVIS_PYTHON_VERSION
-  - source activate testenv
-  - conda install --yes $DEPS
-  - python setup.py install
-  - jupyter nbextension install vega --py --sys-prefix
-  - yarn
+  - 3.8
 
 before_install:
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b
-  - export PATH=/home/travis/miniconda3/bin:$PATH
-  - conda update --yes conda
+  - pip install poetry
+
+install:
+  - poetry install
+  - poetry run jupyter nbextension install vega --py --sys-prefix
+  - yarn
 
 script:
   - yarn lint
-  - pytest vega
+  - poetry run pytest vega
 
 cache: yarn
