@@ -3226,10 +3226,10 @@ vega-hierarchy@4.0.3:
     vega-dataflow "^5.4.0"
     vega-util "^1.11.0"
 
-vega-lite@4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/vega-lite/-/vega-lite-4.3.1.tgz#9555da3fa7316d9bcb4d3408905cdb487c2589da"
-  integrity sha512-L4jFdujYEfJl3Gpar3ANWFou0xJjxJVcIhhj2Y3s7+EaCxrOhT5gPEyoO/8myHfbTfp7wdftD+nX4hhFm9iR1Q==
+vega-lite@4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/vega-lite/-/vega-lite-4.4.0.tgz#c7be7caac0b6fffc884cae4745e9f4738405844d"
+  integrity sha512-Np48CMrCJRDkYQOYdcQ1s6Fuwc4/m/mj3JgVve73J7AvX5nxDsliTk9z/A4krSyTh1O4sHgOhW/N/BtIz5DpIg==
   dependencies:
     "@types/clone" "~0.1.30"
     "@types/fast-json-stable-stringify" "^2.0.0"
