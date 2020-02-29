@@ -36,11 +36,11 @@ def sanitize_dataframe(df):
     import pandas as pd
     import numpy as np
 
-    df = df.copy()
+    df = df.copy() # type: pd.DataFrame
 
-    if isinstance(df.index, pd.core.index.MultiIndex):
+    if isinstance(df.index, pd.core.indexes.multi.MultiIndex):
         raise ValueError('Hierarchical indices not supported')
-    if isinstance(df.columns, pd.core.index.MultiIndex):
+    if isinstance(df.columns, pd.core.indexes.multi.MultiIndex):
         raise ValueError('Hierarchical indices not supported')
 
     def to_list_if_array(val):

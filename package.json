@@ -19,16 +19,16 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "vega": "5.9.1",
+    "vega": "5.9.2",
     "vega-lite": "4.4.0",
-    "vega-embed": "^6.2.2",
+    "vega-embed": "^6.3.2",
     "@jupyter-widgets/base": "2.0.2",
     "@types/webpack-env": "*"
   },
   "devDependencies": {
     "prettier": "^1.19.1",
     "ts-loader": "^6.2.1",
-    "typescript": "^3.8.2",
+    "typescript": "^3.8.3",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
   },
