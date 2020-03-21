@@ -39,6 +39,12 @@ widget = [
 [tool.poetry.scripts]
 test = "pytest:main"
 
+[tool.poetry.plugins."altair.vegalite.v4.renderer"]
+notebook = "vega.vegalite:entry_point_renderer"
+
+[tool.poetry.plugins."altair.vega.v5.renderer"]
+notebook = "vega.vega:entry_point_renderer"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
