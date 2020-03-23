@@ -68,26 +68,26 @@ export function render(
   vegaEmbed(el, spec, {
     loader: { http: { credentials: "same-origin" } },
     ...opt,
-    mode: type
+    mode: type,
   })
-    .then(result => {
+    .then((result) => {
       result.view
         .toImageURL("png")
-        .then(imageData => {
+        .then((imageData) => {
           if (output_area !== undefined) {
             const output = {
               data: {
-                "image/png": imageData.split(",")[1]
+                "image/png": imageData.split(",")[1],
               },
               metadata: { "jupyter-vega": selector },
-              output_type: "display_data"
+              output_type: "display_data",
             };
             // This appends the PNG output, but doesn't render it this time
             // as the JS version will be rendered already.
             output_area.outputs.push(output);
           }
         })
-        .catch(error => showError(el, error));
+        .catch((error) => showError(el, error));
     })
-    .catch(error => showError(el, error));
+    .catch((error) => showError(el, error));
 }

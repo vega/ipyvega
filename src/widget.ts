@@ -47,7 +47,7 @@ export class VegaWidget extends DOMWidgetView {
 
       vegaEmbed(this.viewElement, spec, {
         loader: { http: { credentials: "same-origin" } },
-        ...opt
+        ...opt,
       })
         .then((res: any) => {
           this.result = res;
