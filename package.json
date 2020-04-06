@@ -20,13 +20,13 @@
   },
   "dependencies": {
     "vega": "5.10.1",
-    "vega-lite": "4.8.1",
+    "vega-lite": "4.10.0",
     "vega-embed": "^6.5.2",
     "@jupyter-widgets/base": "2.0.2",
     "@types/webpack-env": "*"
   },
   "devDependencies": {
-    "prettier": "^2.0.3",
+    "prettier": "^2.0.4",
     "ts-loader": "^6.2.2",
     "typescript": "^3.8.3",
     "webpack": "^4.42.1",
