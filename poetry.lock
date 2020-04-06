@@ -3,19 +3,19 @@ category = "dev"
 description = "Altair: A declarative statistical visualization library for Python."
 name = "altair"
 optional = false
-python-versions = ">=3.5"
-version = "4.0.1"
+python-versions = ">=3.6"
+version = "4.1.0"
 
 [package.dependencies]
 entrypoints = "*"
 jinja2 = "*"
 jsonschema = "*"
 numpy = "*"
-pandas = "*"
+pandas = ">=0.18"
 toolz = "*"
 
 [package.extras]
-dev = ["docutils", "ipython", "flake8", "pytest", "sphinx", "m2r", "vega-datasets", "recommonmark"]
+dev = ["black", "docutils", "ipython", "flake8", "pytest", "sphinx", "m2r", "vega-datasets", "recommonmark"]
 
 [[package]]
 category = "main"
@@ -454,7 +454,6 @@ version = "1.4.2"
 [[package]]
 category = "main"
 description = "A Python Parser"
-marker = "python_version >= \"3.3\""
 name = "parso"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -524,7 +523,7 @@ wcwidth = "*"
 [[package]]
 category = "main"
 description = "Run a subprocess in a pseudo terminal"
-marker = "python_version >= \"3.3\" and sys_platform != \"win32\" or os_name != \"nt\""
+marker = "python_version >= \"3.3\" and sys_platform != \"win32\" or sys_platform != \"win32\" or os_name != \"nt\" or python_version >= \"3.3\" and sys_platform != \"win32\" and (python_version >= \"3.3\" and sys_platform != \"win32\" or sys_platform != \"win32\")"
 name = "ptyprocess"
 optional = false
 python-versions = "*"
@@ -781,13 +780,13 @@ testing = ["jaraco.itertools", "func-timeout"]
 widget = []
 
 [metadata]
-content-hash = "a1cd247e4ef59abe680aab38bf6bde3d004443e9bc073b4e66a8217efdf55d50"
+content-hash = "4a58a94df221b5947f27bb25520f07f04920610aaa0671c6405caba6a3a15f67"
 python-versions = ">= 3.6.1"
 
 [metadata.files]
 altair = [
-    {file = "altair-4.0.1-py3-none-any.whl", hash = "sha256:aeafbf669caa71e567a3032874a46a1bacf55990e84b683f06c05ae4123c594c"},
-    {file = "altair-4.0.1.tar.gz", hash = "sha256:d31270c82ce5e37b25fc3bc4e990dc6ac593620a2be0c8c075f297409a92af90"},
+    {file = "altair-4.1.0-py3-none-any.whl", hash = "sha256:7748841a1bea8354173d1140bef6d3b58bea21d201f562528e9599ea384feb7f"},
+    {file = "altair-4.1.0.tar.gz", hash = "sha256:3edd30d4f4bb0a37278b72578e7e60bc72045a8e6704179e2f4738e35bc12931"},
 ]
 appnope = [
     {file = "appnope-0.1.0-py2.py3-none-any.whl", hash = "sha256:5b26757dc6f79a3b7dc9fab95359328d5747fcb2409d331ea66d0272b90ab2a0"},

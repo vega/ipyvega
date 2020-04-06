@@ -29,7 +29,7 @@ pandas = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
-altair = "^4.0.1"
+altair = "^4.1.0"
 
 [tool.poetry.extras]
 widget = [
