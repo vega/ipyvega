@@ -19,7 +19,7 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "vega": "5.10.1",
+    "vega": "5.11.0",
     "vega-lite": "4.10.4",
     "vega-embed": "^6.6.0",
     "@jupyter-widgets/base": "2.0.2",
