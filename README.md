@@ -59,7 +59,7 @@ To rebuild the JavaScript continuously, run `yarn watch`.
 
 ### How to make a release
 
-* Update the JavaScript dependendencies by changing `package.json` (e.g. with [ncu](https://www.npmjs.com/package/npm-check-updates)).
+* Update the JavaScript dependencies by changing `package.json` (e.g. with [ncu](https://www.npmjs.com/package/npm-check-updates)).
 * Run `yarn`.
 * Rebuild the JavaScript with `yarn build`.
 * Make sure that everything still works (launch notebook and try the examples).
