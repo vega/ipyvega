@@ -21,7 +21,7 @@
   "dependencies": {
     "vega": "5.11.1",
     "vega-lite": "4.11.0",
-    "vega-embed": "^6.7.1",
+    "vega-embed": "^6.8.0",
     "@jupyter-widgets/base": "2.0.2",
     "@types/webpack-env": "*"
   },
