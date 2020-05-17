@@ -36,6 +36,18 @@ jobs:
         shell: bash
         run: poetry config virtualenvs.in-project true
 
+      - name: Set up cache
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.full-python-version.outputs.version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Ensure cache is healthy
+        if: steps.cache.outputs.cache-hit == 'true'
+        shell: bash
+        run: poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
+
       - name: Install Python dependencies
         shell: bash
         run: poetry install
@@ -53,4 +65,4 @@ jobs:
 
       - name: Run pytest
         shell: bash
-        run: poetry run pytest -q vega
+        run: poetry run pytest vega
