@@ -58,5 +58,8 @@ jobs:
       - name: Lint TypeScript
         run: yarn lint
 
+      - name: Build JavaScript
+        run: yarn build
+
       - name: Run pytest
         run: poetry run pytest vega
