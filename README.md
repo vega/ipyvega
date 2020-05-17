@@ -1,6 +1,6 @@
 # IPython Vega
 [![PyPI](https://img.shields.io/pypi/v/vega.svg)](https://pypi.python.org/pypi/vega)
-[![Build Status](https://travis-ci.org/vega/ipyvega.svg?branch=master)](https://travis-ci.org/vega/ipyvega)
+[![Build Status](https://github.com/vega/ipyvega/workflows/Test/badge.svg)](https://github.com/vega/ipyvega/actions)
 
 IPython/Jupyter notebook module for [Vega 5](https://github.com/vega/vega), and [Vega-Lite 4](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on [GitHub](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [nbviewer](https://nbviewer.jupyter.org/github/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb). If you use JupyterLab (not the notebook), you don't need to install this extension since JupyterLab comes with built-in support for Vega and Vega-Lite.
 
