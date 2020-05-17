@@ -1,0 +1,65 @@
+name: Test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python: [3.5, 3.6, 3.7, 3.8]
+
+    name: Python ${{ matrix.python }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Get full Python version
+        id: full-python-version
+        run: echo ::set-output name=version::$(python -c "import sys; print('-'.join(str(v) for v in sys.version_info))")
+
+      - name: Install poetry
+        run: |
+          curl -fsS -o get-poetry.py https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+          python get-poetry.py --preview -y
+          echo "::set-env name=PATH::$HOME/.poetry/bin:$PATH"
+
+      - name: Configure poetry
+        run: poetry config virtualenvs.in-project true
+
+      - name: Set up cache
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.full-python-version.outputs.version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Ensure cache is healthy
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: poetry run pip --version >/dev/null 2>&1 || rm -rf .venv
+
+      - name: Install Python dependencies
+        run: poetry install
+
+      - run: poetry run jupyter nbextension install vega --py --sys-prefix
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+
+      - name: Install Node dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Lint TypeScript
+        run: yarn lint
+
+      - name: Build JavaScript
+        run: yarn build
+
+      - name: Run pytest
+        run: poetry run pytest vega
