@@ -14,7 +14,3 @@ updates:
     time: "23:00"
     timezone: PST8PDT
   open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: vega-lite
-    versions:
-    - 5.0.0
