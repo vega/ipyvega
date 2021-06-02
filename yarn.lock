@@ -1354,6 +1354,11 @@ tslib@^1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
+tslib@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
+  integrity sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
+
 tslib@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c"
@@ -1412,15 +1417,16 @@ vega-dataflow@^5.7.3, vega-dataflow@^5.7.4, vega-dataflow@~5.7.4:
     vega-loader "^4.3.2"
     vega-util "^1.16.1"
 
-vega-embed@^6.17.0:
-  version "6.17.0"
-  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-6.17.0.tgz#6afe157ef31c473a799fce1d45e3878a3c80c5e2"
-  integrity sha512-9eiVZCrLDb/EiVCMbMYouWB/q9dOeVkL5Bh0vU6wsUpIV/bbEvS47uljuo3YSxFqkfNpJ+Qt8xvLRiYSnN4lqw==
+vega-embed@^6.18.2:
+  version "6.18.2"
+  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-6.18.2.tgz#1fcbf9c1eca1fc58db337efacbca7b9c74db43ca"
+  integrity sha512-wcDyQPE4J5aiCDc3/suH5RQDvrKkjuLkhzUcbOLwEkNF8/+pp17tS0JghzEvAPNRg+5aG1/N2ydixq8Lk3dOlg==
   dependencies:
     fast-json-patch "^3.0.0-1"
     json-stringify-pretty-compact "^3.0.0"
     semver "^7.3.5"
-    vega-schema-url-parser "^2.1.0"
+    tslib "^2.2.0"
+    vega-schema-url-parser "^2.2.0"
     vega-themes "^2.10.0"
     vega-tooltip "^0.25.1"
 
@@ -1613,10 +1619,10 @@ vega-scenegraph@^4.9.2, vega-scenegraph@^4.9.3, vega-scenegraph@^4.9.4, vega-sce
     vega-scale "^7.1.1"
     vega-util "^1.15.2"
 
-vega-schema-url-parser@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/vega-schema-url-parser/-/vega-schema-url-parser-2.1.0.tgz#847f9cf9f1624f36f8a51abc1adb41ebc6673cb4"
-  integrity sha512-JHT1PfOyVzOohj89uNunLPirs05Nf59isPT5gnwIkJph96rRgTIBJE7l7yLqndd7fLjr3P8JXHGAryRp74sCaQ==
+vega-schema-url-parser@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/vega-schema-url-parser/-/vega-schema-url-parser-2.2.0.tgz#a0d1e02915adfbfcb1fd517c8c2ebe2419985c1e"
+  integrity sha512-yAtdBnfYOhECv9YC70H2gEiqfIbVkq09aaE4y/9V/ovEFmH9gPKaEgzIZqgT7PSPQjKhsNkb6jk6XvSoboxOBw==
 
 vega-selections@^5.3.0:
   version "5.3.0"
