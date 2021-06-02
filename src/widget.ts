@@ -84,6 +84,7 @@ export class VegaWidget extends DOMWidgetView {
     this.model.on("change:_spec_source", reembed);
     this.model.on("change:_opt_source", reembed);
     this.model.on("msg:custom", (ev: any) => {
+      console.log(ev)
       const message = checkWidgetUpdate(ev);
       if (message == null) {
         return;
