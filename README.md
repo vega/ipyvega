@@ -64,7 +64,7 @@ To rebuild the JavaScript continuously, run `yarn watch`.
 * Rebuild the JavaScript with `yarn build`.
 * Make sure that everything still works (launch notebook and try the examples).
 * Update the version number in `pyproject.toml` (with `poetry version [VERSION]`), `package.json`, and `__init__.py` and add a git tag.
-* `git push`.
+* `git push --tags`.
 * Then run `poetry publish --build` to update https://pypi.python.org/pypi/vega.
 
 The Conda feedstock for this package is at https://github.com/conda-forge/vega-feedstock. It should update automatically but we may need to merge a pull request with the updates. 
