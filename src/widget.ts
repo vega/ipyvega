@@ -51,11 +51,11 @@ export class VegaWidget extends DOMWidgetView {
         }
         this.result = result;
         this.send({ type: "display" });
-      } catch(err) {
+      } catch (err) {
         if (this.result) {
           this.result.finalize();
         }
-        console.error(err)
+        console.error(err);
       }
     };
 
