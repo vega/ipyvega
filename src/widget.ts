@@ -28,7 +28,7 @@ export class VegaWidget extends DOMWidgetView {
   viewElement = document.createElement("div");
   errorElement = document.createElement("div");
 
-  render() {
+  async render() {
     this.el.appendChild(this.viewElement);
     this.errorElement.style.color = "red";
     this.el.appendChild(this.errorElement);
@@ -93,12 +93,12 @@ export class VegaWidget extends DOMWidgetView {
       }
 
       applyUpdates(message).catch((err: Error) => {
-        this.errorElement.textContent = "" + err;
+        this.errorElement.textContent = String(err);
         console.error(err);
       });
     });
 
     // initial rendering
-    reembed();
+    await reembed();
   }
 }
