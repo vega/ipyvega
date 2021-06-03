@@ -33,11 +33,7 @@ export class VegaWidget extends DOMWidgetView {
     this.errorElement.style.color = "red";
     this.el.appendChild(this.errorElement);
 
-    const reembed = () => {
-      if (this.result) {
-        this.result.finalize();
-        this.result = undefined;
-      }
+    const reembed = async () => {
       const spec = JSON.parse(this.model.get("_spec_source"));
       const opt = JSON.parse(this.model.get("_opt_source"));
 
@@ -45,15 +41,22 @@ export class VegaWidget extends DOMWidgetView {
         return;
       }
 
-      vegaEmbed(this.viewElement, spec, {
-        loader: { http: { credentials: "same-origin" } },
-        ...opt,
-      })
-        .then((res: any) => {
-          this.result = res;
-          this.send({ type: "display" });
-        })
-        .catch((err: Error) => console.error(err));
+      try {
+        const result = await vegaEmbed(this.viewElement, spec, {
+          loader: { http: { credentials: "same-origin" } },
+          ...opt,
+        });
+        if (this.result) {
+          this.result.finalize();
+        }
+        this.result = result;
+        this.send({ type: "display" });
+      } catch(err) {
+        if (this.result) {
+          this.result.finalize();
+        }
+        console.error(err)
+      }
     };
 
     const applyUpdate = async (update: WidgetUpdate) => {
@@ -69,8 +72,8 @@ export class VegaWidget extends DOMWidgetView {
       const newValues = update.insert || [];
       const changeSet = result.view
         .changeset()
-        .insert(newValues)
-        .remove(filter);
+        .remove(filter)
+        .insert(newValues);
 
       await result.view.change(update.key, changeSet).runAsync();
     };
