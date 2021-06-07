@@ -4,10 +4,16 @@ import contextlib
 import json
 import uuid
 import sys
-
+from ipydatawidgets import DataUnion
+from ipydatawidgets.widgets import DataWidget
+from ipydatawidgets.ndarray.serializers import (
+    array_to_compressed_json,
+    array_from_compressed_json)
+import ipywidgets as widgets
+import numpy as np
 try:
     from ipywidgets import DOMWidget
-    from traitlets import Unicode, Dict
+    from traitlets import Unicode, Dict, Any
 
 except ImportError as err:
     new_err = ImportError(
@@ -22,6 +28,31 @@ except ImportError as err:
 
 __all__ = ['VegaWidget']
 
+#
+# The two functions below  (data_union_to_json_compress, data_union_from_json_compress)
+# are adapted from ipydatawidgets
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+#
+
+
+def data_union_to_json_compress(value, widget):
+    """Serializer for union of NDArray and NDArrayWidget"""
+    if isinstance(value, widgets.Widget):
+        return widgets.widget_serialization['to_json'](value, widget)
+    return array_to_compressed_json(value, widget)
+
+
+def data_union_from_json_compress(value, widget):
+    """Deserializer for union of NDArray and NDArrayWidget"""
+    if isinstance(value, str) and value.startswith('IPY_MODEL_'):
+        return widgets.widget_serialization['from_json'](value, widget)
+    return array_from_compressed_json(value, widget)
+
+
+_serialization = dict(
+    to_json=data_union_to_json_compress,
+    from_json=data_union_from_json_compress)
 
 class VegaWidget(DOMWidget):
     """An IPython widget display a vega chart.
@@ -63,11 +94,18 @@ class VegaWidget(DOMWidget):
     # display state is reflected by the `_displayed` attribute.
 
     _view_name = Unicode('VegaWidget').tag(sync=True)
+    _model_name = Unicode('VegaWidgetModel').tag(sync=True)
     _view_module = Unicode('nbextensions/jupyter-vega/widget').tag(sync=True)
+    _model_module = Unicode('nbextensions/jupyter-vega/widget').tag(sync=True)
     _view_module_version = Unicode('0.1.0').tag(sync=True)
+    _model_module_version = Unicode('0.1.0').tag(sync=True)
     _spec_source = Unicode('null').tag(sync=True)
     _opt_source = Unicode('null').tag(sync=True)
-
+    _df = DataUnion(
+        np.array([], dtype='float32'),
+        dtype='float32'
+    ).tag(sync=True, **_serialization)
+    _columns = Any([]).tag(sync=True)
     def __init__(self, spec=None, opt=None, **kwargs):
         super().__init__(**kwargs)
         self._spec_source = json.dumps(spec)
@@ -143,3 +181,27 @@ class VegaWidget(DOMWidget):
 
         else:
             self._pending_updates.append(update)
+
+    def update_dataframe(self, df, remove=None):
+        """
+        df = pd.DataFrame(dict(a=[1,2], b=[3,4], x=[1.1,2.2],  y=[3.3,4.4]))
+        df = pd.DataFrame(dict(a=[1,2], b=[3,4], x=[1.1,2.2],  y=[3.3,4.4], z=['aa','bb']))
+        """
+        self._df = df.values
+        self._columns = df.columns.to_list()
+        update = dict(key='data')
+        if remove is not None:
+            update['remove'] = remove
+        update['insert'] = "@dataframe"
+        self.send(dict(type="update", updates=[update]))
+
+    def update_histogram2d(self, arr, columns, remove=None):
+        """
+        """
+        self._df = arr
+        self._columns = columns
+        update = dict(key='data')
+        if remove is not None:
+            update['remove'] = remove
+        update['insert'] = "@histogram2d"
+        self.send(dict(type="update", updates=[update]))
