@@ -4,10 +4,14 @@ import contextlib
 import json
 import uuid
 import sys
-from ipydatawidgets import NDArray
-from ipydatawidgets.ndarray.serializers import (
-    array_to_compressed_json,
-    array_from_compressed_json)
+import pandas as pd
+
+from .dataframes.compressors import *
+from .dataframes.serializers import serialization
+from .dataframes.source_adapter import SourceAdapter
+from .dataframes.pandas_adapter import PandasAdapter
+from .dataframes.numpy_adapter import NumpyAdapter
+from .dataframes.traitlets import TableType
 import ipywidgets as widgets
 import numpy as np
 try:
@@ -26,11 +30,11 @@ except ImportError as err:
 
 
 __all__ = ['VegaWidget']
-
+"""
 _serialization = dict(
     to_json=array_to_compressed_json,
     from_json=array_from_compressed_json)
-
+"""
 class VegaWidget(DOMWidget):
     """An IPython widget display a vega chart.
 
@@ -78,11 +82,9 @@ class VegaWidget(DOMWidget):
     _model_module_version = Unicode('0.1.0').tag(sync=True)
     _spec_source = Unicode('null').tag(sync=True)
     _opt_source = Unicode('null').tag(sync=True)
-    _df = NDArray(
-        np.array([], dtype='float32'),
-        dtype='float32'
-    ).tag(sync=True, **_serialization)
-    _columns = Any([]).tag(sync=True)
+    compression = None
+    _df = TableType(None).tag(sync=True, **serialization)
+
     def __init__(self, spec=None, opt=None, **kwargs):
         super().__init__(**kwargs)
         self._spec_source = json.dumps(spec)
@@ -161,11 +163,13 @@ class VegaWidget(DOMWidget):
 
     def update_dataframe(self, df, remove=None):
         """
-        df = pd.DataFrame(dict(a=[1,2], b=[3,4], x=[1.1,2.2],  y=[3.3,4.4]))
-        df = pd.DataFrame(dict(a=[1,2], b=[3,4], x=[1.1,2.2],  y=[3.3,4.4], z=['aa','bb']))
         """
-        self._df = df.values
-        self._columns = df.columns.to_list()
+        if isinstance(df, pd.DataFrame):
+            self._df = PandasAdapter(df)
+        else:
+            assert isinstance(df, SourceAdapter)
+            self._df = df
+        #self._columns = df.columns.to_list()
         update = dict(key='data')
         if remove is not None:
             update['remove'] = remove
@@ -174,9 +178,18 @@ class VegaWidget(DOMWidget):
 
     def update_histogram2d(self, arr, columns, remove=None):
         """
+        NB: the array is wrapped in an one column Table.
+        The unique column (fancy_col below) is built as a comma separated
+        coords string (i.e. columns param.)
+        This naming covention is important because javascript will split
+        this string to obtain the three names for the x, y, z coords.
         """
-        self._df = arr
-        self._columns = columns
+        if isinstance(arr, np.ndarray):
+            fancy_col = ','.join(columns)
+            self._df = NumpyAdapter({fancy_col: arr})
+        else:
+            assert isinstance(arr, SourceAdapter)
+            self._df = arr            
         update = dict(key='data')
         if remove is not None:
             update['remove'] = remove
