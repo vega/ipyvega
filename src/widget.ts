@@ -133,7 +133,6 @@ export class VegaWidget extends DOMWidgetView {
     for(let i=0; i < table.size; i++){
       let row: any = [];
       for (const col of table.columns){
-        console.log("col", table.data[col].shape);
         if(table.data[col].shape===undefined){
           row[col] = table.data[col][i];
 	 } else {
