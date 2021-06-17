@@ -20,9 +20,10 @@
   },
   "dependencies": {
     "@jupyter-widgets/base": "4.0.0",
+    "@types/pako": "^1.0.1",
     "@types/webpack-env": "*",
-    "jupyter-dataserializers": "^2.3.0",
     "ndarray": "^1.0.19",
+    "pako": "^2.0.3",
     "vega": "5.20.2",
     "vega-embed": "^6.18.2",
     "vega-lite": "4.17.0"

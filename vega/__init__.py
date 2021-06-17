@@ -4,7 +4,9 @@ from warnings import warn
 
 from .vega import Vega
 from .vegalite import VegaLite
-
+from .dataframes.source_adapter import SourceAdapter
+from .dataframes.pandas_adapter import PandasAdapter
+from .dataframes.traitlets import TableType
 
 __all__ = ['Vega', 'VegaLite']
 

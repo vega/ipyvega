@@ -3,10 +3,7 @@ import { vegaEmbed } from "./index";
 import { Result } from "vega-embed";
 import * as ndarray from "ndarray";
 //import * as ndarray_unpack from "ndarray-unpack";
-import {
-  data_union_serialization,
-  listenToUnion,
-} from 'jupyter-dataserializers';
+import { table_serialization } from "./serializers";
 
 interface WidgetUpdate {
   key: string;
@@ -42,7 +39,7 @@ export class VegaWidgetModel extends DOMWidgetModel {
    };
   static serializers = {
         ...DOMWidgetModel.serializers,
-        _df: data_union_serialization
+        _df: table_serialization
     };
 
 }
@@ -56,7 +53,6 @@ export class VegaWidget extends DOMWidgetView {
     this.errorElement.style.color = "red";
     this.el.appendChild(this.errorElement);
     const reembed = async () => {
-      listenToUnion(this.model, '_df', this.update.bind(this), true);
       const spec = JSON.parse(this.model.get("_spec_source"));
       const opt = JSON.parse(this.model.get("_opt_source"));
       if (spec == null) {
@@ -93,6 +89,7 @@ export class VegaWidget extends DOMWidgetView {
       );
       let newValues = update.insert || [];
       if (newValues == "@dataframe") {
+         console.log("@dataframe");
 	 newValues = this.updateDataFrame();
       } else if (newValues == "@histogram2d") {
 	 newValues = this.updateHistogram2D();
@@ -130,13 +127,13 @@ export class VegaWidget extends DOMWidgetView {
   }
 
   updateDataFrame(): any[] {
-    let res = [];
-    let arr = this.model.get("_df");
-    let cols = this.model.get("_columns");
-    for(let i=0; i<arr.shape[0];i++){
-      let row = [];
-      for(let j=0; j< arr.shape[1]; j++){
-        row[cols[j]] = arr.get(i,j);
+    let res: any[] = [];
+    let table = this.model.get("_df");
+    console.log("table", table);
+    for(let i=0; i < table.size; i++){
+      let row: any = [];
+      for (const col of table.columns){
+        row[col] = table.data[col].get(i);
       }
       res[i] = row;
     }
@@ -144,9 +141,13 @@ export class VegaWidget extends DOMWidgetView {
   };
 
   updateHistogram2D(): any[] {
+    console.log("updateHistogram2D");
     let res = [];
-    let arr = this.model.get("_df");
-    let cols = this.model.get("_columns");
+    let table = this.model.get("_df");
+    let fancyCol = table.columns[0];
+    let arr = table.data[fancyCol];
+    let cols = fancyCol.split(",");
+    //let cols = this.model.get("_columns");
     for(let i=0; i<arr.shape[0];i++){
       for(let j=0; j< arr.shape[1]; j++){
         let row = [];
