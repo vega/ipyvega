@@ -1,22 +1,18 @@
 from __future__ import print_function
 
-import contextlib
 import json
-import uuid
-import sys
 import pandas as pd
 
-from .dataframes.compressors import *
+# from .dataframes.compressors import *
 from .dataframes.serializers import serialization
 from .dataframes.source_adapter import SourceAdapter
 from .dataframes.pandas_adapter import PandasAdapter
 from .dataframes.numpy_adapter import NumpyAdapter
 from .dataframes.traitlets import TableType
-import ipywidgets as widgets
 import numpy as np
 try:
-    from ipywidgets import DOMWidget
-    from traitlets import Unicode, Dict, Any
+    import ipywidgets as widgets
+    from traitlets import Unicode
 
 except ImportError as err:
     new_err = ImportError(
@@ -30,12 +26,8 @@ except ImportError as err:
 
 
 __all__ = ['VegaWidget']
-"""
-_serialization = dict(
-    to_json=array_to_compressed_json,
-    from_json=array_from_compressed_json)
-"""
-class VegaWidget(DOMWidget):
+
+class VegaWidget(widgets.DOMWidget):
     """An IPython widget display a vega chart.
 
     Specifying the spec directly::
@@ -169,7 +161,6 @@ class VegaWidget(DOMWidget):
         else:
             assert isinstance(df, SourceAdapter)
             self._df = df
-        #self._columns = df.columns.to_list()
         update = dict(key='data')
         if remove is not None:
             update['remove'] = remove

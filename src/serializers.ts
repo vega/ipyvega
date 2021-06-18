@@ -60,7 +60,7 @@ function JSONToTable(obj: IReceivedSerializedTable | null, manager?: ManagerBase
   var size: number = Infinity;
   let buffer: ArrayBuffer;
   for (const [col, val] of Object.entries(obj.data)) {
-      console.log(col, val);
+      // console.log(col, val);
       if(val.compression !== undefined){
         let valBuffer = val.buffer as DataView;
         buffer = decompress[val.compression](valBuffer.buffer);

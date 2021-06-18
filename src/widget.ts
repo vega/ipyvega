@@ -89,7 +89,7 @@ export class VegaWidget extends DOMWidgetView {
       );
       let newValues = update.insert || [];
       if (newValues == "@dataframe") {
-         console.log("@dataframe");
+         // console.log("@dataframe");
 	 newValues = this.updateDataFrame();
       } else if (newValues == "@histogram2d") {
 	 newValues = this.updateHistogram2D();
@@ -129,7 +129,7 @@ export class VegaWidget extends DOMWidgetView {
   updateDataFrame(): any[] {
     let res: any[] = [];
     let table = this.model.get("_df");
-    console.log("table", table);
+    // console.log("table", table);
     for(let i=0; i < table.size; i++){
       let row: any = [];
       for (const col of table.columns){
@@ -145,7 +145,7 @@ export class VegaWidget extends DOMWidgetView {
   };
 
   updateHistogram2D(): any[] {
-    console.log("updateHistogram2D");
+    // console.log("updateHistogram2D");
     let res = [];
     let table = this.model.get("_df");
     let fancyCol = table.columns[0];
