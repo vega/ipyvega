@@ -6,7 +6,7 @@ const decompress : {[key:string]: Function} = {
            return pako.inflate(new Uint8Array(input)).buffer;
          },
       lz4: (input: ArrayBuffer): ArrayBuffer => {
-          return lz4.dcompress(new Uint8Array(input)).buffer;
+          return lz4.decompress(new Uint8Array(input)).buffer;
          },
 
 }
