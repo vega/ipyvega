@@ -23,4 +23,4 @@ class NumpyAdapter(SourceAdapter):
         for k, v in self._source.items():
             if not np.array_equal(v, other[k]):
                 return False
-        return True
+        return False
