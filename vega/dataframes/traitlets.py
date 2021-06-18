@@ -1,5 +1,4 @@
-import numpy as np
-from traitlets import TraitError, Undefined
+from traitlets import Undefined
 from traittypes import SciType
 from . import SourceAdapter
 
