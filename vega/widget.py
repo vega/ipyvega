@@ -137,7 +137,7 @@ class VegaWidget(widgets.DOMWidget):
             property ``t < 5``.
 
         :param Optional[List[dict]] insert:
-            new items to add to the chat data.
+            new items to add to the chart data.
         """
         update = dict(key=key)
 
@@ -154,7 +154,19 @@ class VegaWidget(widgets.DOMWidget):
             self._pending_updates.append(update)
 
     def update_dataframe(self, df, remove=None):
-        """
+        """Update the chart data with a DataFrame.
+
+        Updates are only reflected on the client, i.e., after re-displaying
+        the widget will show the chart specified in its spec property.
+
+        :param pd.DataFrame insert:
+            new items to add to the chart data.
+
+        :param Optional[str] remove:
+            a JavaScript expression of items to remove. The item to test can
+            be accessed as ``datum``. For example, the call
+            ``update(remove="datum.t < 5")`` removes all items with the
+            property ``t < 5``.
         """
         if isinstance(df, pd.DataFrame):
             self._df = PandasAdapter(df)
@@ -167,9 +179,25 @@ class VegaWidget(widgets.DOMWidget):
         update['insert'] = "@dataframe"
         self.send(dict(type="update", updates=[update]))
 
-    def update_histogram2d(self, arr, columns, remove=None):
-        """
-        NB: the array is wrapped in an one column Table.
+    def update_array2d(self, arr, columns, remove=None):
+        """Update the chart data with a 2d array and their column names.
+
+        Updates are only reflected on the client, i.e., after re-displaying
+        the widget will show the chart specified in its spec property.
+
+        :param np.ndarray arr:
+            new items to add to the chart data as a 2d numpy array.
+
+        :param List[str] columns:
+            list of column names for each column of the array.
+
+        :param Optional[str] remove:
+            a JavaScript expression of items to remove. The item to test can
+            be accessed as ``datum``. For example, the call
+            ``update(remove="datum.t < 5")`` removes all items with the
+            property ``t < 5``.
+
+        NB: the array will be wrapped as a one column Table.
         The unique column (fancy_col below) is built as a comma separated
         coords string (i.e. columns param.)
         This naming covention is important because javascript will split

@@ -55,7 +55,7 @@ function JSONToTable(obj: IReceivedSerializedTable | null, manager?: ManagerBase
   }
   // obj is {shape: list, dtype: string, array: DataView}
   // return an ndarray object
-  console.log("OBJ", obj);
+  // console.log("OBJ", obj);
   var data: IDict<NdArray | string[]> = {};
   var size: number = Infinity;
   let buffer: ArrayBuffer;
@@ -88,7 +88,7 @@ function JSONToTable(obj: IReceivedSerializedTable | null, manager?: ManagerBase
      }
   }
   var result = {columns: obj.columns, data: data, size: size} as ISendSerializedTable;
-  console.log("result", result);
+  // console.log("result", result);
   //let objFoo = obj.data.foo;
   return result;
 }
