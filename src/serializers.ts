@@ -60,6 +60,7 @@ function JSONToTable(obj: IReceivedSerializedTable | null, manager?: ManagerBase
   // console.log("OBJ", obj);
   var data: IDict<NdArray | string[]> = {};
   var size: number = Infinity;
+  let decoder = new TextDecoder("utf-8");
   let buffer: ArrayBuffer;
   for (const [col, val] of Object.entries(obj.data)) {
       // console.log(col, val);
@@ -67,9 +68,8 @@ function JSONToTable(obj: IReceivedSerializedTable | null, manager?: ManagerBase
         let valBuffer = val.buffer as DataView;
         buffer = decompress[val.compression](valBuffer.buffer);
 	if(val.dtype==="str"){
-	   let enc = new TextDecoder("utf-8");
 	   let u8buf = buffer as Uint8Array;
-	   let strcol = enc.decode(u8buf);
+	   let strcol = decoder.decode(u8buf);
 	   let lstr: string[] = JSON.parse(strcol) as string[];
 	   data[col] = lstr;
 	} else { //numeric

@@ -6,8 +6,11 @@ class NumpyAdapter(SourceAdapter):
     """
     Actually this adapter requires a dict of ndarrays
     """
+
     def __init__(self, source, *args, **kw):
-        assert source is None or isinstance(source, dict) # TODO: check values are ndarrays
+        assert source is None or isinstance(
+            source, dict
+        )  # TODO: check values are ndarrays
         super().__init__(source, *args, **kw)
 
     @property

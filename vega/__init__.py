@@ -8,7 +8,7 @@ from .dataframes.source_adapter import SourceAdapter
 from .dataframes.pandas_adapter import PandasAdapter
 from .dataframes.traitlets import TableType
 
-__all__ = ['Vega', 'VegaLite']
+__all__ = ['Vega', 'VegaLite', 'SourceAdapter', 'PandasAdapter', 'TableType']
 
 __version__ = '3.5.0'
 

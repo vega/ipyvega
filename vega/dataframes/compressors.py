@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 import zlib
 import lz4.frame
 
+
 class BaseCompressor(metaclass=ABCMeta):
     def __init__(self, level=None):
         self._level = level
@@ -14,16 +15,20 @@ class BaseCompressor(metaclass=ABCMeta):
     def compress(self, data):
         ...
 
+
 class ZLibCompressor(BaseCompressor):
-    name = 'zlib'
+    name = "zlib"
+
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
 
     def compress(self, data):
         return zlib.compress(data, level=self._level)
 
+
 class LZ4Compressor(BaseCompressor):
-    name = 'lz4'
+    name = "lz4"
+
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
 

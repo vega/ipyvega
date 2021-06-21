@@ -19,6 +19,8 @@ class PandasAdapter(SourceAdapter):
             other = other._source
         assert isinstance(other, pd.DataFrame)
         return self._source.equals(other)
+
+
 """
     @classmethod
     def create(cls, data):

@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 
+
 class SourceAdapter(metaclass=ABCMeta):
     def __init__(self, source, columns=None, compression=None):
         self._source = source
@@ -17,6 +18,8 @@ class SourceAdapter(metaclass=ABCMeta):
     @abstractmethod
     def equals(self, other):
         ...
+
+
 """
     @classmethod
     @abstractmethod
