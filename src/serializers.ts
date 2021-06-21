@@ -26,6 +26,8 @@ const dtypeToArray = {
     str: Array
 }
 
+const RowIndex = Symbol('rowIndex');
+
 export
 interface IDict<T> {
     [Key: string]: T;
@@ -92,6 +94,52 @@ function JSONToTable(obj: IReceivedSerializedTable | null, manager?: ManagerBase
   //let objFoo = obj.data.foo;
   return result;
 }
+
+export
+function rowProxy(table: ISendSerializedTable):any {
+    var fields: string[] = table.columns;
+    var proto: any = {};
+
+    fields.forEach((name: string) => {
+        const column: NdArray | string[] = table.data[name];
+        const arraycolumn = column as NdArray;
+        const stringcolumn = column as string[];
+
+        // skip columns with duplicate names
+        if (proto.hasOwnProperty(name)) return;
+
+        if (arraycolumn.shape===undefined) {
+            Object.defineProperty(proto, name, {
+                get: function():any {
+                    const i:number = (this[RowIndex] as number)
+                    return stringcolumn[i];                
+                },
+                set: function() {
+                    throw Error('Arrow field values can not be overwritten.');
+                },
+                enumerable: true
+            });
+        }
+        else {
+            Object.defineProperty(proto, name, {
+                get: function():any {
+                    const i:number = (this[RowIndex] as number)
+                    return arraycolumn.get(i);
+                },
+                set: function() {
+                    throw Error('Arrow field values can not be overwritten.');
+                },
+                enumerable: true
+            });
+        }
+    });
+    return (i: number):any  => {
+        var r:any = Object.create(proto);
+        r[RowIndex] = i;
+        return r;
+    };
+}
+
 
 export
 function tableToJSON(obj: IDict<NdArray>| null, widget?: WidgetModel): ISendSerializedTable | null {

@@ -130,6 +130,10 @@ class VegaWidget(widgets.DOMWidget):
         Updates are only reflected on the client, i.e., after re-displaying
         the widget will show the chart specified in its spec property.
 
+        :param str key:
+            the name of the dataset to update, as declared in the data
+            section of the spec.
+
         :param Optional[str] remove:
             a JavaScript expression of items to remove. The item to test can
             be accessed as ``datum``. For example, the call
@@ -153,11 +157,15 @@ class VegaWidget(widgets.DOMWidget):
         else:
             self._pending_updates.append(update)
 
-    def update_dataframe(self, df, remove=None):
+    def update_dataframe(self, key, df, remove=None):
         """Update the chart data with a DataFrame.
 
         Updates are only reflected on the client, i.e., after re-displaying
         the widget will show the chart specified in its spec property.
+
+        :param str key:
+            the name of the dataset to update, as declared in the data
+            section of the spec.
 
         :param pd.DataFrame insert:
             new items to add to the chart data.
@@ -173,17 +181,21 @@ class VegaWidget(widgets.DOMWidget):
         else:
             assert isinstance(df, SourceAdapter)
             self._df = df
-        update = dict(key='data')
+        update = dict(key=key)
         if remove is not None:
             update['remove'] = remove
         update['insert'] = "@dataframe"
         self.send(dict(type="update", updates=[update]))
 
-    def update_array2d(self, arr, columns, remove=None):
+    def update_array2d(self, key, arr, columns, remove=None):
         """Update the chart data with a 2d array and their column names.
 
         Updates are only reflected on the client, i.e., after re-displaying
         the widget will show the chart specified in its spec property.
+
+        :param str key:
+            the name of the dataset to update, as declared in the data
+            section of the spec.
 
         :param np.ndarray arr:
             new items to add to the chart data as a 2d numpy array.
@@ -209,8 +221,8 @@ class VegaWidget(widgets.DOMWidget):
         else:
             assert isinstance(arr, SourceAdapter)
             self._df = arr            
-        update = dict(key='data')
+        update = dict(key=key)
         if remove is not None:
             update['remove'] = remove
-        update['insert'] = "@histogram2d"
+        update['insert'] = "@array2d"
         self.send(dict(type="update", updates=[update]))

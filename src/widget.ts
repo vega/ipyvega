@@ -3,7 +3,7 @@ import { vegaEmbed } from "./index";
 import { Result } from "vega-embed";
 import * as ndarray from "ndarray";
 //import * as ndarray_unpack from "ndarray-unpack";
-import { table_serialization } from "./serializers";
+import { table_serialization, rowProxy, IDict } from "./serializers";
 
 interface WidgetUpdate {
   key: string;
@@ -29,13 +29,13 @@ function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
 export class VegaWidgetModel extends DOMWidgetModel {
   defaults() {
         return {...DOMWidgetModel.prototype.defaults(),
-	    _model_name: "VegaWidgetModule",
+            _model_name: "VegaWidgetModule",
             _view_name: "VegaWidget",
-	    _spec_source: "",
-	    _opt_source: "",
-	    _df:  ndarray([]),
-	    _columns: []
-	    }
+            _spec_source: "",
+            _opt_source: "",
+            _df:  ndarray([]),
+            _columns: []
+            }
    };
   static serializers = {
         ...DOMWidgetModel.serializers,
@@ -90,9 +90,9 @@ export class VegaWidget extends DOMWidgetView {
       let newValues = update.insert || [];
       if (newValues == "@dataframe") {
          // console.log("@dataframe");
-	 newValues = this.updateDataFrame();
-      } else if (newValues == "@histogram2d") {
-	 newValues = this.updateHistogram2D();
+         newValues = this.updateDataFrame();
+      } else if (newValues == "@array2d") {
+         newValues = this.updateArray2D();
       }
       const changeSet = result.view
         .changeset()
@@ -127,40 +127,48 @@ export class VegaWidget extends DOMWidgetView {
   }
 
   updateDataFrame(): any[] {
-    let res: any[] = [];
     let table = this.model.get("_df");
     // console.log("table", table);
-    for(let i=0; i < table.size; i++){
-      let row: any = [];
-      for (const col of table.columns){
-        if(table.data[col].shape===undefined){
-          row[col] = table.data[col][i];
-	 } else {
-	  row[col] = table.data[col].get(i);
-	 }
-      }
-      res[i] = row;
+    const proxy = rowProxy(table);
+    const rows = Array(table.size);
+
+    for (let i=0, n=rows.length; i<n; ++i) {
+      rows[i] = proxy(i);
     }
-    return res;
+    return rows;
+    // for(let i=0; i < table.size; i++){
+    //     let row: any = [];
+    //     for (const col of table.columns){
+    //         if(table.data[col].shape===undefined){
+    //             row[col] = table.data[col][i];
+    //         } else {
+    //             row[col] = table.data[col].get(i);
+    //         }
+    //     }
+    //     res[i] = row;
+    // }
+    // return res;
   };
 
-  updateHistogram2D(): any[] {
-    // console.log("updateHistogram2D");
-    let res = [];
+  updateArray2D(): any[] {
+    // console.log("updateArray2D");
     let table = this.model.get("_df");
+    let res = Array(table.size*table.size);
     let fancyCol = table.columns[0];
-    let arr = table.data[fancyCol];
-    let cols = fancyCol.split(",");
+    let arr: ndarray.NdArray = table.data[fancyCol];
+    let cols: string[] = fancyCol.split(",");
     //let cols = this.model.get("_columns");
+    let k = 0;
     for(let i=0; i<arr.shape[0];i++){
       for(let j=0; j< arr.shape[1]; j++){
-        let row = [];
+        let row: IDict<Number> = {};
         row[cols[0]] = i;
         row[cols[1]] = j;
-	row[cols[2]] = arr.get(i,j);
-	res.push(row);
+        row[cols[2]] = arr.get(i,j);
+        res[k++] = row;
       }
     }
     return res;
   };
 }
+
