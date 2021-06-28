@@ -34,3 +34,5 @@ class LZ4Compressor(BaseCompressor):
 
     def compress(self, data):
         return lz4.frame.compress(data, compression_level=self._level)
+
+DEFAULT_COMPRESSORS = {'zlib': ZLibCompressor(level=-1), 'lz4': LZ4Compressor(level=0)}

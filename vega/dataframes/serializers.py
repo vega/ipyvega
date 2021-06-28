@@ -1,7 +1,7 @@
 import numpy as np
 import json
 from .. import SourceAdapter
-
+from .compressors import DEFAULT_COMPRESSORS, BaseCompressor
 
 def array_to_json(value):
     """
@@ -45,6 +45,16 @@ def col_to_json(value, compression):
     json_["compression"] = compression.name
     return json_
 
+def _expand_compressors(compr_dict):
+    res = {}
+    for k, v in compr_dict.items():
+        if isinstance(v, str):
+            assert v in DEFAULT_COMPRESSORS
+            res[k] = DEFAULT_COMPRESSORS[v]
+        else:
+            assert v is None or isinstance(v, BaseCompressor)
+            res[k] = v
+
 
 def table_to_json(value, widget):
     if value is None:
@@ -52,13 +62,19 @@ def table_to_json(value, widget):
     _ = widget
     assert isinstance(value, SourceAdapter)
     compression = value._compression or widget.compression
-    if isinstance(compression, dict):  # column specific compressors
-        data = {
-            cn: col_to_json(value.to_array(cn), compression[cn])
-            for cn in value.columns
-        }
+    if isinstance(compression, dict): # column specific compressors
+        compression = _expand_compressors(compression)
+        data = {cn: col_to_json(value.to_array(cn),
+                                compression[cn])
+                for cn in value.columns}
     else:
         # unique compression for all columns
+        if isinstance(compression, str):
+            assert compression in DEFAULT_COMPRESSORS
+            compression = DEFAULT_COMPRESSORS[compression]
+        else:
+            assert compression is None or isinstance(compression,
+                                                     BaseCompressor)
         data = {
             cn: col_to_json(value.to_array(cn), compression)
             for cn in value.columns
