@@ -11,6 +11,7 @@ class NumpyAdapter(SourceAdapter):
         assert source is None or isinstance(
             source, dict
         )  # TODO: check values are ndarrays
+        source = {k:v.copy() for (k, v) in source.items()}
         super().__init__(source, *args, **kw)
 
     @property
@@ -26,4 +27,4 @@ class NumpyAdapter(SourceAdapter):
         for k, v in self._source.items():
             if not np.array_equal(v, other[k]):
                 return False
-        return False
+        return True
