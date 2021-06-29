@@ -1,4 +1,3 @@
-import numpy as np
 from .source_adapter import SourceAdapter
 
 
