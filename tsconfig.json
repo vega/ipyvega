@@ -13,6 +13,9 @@
   ],
   "files": [
     "src/index.ts",
-    "src/widget.ts"
+      "src/widget.ts",
+      "src/serializers.ts",
+      "src/compression.ts",
+      "src/types.d.ts"
   ]
 }
