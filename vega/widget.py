@@ -157,7 +157,8 @@ class VegaWidget(widgets.DOMWidget):
         else:
             self._pending_updates.append(update)
 
-    def update_dataframe(self, key, df, remove=None):
+    def update_dataframe(self, key, df, remove=None,
+                         touch_mode=False, touch=False):
         """Update the chart data with a DataFrame.
 
         Updates are only reflected on the client, i.e., after re-displaying
@@ -177,17 +178,20 @@ class VegaWidget(widgets.DOMWidget):
             property ``t < 5``.
         """
         if isinstance(df, pd.DataFrame):
-            self._df = PandasAdapter(df)
+            self._df = PandasAdapter(df, touch_mode=touch_mode)
         else:
             assert isinstance(df, SourceAdapter)
             self._df = df
+        if touch:
+            self._df.touch()
         update = dict(key=key)
         if remove is not None:
             update['remove'] = remove
         update['insert'] = "@dataframe"
         self.send(dict(type="update", updates=[update]))
 
-    def update_array2d(self, key, arr, columns, remove=None):
+    def update_array2d(self, key, arr, columns, remove=None,
+                       touch_mode=False, touch=False):
         """Update the chart data with a 2d array and their column names.
 
         Updates are only reflected on the client, i.e., after re-displaying
@@ -217,10 +221,12 @@ class VegaWidget(widgets.DOMWidget):
         """
         if isinstance(arr, np.ndarray):
             fancy_col = ','.join(columns)
-            self._df = NumpyAdapter({fancy_col: arr})
+            self._df = NumpyAdapter({fancy_col: arr}, touch_mode=touch_mode)
         else:
             assert isinstance(arr, SourceAdapter)
-            self._df = arr            
+            self._df = arr
+        if touch:
+            self._df.touch()
         update = dict(key=key)
         if remove is not None:
             update['remove'] = remove

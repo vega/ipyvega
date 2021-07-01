@@ -11,8 +11,9 @@ class NumpyAdapter(SourceAdapter):
         assert source is None or isinstance(
             source, dict
         )  # TODO: check values are ndarrays
-        source = {k:v.copy() for (k, v) in source.items()}
         super().__init__(source, *args, **kw)
+        if not self._touch_mode:
+            self._source = {k:v.copy() for (k, v) in self._source.items()}
 
     @property
     def columns(self):

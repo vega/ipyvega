@@ -26,9 +26,10 @@ class TableType(SciType):
         old_value = obj._trait_values.get(self.name, self.default_value)
         obj._trait_values[self.name] = new_value
         if (
-            (old_value is None and new_value is not None)
-            or (old_value is Undefined and new_value is not Undefined)
-            or not old_value.equals(new_value)
+                (old_value is None and new_value is not None)
+                or (old_value is Undefined and new_value is not Undefined)
+                or (old_value.is_touched or new_value.is_touched)
+                or not old_value._equals_no_touch_mode(new_value)
         ):
             obj._notify_trait(self.name, old_value, new_value)
 
