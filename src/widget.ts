@@ -2,8 +2,7 @@ import { DOMWidgetView, DOMWidgetModel } from "@jupyter-widgets/base";
 import { vegaEmbed } from "./index";
 import { Result } from "vega-embed";
 import * as ndarray from "ndarray";
-//import * as ndarray_unpack from "ndarray-unpack";
-import { table_serialization, rowProxy, IDict } from "./serializers";
+import { table_serialization, rowProxy, IDict } from "ipytablewidgets";
 
 interface WidgetUpdate {
   key: string;

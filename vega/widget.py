@@ -3,12 +3,15 @@ from __future__ import print_function
 import json
 import pandas as pd
 
-# from .dataframes.compressors import *
-from .dataframes.serializers import serialization
-from .dataframes.source_adapter import SourceAdapter
-from .dataframes.pandas_adapter import PandasAdapter
-from .dataframes.numpy_adapter import NumpyAdapter
-from .dataframes.traitlets import TableType
+# from ipytablewidgets.compressors import *
+from ipytablewidgets import (serialization,
+                             SourceAdapter,
+                             PandasAdapter,
+                             NumpyAdapter, TableType)
+#from ipytablewidgets.source_adapter import SourceAdapter
+#from ipytablewidgets.pandas_adapter import PandasAdapter
+#from ipytablewidgets.numpy_adapter import NumpyAdapter
+#from ipytablewidgets.traitlets import TableType
 import numpy as np
 try:
     import ipywidgets as widgets
