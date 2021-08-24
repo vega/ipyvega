@@ -146,6 +146,10 @@ class VegaWidget(widgets.DOMWidget):
         :param Optional[List[dict]] insert:
             new items to add to the chart data.
         """
+        if isinstance(insert, (pd.DataFrame, PandasAdapter)):
+            return self.update_dataframe(key, df=insert, remove=remove)
+        elif isinstance(insert, (np.ndarray, NumpyAdapter)):
+            return self.update_array2d(key, arr=insert, columns=['x', 'y', 'z'], remove=remove)
         update = dict(key=key)
 
         if remove is not None:
@@ -161,7 +165,7 @@ class VegaWidget(widgets.DOMWidget):
             self._pending_updates.append(update)
 
     def update_dataframe(self, key, df, remove=None,
-                         touch_mode=False, touch=False):
+                         touch_mode=True, touch=True):
         """Update the chart data with a DataFrame.
 
         Updates are only reflected on the client, i.e., after re-displaying
@@ -194,7 +198,7 @@ class VegaWidget(widgets.DOMWidget):
         self.send(dict(type="update", updates=[update]))
 
     def update_array2d(self, key, arr, columns, remove=None,
-                       touch_mode=False, touch=False):
+                       touch_mode=True, touch=True):
         """Update the chart data with a 2d array and their column names.
 
         Updates are only reflected on the client, i.e., after re-displaying
