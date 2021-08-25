@@ -3,6 +3,8 @@ import vegaEmbed, { EmbedOptions, Mode } from "vega-embed";
 import { TopLevelSpec } from "vega-lite";
 
 export { default as vegaEmbed } from "vega-embed";
+export { VegaWidgetModel, VegaWidget } from "./widget";
+export let version = require('../package.json').version;
 
 function javascriptIndex(selector: string, outputs: any) {
   // Return the index in the output array of the JS repr of this viz

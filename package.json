@@ -35,5 +35,11 @@
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0"
   },
+  "files": [
+      "vega/static/"
+  ],
+  "jupyterlab": {
+    "extension": "vega/static/labplugin"
+  },
   "private": true
 }

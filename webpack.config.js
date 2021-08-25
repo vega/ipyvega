@@ -19,25 +19,30 @@ const outputLibraryTarget = "amd";
 module.exports = [
   // the main vega extension
   Object.assign({}, commonConfig, {
-    entry: "./src/index.ts",
+    entry: "./src/extension.ts",
     output: {
-      filename: "index.js",
-      library: "nbextensions/jupyter-vega/index",
+      filename: "extension.js",
       path: outputPath,
       libraryTarget: outputLibraryTarget
     }
   }),
   // the widget extension
   Object.assign({}, commonConfig, {
-    entry: "./src/widget.ts",
+    entry: "./src/index.ts",
     output: {
-      filename: "widget.js",
+      filename: "index.js",
       path: outputPath,
       libraryTarget: outputLibraryTarget
     },
-    externals: {
-      "@jupyter-widgets/base": "@jupyter-widgets/base",
-      "./index": "nbextensions/jupyter-vega/index"
-    }
-  })
+    externals: ["@jupyter-widgets/base"]
+  }),
+  Object.assign({}, commonConfig, {
+    entry: "./src/labplugin.ts",
+    output: {
+      filename: "labplugin.js",
+      path: outputPath,
+      libraryTarget: outputLibraryTarget
+    },
+    externals: ["@jupyter-widgets/base"]
+  }),
 ];

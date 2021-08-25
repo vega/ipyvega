@@ -2,16 +2,14 @@ from __future__ import print_function
 
 import json
 import pandas as pd
+from ._frontend import module_name, EXTENSION_SPEC_VERSION
 
 # from ipytablewidgets.compressors import *
 from ipytablewidgets import (serialization,
                              SourceAdapter,
                              PandasAdapter,
                              NumpyAdapter, TableType)
-#from ipytablewidgets.source_adapter import SourceAdapter
-#from ipytablewidgets.pandas_adapter import PandasAdapter
-#from ipytablewidgets.numpy_adapter import NumpyAdapter
-#from ipytablewidgets.traitlets import TableType
+
 import numpy as np
 try:
     import ipywidgets as widgets
@@ -30,6 +28,7 @@ except ImportError as err:
 
 __all__ = ['VegaWidget']
 
+@widgets.register
 class VegaWidget(widgets.DOMWidget):
     """An IPython widget display a vega chart.
 
@@ -71,10 +70,10 @@ class VegaWidget(widgets.DOMWidget):
 
     _view_name = Unicode('VegaWidget').tag(sync=True)
     _model_name = Unicode('VegaWidgetModel').tag(sync=True)
-    _view_module = Unicode('nbextensions/jupyter-vega/widget').tag(sync=True)
-    _model_module = Unicode('nbextensions/jupyter-vega/widget').tag(sync=True)
-    _view_module_version = Unicode('0.1.0').tag(sync=True)
-    _model_module_version = Unicode('0.1.0').tag(sync=True)
+    _view_module = Unicode(module_name).tag(sync=True)
+    _model_module = Unicode(module_name).tag(sync=True)
+    _view_module_version = Unicode(EXTENSION_SPEC_VERSION).tag(sync=True)
+    _model_module_version = Unicode(EXTENSION_SPEC_VERSION).tag(sync=True)
     _spec_source = Unicode('null').tag(sync=True)
     _opt_source = Unicode('null').tag(sync=True)
     compression = None
@@ -149,7 +148,9 @@ class VegaWidget(widgets.DOMWidget):
         if isinstance(insert, (pd.DataFrame, PandasAdapter)):
             return self.update_dataframe(key, df=insert, remove=remove)
         elif isinstance(insert, (np.ndarray, NumpyAdapter)):
-            return self.update_array2d(key, arr=insert, columns=['x', 'y', 'z'], remove=remove)
+            return self.update_array2d(key, arr=insert,
+                                       columns=['x', 'y', 'z'],
+                                       remove=remove)
         update = dict(key=key)
 
         if remove is not None:
