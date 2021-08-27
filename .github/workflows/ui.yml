@@ -1,0 +1,54 @@
+name: UI Tests
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  run:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        channels: conda-forge, anaconda
+    - name: Create the conda environment with ipytablewidgets
+      run: |
+        git clone https://github.com/progressivis/ipytablewidgets.git
+	cd ipytablewidgets
+        conda env create -q python=${{ matrix.python_version }} -f environment.yml -n ipyvega
+	cd ..
+    - name: Run tests
+      run: |
+        source /usr/share/miniconda/etc/profile.d/conda.sh
+        conda activate ipyvega
+        conda install jupyterlab=3.0.11 -c conda-forge # required 4 galata
+	conda install poetry -c conda-forge -y
+        poetry config virtualenvs.in-project true
+        poetry install
+        npm install
+        npm run build
+        jupyter labextension install .
+        conda install yarn
+        cd ui-tests/	
+        npm i jest
+        npm i @types/jest
+        yarn
+        yarn run start-jlab:detached
+        yarn run test
