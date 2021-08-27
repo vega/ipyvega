@@ -39,7 +39,7 @@ jobs:
         source /usr/share/miniconda/etc/profile.d/conda.sh
         conda activate ipyvega
         conda install jupyterlab=3.0.11 -c conda-forge # required 4 galata
-	conda install poetry -c conda-forge -y
+        conda install poetry -c conda-forge -y
         poetry config virtualenvs.in-project true
         poetry install
         npm install
