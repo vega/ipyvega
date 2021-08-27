@@ -31,9 +31,9 @@ jobs:
     - name: Create the conda environment with ipytablewidgets
       run: |
         git clone https://github.com/progressivis/ipytablewidgets.git
-	cd ipytablewidgets
+        cd ipytablewidgets
         conda env create -q python=${{ matrix.python_version }} -f environment.yml -n ipyvega
-	cd ..
+        cd ..
     - name: Run tests
       run: |
         source /usr/share/miniconda/etc/profile.d/conda.sh
