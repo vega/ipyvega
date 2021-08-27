@@ -32,7 +32,7 @@ jobs:
       run: |
         git clone https://github.com/progressivis/ipytablewidgets.git
         cd ipytablewidgets
-        conda env create -q python=${{ matrix.python_version }} -f environment.yml -n ipyvega
+        conda env create -q python=3.9 -f environment.yml -n ipyvega
         cd ..
     - name: Run tests
       run: |
