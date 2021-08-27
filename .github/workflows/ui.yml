@@ -45,9 +45,10 @@ jobs:
         npm run build
         jupyter labextension install .
         conda install yarn
-        cd ui-tests/	
+        cd ui-tests/
+        jupyter trust tests/notebooks/NBTest.ipynb	
         npm i jest
         npm i @types/jest
-        yarn --no-lockfile
+        yarn
         yarn run start-jlab:detached
         yarn run test
