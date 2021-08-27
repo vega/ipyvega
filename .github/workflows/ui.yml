@@ -54,7 +54,7 @@ jobs:
         yarn run start-jlab:detached
         yarn run test
     - name: Upload output file
-      if: always()
+      if: cancelled()
       uses: actions/upload-artifact@v2
       with:
         name: cell-artifact
