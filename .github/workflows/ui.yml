@@ -48,6 +48,6 @@ jobs:
         cd ui-tests/	
         npm i jest
         npm i @types/jest
-        yarn
+        yarn --no-lockfile
         yarn run start-jlab:detached
         yarn run test
