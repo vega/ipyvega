@@ -48,8 +48,6 @@ jobs:
         conda install yarn
         cd ui-tests/
         jupyter trust tests/notebooks/NBTest.ipynb	
-        npm i jest
-        npm i @types/jest
         yarn
         yarn run start-jlab:detached
         yarn run test
