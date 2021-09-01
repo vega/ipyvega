@@ -5,7 +5,7 @@ from toolz import curried
 import pandas as pd
 import altair as alt
 
-from .dataframes.pandas_adapter import PandasAdapter
+from ipytablewidgets import PandasAdapter
 
 
 @curried.curry

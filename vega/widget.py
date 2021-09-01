@@ -145,12 +145,12 @@ class VegaWidget(widgets.DOMWidget):
         :param Optional[List[dict]] insert:
             new items to add to the chart data.
         """
-        if isinstance(insert, (pd.DataFrame, PandasAdapter)):
-            return self.update_dataframe(key, df=insert, remove=remove)
-        elif isinstance(insert, (np.ndarray, NumpyAdapter)):
+        if isinstance(insert, (np.ndarray, NumpyAdapter)):
             return self.update_array2d(key, arr=insert,
                                        columns=['x', 'y', 'z'],
                                        remove=remove)
+        elif isinstance(insert, (pd.DataFrame, SourceAdapter)):
+            return self.update_dataframe(key, df=insert, remove=remove)
         update = dict(key=key)
 
         if remove is not None:
