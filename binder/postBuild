@@ -1,0 +1,14 @@
+set -ex
+conda info
+#git submodule update --init --recursive
+#poetry env use /srv/conda/bin/python
+poetry config virtualenvs.create false
+cp binder/pyproject.toml .
+rm yarn.lock
+poetry install
+npm install
+npm run build
+jupyter nbextension install --py --symlink --sys-prefix vega
+jupyter nbextension enable --py --sys-prefix vega
+jupyter labextension install .
+#https://mybinder.org/v2/gh/jdfekete/ipyvega.git/bench

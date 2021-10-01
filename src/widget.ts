@@ -2,7 +2,7 @@ import { DOMWidgetView, DOMWidgetModel } from "@jupyter-widgets/base";
 import { vegaEmbed } from "./index";
 import { Result } from "vega-embed";
 import * as ndarray from "ndarray";
-import { table_serialization, rowProxy, IDict } from "ipytablewidgets";
+import { table_serialization, rowProxy, IDict } from "jupyter-tablewidgets";
 
 interface WidgetUpdate {
   key: string;
@@ -28,7 +28,7 @@ function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
 export class VegaWidgetModel extends DOMWidgetModel {
   defaults() {
         return {...DOMWidgetModel.prototype.defaults(),
-            _model_name: "VegaWidgetModule",
+            _model_name: "VegaWidgetModel",
             _view_name: "VegaWidget",
             _spec_source: "",
             _opt_source: "",

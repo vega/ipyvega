@@ -21,7 +21,7 @@
   "dependencies": {
     "@jupyter-widgets/base": "4.0.0",
     "@types/webpack-env": "*",
-    "ipytablewidgets": "progressivis/ipytablewidgets-js",
+    "jupyter-tablewidgets": "^0.1.0",
     "ndarray": "^1.0.19",
     "vega": "5.20.2",
     "vega-embed": "^6.18.2",
@@ -36,7 +36,7 @@
     "webpack-cli": "^4.7.0"
   },
   "files": [
-      "vega/static/"
+    "vega/static/"
   ],
   "jupyterlab": {
     "extension": "vega/static/labplugin"

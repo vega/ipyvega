@@ -28,10 +28,6 @@ jupyter = "^1.0.0"
 pandas = "^1.0.0"
 ipytablewidgets = "^0.1.1"
 
-[tool.poetry.dev-dependencies]
-pytest = "^6.2"
-altair = "^4.0.1"
-
 [tool.poetry.extras]
 widget = [
     "ipywidgets"
