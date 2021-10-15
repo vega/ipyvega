@@ -23,10 +23,10 @@ exclude = ["notebooks/*"]
 readme = "README.rst"
 
 [tool.poetry.dependencies]
-python = ">= 3.6.1"
+python = ">= 3.8"
 jupyter = "^1.0.0"
 pandas = "^1.0.0"
-ipytablewidgets = "^0.1.1"
+ipytablewidgets = "^0.1.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"

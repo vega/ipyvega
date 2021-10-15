@@ -21,7 +21,7 @@
   "dependencies": {
     "@jupyter-widgets/base": "4.0.0",
     "@types/webpack-env": "*",
-    "jupyter-tablewidgets": "^0.1.0",
+    "jupyter-tablewidgets": "^0.1.2",
     "ndarray": "^1.0.19",
     "vega": "5.20.2",
     "vega-embed": "^6.18.2",

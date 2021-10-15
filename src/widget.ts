@@ -98,7 +98,7 @@ export class VegaWidget extends DOMWidgetView {
         .remove(filter)
         .insert(newValues);
 
-      await result.view.change(update.key, changeSet).runAsync();
+      await result.view.change(update.key, changeSet).resize().runAsync();
     };
 
     const applyUpdates = async (message: WidgetUpdateMessage) => {

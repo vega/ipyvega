@@ -1,5 +1,7 @@
 # Functions to stream Altair specifications
 
+import warnings
+
 from pprint import pprint
 from toolz import curried
 
@@ -30,6 +32,7 @@ def to_streaming(data, context=None, exceptions=None, debug=False):
         raise TypeError(f"Expected DataFrame got: {type(data)}")
     if hasattr(data, "__geo_interface__"):
         # raise TypeError("Unhandled __geo_interface__ for now")
+        warnings.warn("Unhandled __geo_interface__, not streaming")
         return alt.to_values(data)
     if id_ in exceptions:
         if debug:
@@ -71,6 +74,7 @@ def stream(alt_spec, exceptions=None, reuse=False, debug=False):
     debug: boolean
         if True, prints debugging information
     """
+    alt.data_transformers.enable('default')
     context = {}
     with alt.data_transformers.enable('streaming',
                                       context=context,
@@ -85,16 +89,29 @@ def stream(alt_spec, exceptions=None, reuse=False, debug=False):
         return context, vw
 
 
-def test_altair():
+def test_altair(names=None):
     import ast
+    import time
     errors = {}
+    results = {}
+    if names and not isinstance(names, list):
+        names = [names]
+        print('testing ', names)
     for ex in alt.examples.iter_examples():
-        print(ex['name'])
+        name = ex['name']
+        if names and name not in names:
+            continue
+        print(name)
         with open(ex['filename'], 'r') as fin:
             code = fin.read()
         locs = {}
         root_node = ast.parse(code, ex['filename'], mode='exec')
         last_expr = root_node.body[-1]
+        # Patch the example source file at the AST level.
+        # The last expression of example files only contain an expression
+        # that is not returned when executing the file. Transform the
+        # last statement to an assignment to the value 'result' that is
+        # then stored in the local `locs` dictionary and returned.
         if isinstance(last_expr, ast.Expr):
             last = ast.Assign(targets=[ast.Name(id='result', ctx=ast.Store(),
                                                 lineno=0, col_offset=0)],
@@ -107,10 +124,17 @@ def test_altair():
             code = compile(root_node, ex['filename'], mode='exec')
             exec(code, globals(), locs)
             if 'result' in locs:
+                start = time.process_time_ns()
                 stream(locs['result'])
+                mid = time.process_time_ns()
+                vw = VegaWidget(locs['result'].to_dict())
+                display(vw)
+                results[name] = (mid - start,
+                                 time.process_time_ns() - mid)
         except Exception as exc:
             print('Error', exc)
             errors[ex['name']] = str(exc)
             pass
     if errors:
         pprint(errors)
+    pprint(results)
