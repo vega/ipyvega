@@ -126,7 +126,7 @@ class VegaWidget(widgets.DOMWidget):
         self._opt_source = json.dumps(value)
         self._reset()
 
-    def update(self, key, remove=None, insert=None):
+    def update(self, key, remove=None, insert=None, resize=True):
         """Update the chart data.
 
         Updates are only reflected on the client, i.e., after re-displaying
@@ -144,13 +144,18 @@ class VegaWidget(widgets.DOMWidget):
 
         :param Optional[List[dict]] insert:
             new items to add to the chart data.
+
+        :param Optional[Bool] resize:
+            trigger a resize of the widget after updating.
         """
         if isinstance(insert, (np.ndarray, NumpyAdapter)):
             return self.update_array2d(key, arr=insert,
                                        columns=['x', 'y', 'z'],
-                                       remove=remove)
+                                       remove=remove,
+                                       resize=resize)
         elif isinstance(insert, (pd.DataFrame, SourceAdapter)):
-            return self.update_dataframe(key, df=insert, remove=remove)
+            return self.update_dataframe(key, df=insert, remove=remove,
+                                         resize=resize)
         update = dict(key=key)
 
         if remove is not None:
@@ -160,12 +165,12 @@ class VegaWidget(widgets.DOMWidget):
             update['insert'] = insert
 
         if self._displayed:
-            self.send(dict(type="update", updates=[update]))
+            self.send(dict(type="update", updates=[update], resize=resize))
 
         else:
             self._pending_updates.append(update)
 
-    def update_dataframe(self, key, df, remove=None,
+    def update_dataframe(self, key, df, remove=None, resize=True,
                          touch_mode=True, touch=True):
         """Update the chart data with a DataFrame.
 
@@ -176,7 +181,7 @@ class VegaWidget(widgets.DOMWidget):
             the name of the dataset to update, as declared in the data
             section of the spec.
 
-        :param pd.DataFrame insert:
+        :param pd.DataFrame df:
             new items to add to the chart data.
 
         :param Optional[str] remove:
@@ -184,6 +189,9 @@ class VegaWidget(widgets.DOMWidget):
             be accessed as ``datum``. For example, the call
             ``update(remove="datum.t < 5")`` removes all items with the
             property ``t < 5``.
+
+        :param Optional[Bool] resize:
+            trigger a resize of the widget after updating.
         """
         if isinstance(df, pd.DataFrame):
             self._df = PandasAdapter(df, touch_mode=touch_mode)
@@ -196,9 +204,9 @@ class VegaWidget(widgets.DOMWidget):
         if remove is not None:
             update['remove'] = remove
         update['insert'] = "@dataframe"
-        self.send(dict(type="update", updates=[update]))
+        self.send(dict(type="update", updates=[update], resize=resize))
 
-    def update_array2d(self, key, arr, columns, remove=None,
+    def update_array2d(self, key, arr, columns, remove=None, resize=True,
                        touch_mode=True, touch=True):
         """Update the chart data with a 2d array and their column names.
 
@@ -221,6 +229,9 @@ class VegaWidget(widgets.DOMWidget):
             ``update(remove="datum.t < 5")`` removes all items with the
             property ``t < 5``.
 
+        :param Optional[Bool] resize:
+            trigger a resize of the widget after updating.
+
         NB: the array will be wrapped as a one column Table.
         The unique column (fancy_col below) is built as a comma separated
         coords string (i.e. columns param.)
@@ -239,4 +250,4 @@ class VegaWidget(widgets.DOMWidget):
         if remove is not None:
             update['remove'] = remove
         update['insert'] = "@array2d"
-        self.send(dict(type="update", updates=[update]))
+        self.send(dict(type="update", updates=[update], resize=resize))

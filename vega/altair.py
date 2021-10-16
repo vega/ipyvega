@@ -56,7 +56,7 @@ def to_streaming(data, context=None, exceptions=None, debug=False):
 alt.data_transformers.register('streaming', to_streaming)
 
 
-def stream(alt_spec, exceptions=None, reuse=False, debug=False):
+def stream(alt_spec, exceptions=None, reuse=False, resize=True, debug=False):
     """
     Send an Altair specification to the notebook using the streaming API
 
@@ -71,6 +71,10 @@ def stream(alt_spec, exceptions=None, reuse=False, debug=False):
         context dictionary associate a dataframe id with a pair
         (name, data). The name is useful to reuse the widget for
         streaming more data using the widget `.update` method.
+    resize: boolean
+        Resize vega component after sending the update. Some charts
+        need it, others don't. Defaults to True but can be overridden
+        here.
     debug: boolean
         if True, prints debugging information
     """

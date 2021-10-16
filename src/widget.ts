@@ -13,6 +13,7 @@ interface WidgetUpdate {
 interface WidgetUpdateMessage {
   type: "update";
   updates: WidgetUpdate[];
+  resize: boolean;
 }
 
 // validate the ev object and cast it to the correct type
@@ -76,7 +77,7 @@ export class VegaWidget extends DOMWidgetView {
       }
     };
 
-    const applyUpdate = async (update: WidgetUpdate) => {
+    const applyUpdate = async (update: WidgetUpdate, resize: boolean) => {
       const result = this.result;
       if (result == null) {
         throw new Error("Internal error: no view attached to widget");
@@ -98,12 +99,14 @@ export class VegaWidget extends DOMWidgetView {
         .remove(filter)
         .insert(newValues);
 
-      await result.view.change(update.key, changeSet).resize().runAsync();
+      const view = result.view.change(update.key, changeSet);
+      if (resize) view.resize();
+      view.runAsync();
     };
 
     const applyUpdates = async (message: WidgetUpdateMessage) => {
       for (const update of message.updates) {
-        await applyUpdate(update);
+        await applyUpdate(update, message.resize);
       }
     };
 

@@ -817,9 +817,9 @@ duplexer2@~0.0.2:
     readable-stream "~1.1.9"
 
 electron-to-chromium@^1.3.867:
-  version "1.3.870"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.870.tgz#c15c921e66a46985181b261f8093b91c2abb6604"
-  integrity sha512-PiJMshfq6PL+i1V+nKLwhHbCKeD8eAz8rvO9Cwk/7cChOHJBtufmjajLyYLsSRHguRFiOCVx3XzJLeZsIAYfSA==
+  version "1.3.871"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.871.tgz#6e87365fd72037a6c898fb46050ad4be3ac9ef62"
+  integrity sha512-qcLvDUPf8DSIMWarHT2ptgcqrYg62n3vPA7vhrOF24d8UNzbUBaHu2CySiENR3nEDzYgaN60071t0F6KLYMQ7Q==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -1172,7 +1172,7 @@ json5@^2.1.1:
   dependencies:
     minimist "^1.2.5"
 
-"jupyter-tablewidgets@file:../ipytablewidgets/js":
+"jupyter-tablewidgets@file:ipytablewidgets/js":
   version "0.1.2"
   dependencies:
     "@jupyter-widgets/base" "4.0.0"
