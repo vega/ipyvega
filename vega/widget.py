@@ -83,7 +83,7 @@ class VegaWidget(widgets.DOMWidget):
         super().__init__(**kwargs)
         self._spec_source = json.dumps(spec)
         self._opt_source = json.dumps(opt)
-
+        self._resize = True # only for pending updates
         self._displayed = False
         self._pending_updates = []
 
@@ -101,7 +101,7 @@ class VegaWidget(widgets.DOMWidget):
         if not self._pending_updates:
             return
 
-        self.send(dict(type="update", updates=self._pending_updates))
+        self.send(dict(type="update", updates=self._pending_updates, resize=self._resize))
         self._pending_updates = []
 
     def _reset(self):
@@ -168,6 +168,7 @@ class VegaWidget(widgets.DOMWidget):
             self.send(dict(type="update", updates=[update], resize=resize))
 
         else:
+            self._resize = resize
             self._pending_updates.append(update)
 
     def update_dataframe(self, key, df, remove=None, resize=True,
