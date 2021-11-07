@@ -1,6 +1,7 @@
 # Functions to stream Altair specifications
 
 import warnings
+import pkgutil
 
 from pprint import pprint
 from toolz import curried
@@ -78,7 +79,6 @@ def stream(alt_spec, exceptions=None, reuse=False, resize=True, debug=False):
     debug: boolean
         if True, prints debugging information
     """
-    alt.data_transformers.enable('default')
     context = {}
     with alt.data_transformers.enable('streaming',
                                       context=context,
@@ -94,51 +94,40 @@ def stream(alt_spec, exceptions=None, reuse=False, resize=True, debug=False):
 
 
 def test_altair(names=None):
-    import ast
     import time
+    try:
+        from altair_examples import iter_examples, exec_example
+    except:
+        return
+
     errors = {}
     results = {}
     if names and not isinstance(names, list):
         names = [names]
         print('testing ', names)
-    for ex in alt.examples.iter_examples():
-        name = ex['name']
+    for example in iter_examples():
+        name = example['name']
         if names and name not in names:
             continue
         print(name)
-        with open(ex['filename'], 'r') as fin:
-            code = fin.read()
-        locs = {}
-        root_node = ast.parse(code, ex['filename'], mode='exec')
-        last_expr = root_node.body[-1]
-        # Patch the example source file at the AST level.
-        # The last expression of example files only contain an expression
-        # that is not returned when executing the file. Transform the
-        # last statement to an assignment to the value 'result' that is
-        # then stored in the local `locs` dictionary and returned.
-        if isinstance(last_expr, ast.Expr):
-            last = ast.Assign(targets=[ast.Name(id='result', ctx=ast.Store(),
-                                                lineno=0, col_offset=0)],
-                              value=last_expr.value,
-                              lineno=last_expr.lineno,
-                              col_offset=last_expr.col_offset)
-            root_node.body[-1] = last
-        # print(ast.dump(root_node, indent=4))
+        start = time.process_time_ns()
+        chart = exec_example(example)
+        if chart is None:
+            print('Error for', example['name'])
+            errors[name] = 'No value returned by '+example['name']
         try:
-            code = compile(root_node, ex['filename'], mode='exec')
-            exec(code, globals(), locs)
-            if 'result' in locs:
-                start = time.process_time_ns()
-                stream(locs['result'])
-                mid = time.process_time_ns()
-                vw = VegaWidget(locs['result'].to_dict())
-                display(vw)
-                results[name] = (mid - start,
-                                 time.process_time_ns() - mid)
+            mid = time.process_time_ns()
+            try:
+                stream(chart)
+                # vw = VegaWidget(chart.to_dict())
+                # display(vw)
+            except Exception as exc:
+                errors[name] = str(exc) + errors.get(name, "")
+            results[name] = (mid - start,
+                             time.process_time_ns() - mid)
         except Exception as exc:
             print('Error', exc)
-            errors[ex['name']] = str(exc)
-            pass
+            errors[name] = str(exc) + errors.get(name, "")
     if errors:
         pprint(errors)
     pprint(results)

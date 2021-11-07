@@ -26,7 +26,7 @@ readme = "README.rst"
 python = ">= 3.8"
 jupyter = "^1.0.0"
 pandas = "^1.0.0"
-ipytablewidgets = "^0.1.2"
+ipytablewidgets = {path = "./ipytablewidgets"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
