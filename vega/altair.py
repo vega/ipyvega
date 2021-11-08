@@ -1,5 +1,7 @@
 # Functions to stream Altair specifications
 
+import os
+import time
 import warnings
 import pkgutil
 
@@ -10,6 +12,8 @@ from IPython.display import display
 
 import pandas as pd
 import altair as alt
+from altair import examples
+from altair.utils.execeval import eval_block
 
 from .widget import VegaWidget
 
@@ -93,29 +97,52 @@ def stream(alt_spec, exceptions=None, reuse=False, resize=True, debug=False):
         return context, vw
 
 
-def test_altair(names=None):
-    import time
-    try:
-        from altair_examples import iter_examples, exec_example
-    except:
-        return
+def _dataframe_from(url):
+    from vega_datasets import data
+    if not isinstance(url, str):
+        return url
+    for dname in data.list_datasets():
+        ds = getattr(data, dname.replace("-", "_"))
+        if ds.url == url:
+            print('substituting url by dataframe for', dname)
+            return ds()
+    print('Cannot substite url by dataset for', url, 'trying direct load')
+    return pd.read_csv(url)
 
+
+def _exec_example(example):
+    """Execute an example return by `iter_examples' and returns the chart.
+
+    Parameters
+    ----------
+    example: dict
+        the example dict should contain the key "filename", as returned by
+        `iter_examples`
+    """
+    with open(example["filename"], "r") as fin:
+        code = fin.read()
+    return eval_block(code, filename=example["filename"])
+
+
+def stream_examples(names=None):
     errors = {}
-    results = {}
-    if names and not isinstance(names, list):
-        names = [names]
+    if names:
+        if not isinstance(names, list):
+            names = [names]
         print('testing ', names)
-    for example in iter_examples():
+        names = set(names)
+
+    for example in examples.iter_examples():
         name = example['name']
         if names and name not in names:
             continue
         print(name)
-        start = time.process_time_ns()
-        chart = exec_example(example)
+        chart = _exec_example(example)
         if chart is None:
             print('Error for', example['name'])
             errors[name] = 'No value returned by '+example['name']
         try:
+            chart.data = _dataframe_from(chart.data)
             mid = time.process_time_ns()
             try:
                 stream(chart)
@@ -123,11 +150,9 @@ def test_altair(names=None):
                 # display(vw)
             except Exception as exc:
                 errors[name] = str(exc) + errors.get(name, "")
-            results[name] = (mid - start,
-                             time.process_time_ns() - mid)
+                print(str(exc) + errors.get(name, ""))
+            print("Time:", (time.process_time_ns() - mid)/1000000000.0, "s")
         except Exception as exc:
             print('Error', exc)
             errors[name] = str(exc) + errors.get(name, "")
-    if errors:
-        pprint(errors)
-    pprint(results)
+    return errors
