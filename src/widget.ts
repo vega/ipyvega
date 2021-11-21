@@ -28,20 +28,20 @@ function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
 
 export class VegaWidgetModel extends DOMWidgetModel {
   defaults() {
-        return {...DOMWidgetModel.prototype.defaults(),
-            _model_name: "VegaWidgetModel",
-            _view_name: "VegaWidget",
-            _spec_source: "",
-            _opt_source: "",
-            _df:  ndarray([]),
-            _columns: []
-            }
-   };
-  static serializers = {
-        ...DOMWidgetModel.serializers,
-        _df: table_serialization
+    return {
+      ...DOMWidgetModel.prototype.defaults(),
+      _model_name: "VegaWidgetModel",
+      _view_name: "VegaWidget",
+      _spec_source: "",
+      _opt_source: "",
+      _df: ndarray([]),
+      _columns: [],
     };
-
+  }
+  static serializers = {
+    ...DOMWidgetModel.serializers,
+    _df: table_serialization,
+  };
 }
 
 export class VegaWidget extends DOMWidgetView {
@@ -89,10 +89,10 @@ export class VegaWidget extends DOMWidgetView {
       );
       let newValues = update.insert || [];
       if (newValues == "@dataframe") {
-         // console.log("@dataframe");
-         newValues = this.updateDataFrame();
+        // console.log("@dataframe");
+        newValues = this.updateDataFrame();
       } else if (newValues == "@array2d") {
-         newValues = this.updateArray2D();
+        newValues = this.updateArray2D();
       }
       const changeSet = result.view
         .changeset()
@@ -134,7 +134,7 @@ export class VegaWidget extends DOMWidgetView {
     const proxy = rowProxy(table);
     const rows = Array(table.size);
 
-    for (let i=0, n=rows.length; i<n; ++i) {
+    for (let i = 0, n = rows.length; i < n; ++i) {
       rows[i] = proxy(i);
     }
     return rows;
@@ -150,27 +150,26 @@ export class VegaWidget extends DOMWidgetView {
     //     res[i] = row;
     // }
     // return res;
-  };
+  }
 
   updateArray2D(): any[] {
     // console.log("updateArray2D");
     let table = this.model.get("_df");
-    let res = Array(table.size*table.size);
+    let res = Array(table.size * table.size);
     let fancyCol = table.columns[0];
     let arr: ndarray.NdArray = table.data[fancyCol];
     let cols: string[] = fancyCol.split(",");
     //let cols = this.model.get("_columns");
     let k = 0;
-    for(let i=0; i<arr.shape[0];i++){
-      for(let j=0; j< arr.shape[1]; j++){
+    for (let i = 0; i < arr.shape[0]; i++) {
+      for (let j = 0; j < arr.shape[1]; j++) {
         let row: IDict<Number> = {};
         row[cols[0]] = i;
         row[cols[1]] = j;
-        row[cols[2]] = arr.get(i,j);
+        row[cols[2]] = arr.get(i, j);
         res[k++] = row;
       }
     }
     return res;
-  };
+  }
 }
-
