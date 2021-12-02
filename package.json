@@ -15,7 +15,7 @@
   "scripts": {
     "format": "prettier --write 'src/*.ts'",
     "lint": "prettier --check 'src/*.ts'",
-    "build": "webpack --mode production",
+    "build": "webpack --mode production && cp dist/* vega/static && cp src/vega.js vega/static",
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {

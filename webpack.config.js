@@ -1,43 +1,18 @@
-const commonConfig = {
-  resolve: {
-    extensions: [".ts", ".tsx", ".js"]
-  },
-  devtool: "source-map",
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader"
-      }
-    ]
-  }
-};
-
-const outputPath = __dirname + "/vega/static";
-const outputLibraryTarget = "amd";
+const version = require('./package.json').version;
+const path = require('path');
 
 module.exports = [
-  // the main vega extension
-  Object.assign({}, commonConfig, {
+  {
     entry: "./src/index.ts",
     output: {
       filename: "index.js",
-      library: "nbextensions/jupyter-vega/index",
-      path: outputPath,
-      libraryTarget: outputLibraryTarget
-    }
-  }),
-  // the widget extension
-  Object.assign({}, commonConfig, {
-    entry: "./src/widget.ts",
-    output: {
-      filename: "widget.js",
-      path: outputPath,
-      libraryTarget: outputLibraryTarget
+      path: path.resolve(__dirname, "dist"),
+      libraryTarget: "amd",
+      publicPath: 'https://unpkg.com/jupyter-vega@' + version + '/dist/'
     },
-    externals: {
-      "@jupyter-widgets/base": "@jupyter-widgets/base",
-      "./index": "nbextensions/jupyter-vega/index"
-    }
-  })
+    resolve: { extensions: [".ts", ".tsx", ".js"] },
+    module: { rules: [{ test: /\.tsx?$/, loader: "ts-loader" }] },
+    externals: ["@jupyter-widgets/base"],
+    devtool: "source-map"
+  }
 ];
