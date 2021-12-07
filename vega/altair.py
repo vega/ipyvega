@@ -1,11 +1,8 @@
 # Functions to stream Altair specifications
 
-import os
 import time
 import warnings
-import pkgutil
 
-from pprint import pprint
 from toolz import curried
 
 from IPython.display import display
