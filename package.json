@@ -15,7 +15,7 @@
   "scripts": {
     "format": "prettier --write 'src/*.ts'",
     "lint": "prettier --check 'src/*.ts'",
-    "build": "webpack --mode production && cp dist/* vega/static && cp src/vega.js vega/static",
+    "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "@types/webpack-env": "*"
   },
   "devDependencies": {
+    "filemanager-webpack-plugin": "^6.1.7",
     "prettier": "^2.4.1",
     "typescript": "^4.4.4",
     "ts-loader": "^9.2.6",
