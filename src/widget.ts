@@ -1,4 +1,5 @@
-import { DOMWidgetView } from "@jupyter-widgets/base";
+import { DOMWidgetView, DOMWidgetModel, ISerializers, } from "@jupyter-widgets/base";
+import { MODULE_NAME, MODULE_VERSION } from './version';
 import { vegaEmbed } from "./index";
 import { Result } from "vega-embed";
 
@@ -23,6 +24,33 @@ function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
   return ev as WidgetUpdateMessage;
 }
 
+
+export class VegaModel extends DOMWidgetModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+      _model_name: VegaModel.model_name,
+      _model_module: VegaModel.model_module,
+      _model_module_version: VegaModel.model_module_version,
+      _view_name: VegaModel.view_name,
+      _view_module: VegaModel.view_module,
+      _view_module_version: VegaModel.view_module_version
+    };
+  }
+
+  static serializers: ISerializers = {
+    ...DOMWidgetModel.serializers,
+    // Add any extra serializers here
+  };
+
+  static model_name = 'VegaModel';
+  static model_module = MODULE_NAME;
+  static model_module_version = MODULE_VERSION;
+  static view_name = 'VegaWidget'; 
+  static view_module = MODULE_NAME;
+  static view_module_version = MODULE_VERSION;
+}
+
 export class VegaWidget extends DOMWidgetView {
   result?: Result;
   viewElement = document.createElement("div");
@@ -35,7 +63,7 @@ export class VegaWidget extends DOMWidgetView {
 
     const reembed = async () => {
       const spec = JSON.parse(this.model.get("_spec_source"));
-      const opt = JSON.parse(this.model.get("_opt_source"));
+      const opt = JSON.parse(this.model.get("_opt_source") || "{}");
 
       if (spec == null) {
         return;

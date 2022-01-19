@@ -60,8 +60,11 @@ class VegaWidget(DOMWidget):
     # display state is reflected by the `_displayed` attribute.
 
     _view_name = Unicode('VegaWidget').tag(sync=True)
+    _model_name = Unicode('VegaModel').tag(sync=True)
     _view_module = Unicode('jupyter-vega').tag(sync=True)
+    _model_module = Unicode('jupyter-vega').tag(sync=True)
     _view_module_version = Unicode('3.5.0').tag(sync=True)
+    _model_module_version = Unicode('3.5.0').tag(sync=True)
     _spec_source = Unicode('null').tag(sync=True)
     _opt_source = Unicode('null').tag(sync=True)
 
