@@ -41,8 +41,6 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v2.5.1
-        with:
-          node-version: 15
 
       - name: Install Node dependencies
         run: yarn --frozen-lockfile
