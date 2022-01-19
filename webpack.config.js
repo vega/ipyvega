@@ -1,5 +1,4 @@
 const version = require('./package.json').version;
-const path = require('path');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 const outputPath = __dirname + "/vega/static";
