@@ -17,7 +17,6 @@ const commonConfig = {
       }
     ]
   },
-  externals: ["@jupyter-widgets/base"],
   plugins: [
     new FileManagerPlugin({
       events: {
@@ -42,7 +41,8 @@ module.exports = [
       path: outputPath,
       libraryTarget: "amd",
       publicPath: 'https://unpkg.com/jupyter-vega@' + version + '/dist/'
-    }
+    },
+    externals: ["@jupyter-widgets/base"]
   }),
   // the widget extension
   Object.assign({}, commonConfig, {
@@ -51,6 +51,10 @@ module.exports = [
       filename: "widget.js",
       path: outputPath,
       libraryTarget: "amd"
+    },
+    externals: {
+      "@jupyter-widgets/base": "@jupyter-widgets/base",
+      "./index": "jupyter-vega"
     }
   })
 ];
