@@ -2,9 +2,8 @@ from __future__ import absolute_import
 
 import json
 import uuid
-import copy
 
-from IPython.display import display, publish_display_data
+from IPython.display import display
 
 from . import utils
 
