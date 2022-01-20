@@ -1,13 +1,10 @@
 from __future__ import print_function
 
-import contextlib
 import json
-import uuid
-import sys
 
 try:
     from ipywidgets import DOMWidget
-    from traitlets import Unicode, Dict
+    from traitlets import Unicode
 
 except ImportError as err:
     new_err = ImportError(
