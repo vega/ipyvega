@@ -1,12 +1,6 @@
 name: UI Tests
 
-on:
-  push:
-    branches:
-    - lab
-  pull_request:
-    branches:
-    - main
+on: [push]
 
 jobs:
   run:
@@ -42,8 +36,8 @@ jobs:
         conda install jupyterlab=3.0.11 -c conda-forge # required 4 galata
         conda install poetry -c conda-forge -y
         poetry install
-        npm install
-        npm run build
+        yarn install
+        yarn run build
         jupyter labextension install .
         conda install yarn
         cd ui-tests/
