@@ -92,4 +92,4 @@ export function render(
     .catch((error) => showError(el, error));
 }
 
-export * from './widget';
+export * from "./widget";
