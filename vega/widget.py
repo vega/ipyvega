@@ -28,7 +28,7 @@ except ImportError as err:
 
 __all__ = ['VegaWidget']
 
-@widgets.register
+@ipywidgets.register
 class VegaWidget(ipywidgets.DOMWidget):
     """An IPython widget display a vega chart.
 

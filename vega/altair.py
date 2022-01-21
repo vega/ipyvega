@@ -28,12 +28,11 @@ def _exceptions(exceptions):
 def to_streaming(data, context=None, exceptions=None, debug=False):
     id_ = id(data)
     if debug:
-        print('to_streaming '+str(id_))
+        print(f'to_streaming {id_}')
     exceptions = _exceptions(exceptions)
     if not isinstance(data, pd.DataFrame):
         raise TypeError(f"Expected DataFrame got: {type(data)}")
     if hasattr(data, "__geo_interface__"):
-        # raise TypeError("Unhandled __geo_interface__ for now")
         warnings.warn("Unhandled __geo_interface__, not streaming")
         return alt.to_values(data)
     if id_ in exceptions:
