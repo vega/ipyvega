@@ -24,22 +24,17 @@ jobs:
         channels: conda-forge, anaconda
     - name: Create the conda environment with ipytablewidgets
       run: |
-        git clone https://github.com/progressivis/ipytablewidgets.git
-        cd ipytablewidgets
-        conda env create -q python=3.9 -f environment.yml -n ipyvega
-        cd ..
+        conda env create -q python=3.9 -f binder/environment.yml -n ipyvega
     - name: Run tests
       run: |
         source /usr/share/miniconda/etc/profile.d/conda.sh
         conda activate ipyvega
-        python -c 'import ipytablewidgets'
         conda install jupyterlab=3.0.11 -c conda-forge # required 4 galata
-        conda install poetry -c conda-forge -y
+        poetry config virtualenvs.create false
         poetry install
         yarn install
         yarn run build
         jupyter labextension install .
-        conda install yarn
         cd ui-tests/
         jupyter trust tests/notebooks/NBTest.ipynb	
         yarn

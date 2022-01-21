@@ -6,13 +6,7 @@ channels:
 
 dependencies:
   - python=3.9
-  - nodejs
-  - pkgconfig
-  - pip
-  - poetry
-  - jupyter>=1.0.0
-  - pandas>=1.0.0
-  - jupyterlab
-  - pip:
-    - ipytablewidgets>=0.1.1
-    - altair>=4.0.1
+  - vega_datasets
+  - nodejs=14 # downgraded to avoid ERR_OSSL_EVP_UNSUPPORTED
+  - yarn
+  - poetry>=0.12

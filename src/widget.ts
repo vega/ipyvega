@@ -89,7 +89,6 @@ export class VegaWidget extends DOMWidgetView {
       );
       let newValues = update.insert || [];
       if (newValues == "@dataframe") {
-        // console.log("@dataframe");
         newValues = this.updateDataFrame();
       } else if (newValues == "@array2d") {
         newValues = this.updateArray2D();
@@ -101,7 +100,7 @@ export class VegaWidget extends DOMWidgetView {
 
       const view = result.view.change(update.key, changeSet);
       if (resize) view.resize();
-      view.runAsync();
+      await view.runAsync();
     };
 
     const applyUpdates = async (message: WidgetUpdateMessage) => {
@@ -130,30 +129,20 @@ export class VegaWidget extends DOMWidgetView {
 
   updateDataFrame(): any[] {
     let table = this.model.get("_df");
-    // console.log("table", table);
     const proxy = rowProxy(table);
     const rows = Array(table.size);
-
-    for (let i = 0, n = rows.length; i < n; ++i) {
+    for (let i = 0; i < rows.length; ++i) {
       rows[i] = proxy(i);
     }
     return rows;
-    // for(let i=0; i < table.size; i++){
-    //     let row: any = [];
-    //     for (const col of table.columns){
-    //         if(table.data[col].shape===undefined){
-    //             row[col] = table.data[col][i];
-    //         } else {
-    //             row[col] = table.data[col].get(i);
-    //         }
-    //     }
-    //     res[i] = row;
-    // }
-    // return res;
   }
 
   updateArray2D(): any[] {
-    // console.log("updateArray2D");
+    // A 2D array is encoded for transfer like  a dataframe
+    // having an unique, (2D) column.
+    // The column name is "special", i.e. it is a string containing
+    // three comma separated keys, e.g. "x,y,z"
+    // this format is useful for encoding, for example, a heatmap
     let table = this.model.get("_df");
     let res = Array(table.size * table.size);
     let fancyCol = table.columns[0];

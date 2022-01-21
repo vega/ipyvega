@@ -12,7 +12,7 @@ from ipytablewidgets import (serialization,
 
 import numpy as np
 try:
-    import ipywidgets as widgets
+    import ipywidgets
     from traitlets import Unicode
 
 except ImportError as err:
@@ -29,7 +29,7 @@ except ImportError as err:
 __all__ = ['VegaWidget']
 
 @widgets.register
-class VegaWidget(widgets.DOMWidget):
+class VegaWidget(ipywidgets.DOMWidget):
     """An IPython widget display a vega chart.
 
     Specifying the spec directly::
