@@ -7,6 +7,6 @@ channels:
 dependencies:
   - python=3.9
   - vega_datasets
-  - nodejs=17
+  - nodejs=16
   - yarn
   - poetry>=0.12
