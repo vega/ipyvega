@@ -20,15 +20,14 @@
   },
   "dependencies": {
     "@jupyter-widgets/base": "4.0.0",
-    "@types/ndarray": "^1.0.9",
-    "@types/webpack-env": "*",
     "jupyter-tablewidgets": "^0.2.3",
     "vega": "5.21.0",
     "vega-embed": "^6.20.5",
-    "vega-lite": "4.17.0",
-    "yarn": "^1.22.17"
+    "vega-lite": "4.17.0"
   },
   "devDependencies": {
+    "@types/ndarray": "^1.0.9",
+    "@types/webpack-env": "*",
     "prettier": "^2.5.0",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.2",
