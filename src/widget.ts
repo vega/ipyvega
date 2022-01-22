@@ -128,7 +128,7 @@ export class VegaWidget extends DOMWidgetView {
   }
 
   updateDataFrame(): any[] {
-    let table = this.model.get("_df");
+    const table = this.model.get("_df");
     const proxy = rowProxy(table);
     const rows = Array(table.size);
     for (let i = 0; i < rows.length; ++i) {
@@ -143,12 +143,11 @@ export class VegaWidget extends DOMWidgetView {
     // The column name is "special", i.e. it is a string containing
     // three comma separated keys, e.g. "x,y,z"
     // this format is useful for encoding, for example, a heatmap
-    let table = this.model.get("_df");
-    let res = Array(table.size * table.size);
-    let fancyCol = table.columns[0];
-    let arr: ndarray.NdArray = table.data[fancyCol];
-    let cols: string[] = fancyCol.split(",");
-    //let cols = this.model.get("_columns");
+    const table = this.model.get("_df");
+    const res = Array(table.size * table.size);
+    const fancyCol = table.columns[0];
+    const arr: ndarray.NdArray = table.data[fancyCol];
+    const cols: string[] = fancyCol.split(",");
     let k = 0;
     for (let i = 0; i < arr.shape[0]; i++) {
       for (let j = 0; j < arr.shape[1]; j++) {
