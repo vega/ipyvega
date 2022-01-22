@@ -1,5 +1,3 @@
-import pytest
-
 import pandas as pd
 
 from .. import Vega, VegaLite
@@ -47,3 +45,4 @@ def test_vega_output():
     data = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 5, 6]})
     obj = Vega(VEGA_SPEC, data)
     js = obj._generate_js(id='ABC')
+    return js

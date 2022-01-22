@@ -1,6 +1,5 @@
 import cgi
 import codecs
-import collections
 import os.path
 
 
@@ -36,7 +35,7 @@ def sanitize_dataframe(df):
     import pandas as pd
     import numpy as np
 
-    df = df.copy() # type: pd.DataFrame
+    df = df.copy()  # type: pd.DataFrame
 
     if isinstance(df.index, pd.core.indexes.multi.MultiIndex):
         raise ValueError('Hierarchical indices not supported')

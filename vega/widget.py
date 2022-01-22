@@ -28,6 +28,7 @@ except ImportError as err:
 
 __all__ = ['VegaWidget']
 
+
 @ipywidgets.register
 class VegaWidget(ipywidgets.DOMWidget):
     """An IPython widget display a Vega chart.
@@ -83,7 +84,7 @@ class VegaWidget(ipywidgets.DOMWidget):
         super().__init__(**kwargs)
         self._spec_source = json.dumps(spec)
         self._opt_source = json.dumps(opt)
-        self._resize = True # only for pending updates
+        self._resize = True  # only for pending updates
         self._displayed = False
         self._pending_updates = []
 
@@ -101,7 +102,11 @@ class VegaWidget(ipywidgets.DOMWidget):
         if not self._pending_updates:
             return
 
-        self.send(dict(type="update", updates=self._pending_updates, resize=self._resize))
+        self.send(
+            dict(type="update",
+                 updates=self._pending_updates,
+                 resize=self._resize)
+        )
         self._pending_updates = []
 
     def _reset(self):
@@ -134,7 +139,8 @@ class VegaWidget(ipywidgets.DOMWidget):
 
         :param str key:
             the name of the dataset to update, as declared in the data
-            section of the spec.
+            section of the spec. To update several datasets, chain multiple
+            update calls on the widget.
 
         :param Optional[str] remove:
             a JavaScript expression of items to remove. The item to test can
