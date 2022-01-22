@@ -86,7 +86,7 @@ def stream(alt_spec, exceptions=None, reuse=False, resize=True, debug=False):
                                       debug=debug):
         vw = VegaWidget(alt_spec.to_dict())
         display(vw)
-        for id_, name_data in context.items():
+        for name_data in context.values():
             name, data = name_data
             vw.update(name, remove='true', insert=data)
     if reuse:
@@ -100,9 +100,7 @@ def _dataframe_from(url):
     for dname in data.list_datasets():
         ds = getattr(data, dname.replace("-", "_"))
         if ds.url == url:
-            print('substituting url by dataframe for', dname)
             return ds()
-    print('Cannot substite url by dataset for', url, 'trying direct load')
     return pd.read_csv(url)
 
 
@@ -142,8 +140,6 @@ def stream_examples(names=None):
             mid = time.process_time_ns()
             try:
                 stream(chart)
-                # vw = VegaWidget(chart.to_dict())
-                # display(vw)
             except Exception as exc:
                 errors[name] = str(exc) + errors.get(name, "")
                 print(str(exc) + errors.get(name, ""))

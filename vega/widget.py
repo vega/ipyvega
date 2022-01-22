@@ -30,7 +30,7 @@ __all__ = ['VegaWidget']
 
 @ipywidgets.register
 class VegaWidget(ipywidgets.DOMWidget):
-    """An IPython widget display a vega chart.
+    """An IPython widget display a Vega chart.
 
     Specifying the spec directly::
 
@@ -45,7 +45,7 @@ class VegaWidget(ipywidgets.DOMWidget):
 
         widget = VegaWidget(chart.to_dict())
 
-    To select between vega and vega-lite use the ``$schema`` property on
+    To select between Vega and Vega-Lite use the ``$schema`` property on
     the ``spec`` dictionary.
 
     The chart can be updated by setting the ``spec`` property. In additon
