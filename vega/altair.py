@@ -120,6 +120,7 @@ def _exec_example(example):
 
 def stream_examples(names=None):
     errors = {}
+    total = 0
     if names:
         if not isinstance(names, list):
             names = [names]
@@ -130,7 +131,7 @@ def stream_examples(names=None):
         name = example['name']
         if names and name not in names:
             continue
-        print(name)
+        print(f"Example #{total+1}: {name}")
         chart = _exec_example(example)
         if chart is None:
             print('Error for', example['name'])
@@ -147,4 +148,8 @@ def stream_examples(names=None):
         except Exception as exc:
             print('Error', exc)
             errors[name] = str(exc) + errors.get(name, "")
+        total += 1
+    print(f"Total number of examples: {total}, "
+          f"Sucess: {total-len(errors)}, "
+          f"Error(s): {len(errors)}")
     return errors
