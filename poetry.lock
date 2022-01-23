@@ -2,7 +2,7 @@
 name = "altair"
 version = "4.2.0"
 description = "Altair: A declarative statistical visualization library for Python."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -999,7 +999,7 @@ python-versions = ">=3.6"
 name = "toolz"
 version = "0.11.2"
 description = "List processing tools and functional utilities"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
 
@@ -1089,7 +1089,7 @@ widget = []
 [metadata]
 lock-version = "1.1"
 python-versions = ">= 3.8"
-content-hash = "1af5fdbd081c7d4de84d02fcdd09e0e8ff2900fdb9c3b59d190f255731c31b2b"
+content-hash = "8155bfbaa3997d3b9dddc971876fe394f96d04150d33734fa5d23ab955dc696c"
 
 [metadata.files]
 altair = [
