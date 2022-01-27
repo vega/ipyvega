@@ -1,7 +1,7 @@
 {
-  "name": "ipytablewidgets-end2end-tests",
+  "name": "ipyvega-end2end-tests",
   "version": "1.0.0",
-  "description": "ipytablewidgets end to end Tests",
+  "description": "ipyvega end to end Tests",
   "private": true,
   "scripts": {
     "start-jlab": "jupyter lab --config ./jupyter_server_config.py",

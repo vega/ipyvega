@@ -1,48 +1,62 @@
 name: UI Tests
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   run:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        python: [3.9]
+
+    name: Python ${{ matrix.python }}
 
     defaults:
       run:
         shell: bash -l {0}
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v2.3.1
+        with:
+          python-version: ${{ matrix.python }}
 
-    - name: Setup conda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        channels: conda-forge, anaconda
-    - name: Create the conda environment with ipytablewidgets
-      run: |
-        conda env create -q python=3.9 -f binder/environment.yml -n ipyvega
-    - name: Run tests
-      run: |
-        source /usr/share/miniconda/etc/profile.d/conda.sh
-        conda activate ipyvega
-        conda install jupyterlab=3.0.11 -c conda-forge # required 4 galata
-        poetry config virtualenvs.create false
-        poetry install
-        yarn install
-        yarn run build
-        jupyter labextension install .
-        cd ui-tests/
-        jupyter trust tests/notebooks/NBTest.ipynb	
-        yarn
-        yarn run start-jlab:detached
-        yarn run test
-    - name: Upload output file
-      if: failure()
-      uses: actions/upload-artifact@v2
-      with:
-        name: cell-artifact
-        path: ui-tests/test-output/test/screenshots/vega_cell_*.png
+      - name: Setup poetry
+        uses: abatilo/actions-poetry@v2.1.4
+        with:
+          poetry-version: 1.1.6
+
+      - name: Configure poetry
+        run: poetry config virtualenvs.in-project true
+
+      - name: Install Python dependencies
+        run: poetry install
+      - run: poetry install --extras "jupyterlab"
+
+      - name: Setup Node
+        uses: actions/setup-node@v2.5.1
+
+      - name: Run tests
+        run: |
+          yarn install
+          yarn run build
+          poetry run jupyter labextension install .
+          export PATH="$(poetry env info -p)/bin:$PATH"
+          cd ui-tests/
+          yarn
+          yarn run start-jlab:detached
+          yarn run test
+      - name: Upload output file
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: cell-artifact
+          path: ui-tests/test-output/test/screenshots/vega_cell_*.png
