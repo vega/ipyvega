@@ -53,6 +53,7 @@ jobs:
           cd ui-tests/
           yarn
           yarn run start-jlab:detached
+          sleep 3
           yarn run test
       - name: Upload output file
         if: failure()
