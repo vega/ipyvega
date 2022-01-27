@@ -210,7 +210,7 @@ class VegaWidget(ipywidgets.DOMWidget):
         update = dict(key=key)
         if remove is not None:
             update['remove'] = remove
-        update['insert'] = "@dataframe"
+        update['insert'] = ["@dataframe"]
         self.send(dict(type="update", updates=[update], resize=resize))
 
     def update_array2d(self, key, arr, columns, remove=None, resize=True,
@@ -256,5 +256,5 @@ class VegaWidget(ipywidgets.DOMWidget):
         update = dict(key=key)
         if remove is not None:
             update['remove'] = remove
-        update['insert'] = "@array2d"
+        update['insert'] = ["@array2d"]
         self.send(dict(type="update", updates=[update], resize=resize))
