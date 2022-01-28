@@ -152,14 +152,16 @@ class VegaWidget(ipywidgets.DOMWidget):
             new items to add to the chart data.
 
         :param Optional[Bool] resize:
-            trigger a resize of the widget after updating.
+            trigger a resize of the widget after updating. This is
+            required when the update creates or deletes important marks
+            in the visualization, i.e. creating a new bar in a bar chart.
         """
         if isinstance(insert, (np.ndarray, NumpyAdapter)):
             return self.update_array2d(key, arr=insert,
                                        columns=['x', 'y', 'z'],
                                        remove=remove,
                                        resize=resize)
-        elif isinstance(insert, (pd.DataFrame, SourceAdapter)):
+        if isinstance(insert, (pd.DataFrame, SourceAdapter)):
             return self.update_dataframe(key, df=insert, remove=remove,
                                          resize=resize)
         update = dict(key=key)
