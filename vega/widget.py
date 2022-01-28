@@ -208,7 +208,7 @@ class VegaWidget(ipywidgets.DOMWidget):
         update = dict(key=key)
         if remove is not None:
             update['remove'] = remove
-        update['insert'] = ["@dataframe"]
+        update['insert'] = "@dataframe"
         self.send(dict(type="update", updates=[update], resize=resize))
 
     def update_array2d(self, key, arr, columns, remove=None, resize=True):
@@ -239,7 +239,7 @@ class VegaWidget(ipywidgets.DOMWidget):
         NB: the array will be wrapped as a one column Table.
         The unique column (fancy_col below) is built as a comma separated
         coords string (i.e. columns param.)
-        This naming covention is important because javascript will split
+        This naming covention is important because JavaScript will split
         this string to obtain the three names for the x, y, z coords.
         """
         if isinstance(arr, np.ndarray):
@@ -252,5 +252,5 @@ class VegaWidget(ipywidgets.DOMWidget):
         update = dict(key=key)
         if remove is not None:
             update['remove'] = remove
-        update['insert'] = ["@array2d"]
+        update['insert'] = "@array2d"
         self.send(dict(type="update", updates=[update], resize=resize))
