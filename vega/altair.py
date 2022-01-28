@@ -16,6 +16,7 @@ from .widget import VegaWidget
 
 logger = logging.getLogger(__name__)
 
+
 def _exceptions(exceptions):
     if exceptions is None:
         exceptions = {}
