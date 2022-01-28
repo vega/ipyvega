@@ -1,8 +1,0 @@
-set -ex
-poetry config virtualenvs.create false
-poetry install
-yarn install
-yarn run build
-jupyter nbextension install --py --symlink --sys-prefix vega
-jupyter nbextension enable --py --sys-prefix vega
-jupyter labextension install .
