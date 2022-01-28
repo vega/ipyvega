@@ -2,6 +2,7 @@
 
 import time
 import warnings
+import logging
 
 from toolz import curried
 
@@ -14,6 +15,7 @@ from altair.utils.execeval import eval_block
 
 from .widget import VegaWidget
 
+logger = logging.getLogger(__name__)
 
 def _exceptions(exceptions):
     if exceptions is None:
@@ -28,7 +30,7 @@ def _exceptions(exceptions):
 def to_streaming(data, context=None, exceptions=None, debug=False):
     id_ = id(data)
     if debug:
-        print(f'to_streaming {id_}')
+        logger.debug(f"to_streaming {id_}")
     exceptions = _exceptions(exceptions)
     if not isinstance(data, pd.DataFrame):
         raise TypeError(f"Expected DataFrame got: {type(data)}")
@@ -37,7 +39,7 @@ def to_streaming(data, context=None, exceptions=None, debug=False):
         return alt.to_values(data)
     if id_ in exceptions:
         if debug:
-            print('Exception for', id_)
+            logger.debug(f"Exception for {id_}")
         return alt.to_values(data)
     if isinstance(context, dict):
         name = context.get(id_, None)
@@ -124,17 +126,17 @@ def stream_examples(names=None):
     if names:
         if not isinstance(names, list):
             names = [names]
-        print('testing ', names)
+        logger.info(f"testing {names}")
         names = set(names)
 
     for example in examples.iter_examples():
         name = example['name']
         if names and name not in names:
             continue
-        print(f"Example #{total+1}: {name}")
+        logger.info(f"Example #{total+1}: {name}")
         chart = _exec_example(example)
         if chart is None:
-            print('Error for', example['name'])
+            logger.info(f"Error for {example['name']}")
             errors[name] = 'No value returned by '+example['name']
         try:
             chart.data = _dataframe_from(chart.data)
@@ -143,13 +145,13 @@ def stream_examples(names=None):
                 stream(chart)
             except Exception as exc:
                 errors[name] = str(exc) + errors.get(name, "")
-                print(str(exc) + errors.get(name, ""))
-            print("Time:", (time.process_time_ns() - mid)/1000000000.0, "s")
+                logger.info(str(exc) + errors.get(name, ""))
+            logger.info(f"Time: {(time.process_time_ns() - mid)/1000000000.0} s")
         except Exception as exc:
-            print('Error', exc)
+            logger.error(f"Error {exc}")
             errors[name] = str(exc) + errors.get(name, "")
         total += 1
-    print(f"Total number of examples: {total}, "
-          f"Sucess: {total-len(errors)}, "
-          f"Error(s): {len(errors)}")
+    logger.info(f"Total number of examples: {total}, "
+                f"Sucess: {total-len(errors)}, "
+                f"Error(s): {len(errors)}")
     return errors
