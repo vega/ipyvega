@@ -32,8 +32,8 @@ def sanitize_dataframe(df):
     * Convert floats to objects and replace NaNs/infs with None.
     * Convert DateTime dtypes into appropriate string representations
     """
-    import pandas as pd
     import numpy as np
+    import pandas as pd
 
     df = df.copy()  # type: pd.DataFrame
 
