@@ -28,9 +28,9 @@
   "devDependencies": {
     "@types/ndarray": "^1.0.9",
     "@types/webpack-env": "*",
-    "prettier": "^2.5.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.4",
     "ts-loader": "^9.2.6",
-    "typescript": "^4.5.2",
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1"
   },
