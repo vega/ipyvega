@@ -22,6 +22,7 @@ const commonConfig = {
         onEnd: {
           copy: [
             { source: './src/vega.js', destination: outputPath + '/vega.js' },
+            { source: './src/extension.js', destination: outputPath + '/extension.js' },
             { source: outputPath + '/*', destination: './dist' }
           ]
         }
