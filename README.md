@@ -50,7 +50,7 @@ Then activate the virtual environment with `poetry shell`.
 Symlink files instead of copying files:
 
 ```sh
-jupyter nbextension install --py --symlink vega
+jupyter nbextension install --py --symlink --sys-prefix vega
 ```
 
 Run kernel with `jupyter notebook`. Run the tests with `pytest vega`.
