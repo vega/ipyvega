@@ -24,7 +24,7 @@ require(["jupyter-vega"], function(vega) {{
   element[0].appendChild(target);
   element[0].appendChild(style);
 
-  vega.render("#" + id, spec, type, opt, output_area);
+  vega.render(`#${id}`, spec, type, opt, output_area);
 }}, function (err) {{
   if (err.requireType !== "scripterror") {{
     throw(err);
