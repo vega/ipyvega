@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vega"
-version = "3.5.0"
+version = "3.5.2"
 license = "BSD 3-clause"
 description = "A Jupyter widget for Vega 5 and Vega-Lite 4"
 authors = ["Dominik Moritz <domoritz@gmail.com>"]

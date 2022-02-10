@@ -1,4 +1,8 @@
-import { DOMWidgetView, DOMWidgetModel, ISerializers, } from "@jupyter-widgets/base";
+import {
+  DOMWidgetView,
+  DOMWidgetModel,
+  ISerializers,
+} from "@jupyter-widgets/base";
 import { MODULE_NAME, MODULE_VERSION } from "./version";
 import { vegaEmbed } from "./index";
 import { Result } from "vega-embed";
@@ -24,7 +28,6 @@ function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
   return ev as WidgetUpdateMessage;
 }
 
-
 export class VegaModel extends DOMWidgetModel {
   defaults() {
     return {
@@ -34,7 +37,7 @@ export class VegaModel extends DOMWidgetModel {
       _model_module_version: VegaModel.model_module_version,
       _view_name: VegaModel.view_name,
       _view_module: VegaModel.view_module,
-      _view_module_version: VegaModel.view_module_version
+      _view_module_version: VegaModel.view_module_version,
     };
   }
 
@@ -43,10 +46,10 @@ export class VegaModel extends DOMWidgetModel {
     // Add any extra serializers here
   };
 
-  static model_name = 'VegaModel';
+  static model_name = "VegaModel";
   static model_module = MODULE_NAME;
   static model_module_version = MODULE_VERSION;
-  static view_name = 'VegaWidget'; 
+  static view_name = "VegaWidget";
   static view_module = MODULE_NAME;
   static view_module_version = MODULE_VERSION;
 }

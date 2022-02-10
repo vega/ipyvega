@@ -1,11 +1,8 @@
 import json
-import os
 import copy
 
 import numpy as np
 import pandas as pd
-
-import pytest
 
 from ..utils import sanitize_dataframe, prepare_spec
 

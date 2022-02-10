@@ -1,0 +1,1 @@
+To test the stand alone widget, run `python embed_minimal.py` to generate `index.html`. Then open the widget with a web server such as `python -m http.server` and open http://localhost:8000/.
