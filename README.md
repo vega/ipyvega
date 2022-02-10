@@ -18,7 +18,8 @@ To install `vega` and its dependencies from the Python Package Index using
 ```sh
 pip install jupyter pandas vega
 pip install --upgrade notebook  # need jupyter_client >= 4.2 for sys-prefix below
-jupyter nbextension install --sys-prefix --py vega  # not needed in notebook >= 5.3
+jupyter nbextension install --sys-prefix --py vega
+jupyter nbextension enable --py --sys-prefix vega
 ```
 
 ### Conda Forge
@@ -51,6 +52,7 @@ Symlink files instead of copying files:
 
 ```sh
 jupyter nbextension install --py --symlink --sys-prefix vega
+jupyter nbextension enable --py --sys-prefix vega
 ```
 
 Run kernel with `jupyter notebook`. Run the tests with `pytest vega`.
