@@ -1,5 +1,6 @@
 # IPython Vega
 [![PyPI](https://img.shields.io/pypi/v/vega.svg)](https://pypi.python.org/pypi/vega)
+[![npm version](https://img.shields.io/npm/v/jupyter-vega.svg)](https://www.npmjs.com/package/jupyter-vega)
 [![Build Status](https://github.com/vega/ipyvega/workflows/Test/badge.svg)](https://github.com/vega/ipyvega/actions)
 
 IPython/Jupyter notebook module for [Vega 5](https://github.com/vega/vega), and [Vega-Lite 4](https://github.com/vega/vega-lite). Notebooks with embedded visualizations can be viewed on [GitHub](https://github.com/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb) and [nbviewer](https://nbviewer.jupyter.org/github/vega/ipyvega/blob/master/notebooks/VegaLite.ipynb). If you use JupyterLab (not the notebook), you don't need to install this extension since JupyterLab comes with built-in support for Vega and Vega-Lite.
@@ -61,10 +62,12 @@ To rebuild the JavaScript continuously, run `yarn watch`.
 
 * Update the JavaScript dependencies by changing `package.json` (e.g. with [ncu](https://www.npmjs.com/package/npm-check-updates)).
 * Run `yarn`.
+* Update the version number in `pyproject.toml` (with `poetry version [VERSION]`), `package.json`, `widget.py`, and `__init__.py`
 * Rebuild the JavaScript with `yarn build`.
 * Make sure that everything still works (launch notebook and widgets and try the examples).
-* Update the version number in `pyproject.toml` (with `poetry version [VERSION]`), `package.json`, `widget.py`, and `__init__.py` and add a git tag.
+* Add a git tag.
 * `git push --tags`.
+* Run `npm publish` to update https://www.npmjs.com/package/jupyter-vega.
 * Then run `poetry publish --build` to update https://pypi.python.org/pypi/vega.
 
 The Conda feedstock for this package is at https://github.com/conda-forge/vega-feedstock. It should update automatically but we may need to merge a pull request with the updates. 
