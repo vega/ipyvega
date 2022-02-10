@@ -2,8 +2,6 @@ import altair as alt
 import altair.vega as alt_vg
 from vega import vega, vegalite
 
-import pytest
-
 
 def test_entrypoint_exists():
     assert "notebook" in alt.renderers.names()

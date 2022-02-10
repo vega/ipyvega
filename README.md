@@ -62,8 +62,8 @@ To rebuild the JavaScript continuously, run `yarn watch`.
 * Update the JavaScript dependencies by changing `package.json` (e.g. with [ncu](https://www.npmjs.com/package/npm-check-updates)).
 * Run `yarn`.
 * Rebuild the JavaScript with `yarn build`.
-* Make sure that everything still works (launch notebook and try the examples).
-* Update the version number in `pyproject.toml` (with `poetry version [VERSION]`), `package.json`, and `__init__.py` and add a git tag.
+* Make sure that everything still works (launch notebook and widgets and try the examples).
+* Update the version number in `pyproject.toml` (with `poetry version [VERSION]`), `package.json`, `widget.py`, and `__init__.py` and add a git tag.
 * `git push --tags`.
 * Then run `poetry publish --build` to update https://pypi.python.org/pypi/vega.
 
