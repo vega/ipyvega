@@ -63,8 +63,8 @@ class VegaWidget(DOMWidget):
     _model_name = Unicode('VegaModel').tag(sync=True)
     _view_module = Unicode('jupyter-vega').tag(sync=True)
     _model_module = Unicode('jupyter-vega').tag(sync=True)
-    _view_module_version = Unicode('3.5.2').tag(sync=True)
-    _model_module_version = Unicode('3.5.2').tag(sync=True)
+    _view_module_version = Unicode('3.6.0').tag(sync=True)
+    _model_module_version = Unicode('3.6.0').tag(sync=True)
     _spec_source = Unicode('null').tag(sync=True)
     _opt_source = Unicode('null').tag(sync=True)
 

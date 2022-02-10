@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vega"
-version = "3.5.2"
+version = "3.6.0"
 license = "BSD 3-clause"
 description = "A Jupyter widget for Vega 5 and Vega-Lite 4"
 authors = ["Dominik Moritz <domoritz@gmail.com>"]
@@ -15,7 +15,8 @@ classifiers = [
     "Natural Language :: English",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8"
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9"
 ]
 homepage = "https://github.com/vega/ipyvega"
 repository = "https://github.com/vega/ipyvega"
