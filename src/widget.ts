@@ -1,7 +1,6 @@
 import {
   DOMWidgetView,
-  DOMWidgetModel,
-  ISerializers,
+  DOMWidgetModel
 } from "@jupyter-widgets/base";
 import { MODULE_NAME, MODULE_VERSION } from "./version";
 import { vegaEmbed } from "./index";
