@@ -1,3 +1,8 @@
+const version = require('./package.json').version;
+const FileManagerPlugin = require('filemanager-webpack-plugin');
+
+const outputPath = __dirname + "/vega/static";
+
 const commonConfig = {
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
@@ -10,11 +15,22 @@ const commonConfig = {
         loader: "ts-loader"
       }
     ]
-  }
+  },
+  plugins: [
+    new FileManagerPlugin({
+      events: {
+        onEnd: {
+          copy: [
+            { source: './src/vega.js', destination: outputPath + '/vega.js' },
+            { source: './src/extension.js', destination: outputPath + '/extension.js' },
+            { source: outputPath + '/*', destination: './dist' }
+          ]
+        }
+      }
+    })
+  ]
 };
 
-const outputPath = __dirname + "/vega/static";
-const outputLibraryTarget = "amd";
 
 module.exports = [
   // the main vega extension
@@ -23,8 +39,10 @@ module.exports = [
     output: {
       filename: "extension.js",
       path: outputPath,
-      libraryTarget: outputLibraryTarget
-    }
+      libraryTarget: "amd",
+      publicPath: 'https://unpkg.com/jupyter-vega@' + version + '/dist/'
+    },
+    externals: ["@jupyter-widgets/base"]
   }),
   // the widget extension
   Object.assign({}, commonConfig, {
@@ -32,7 +50,7 @@ module.exports = [
     output: {
       filename: "index.js",
       path: outputPath,
-      libraryTarget: outputLibraryTarget
+      libraryTarget: "amd"
     },
     externals: ["@jupyter-widgets/base"]
   }),
@@ -41,7 +59,7 @@ module.exports = [
     output: {
       filename: "labplugin.js",
       path: outputPath,
-      libraryTarget: outputLibraryTarget
+      libraryTarget: "amd"
     },
     externals: ["@jupyter-widgets/base"]
   }),

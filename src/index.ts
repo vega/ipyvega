@@ -93,3 +93,5 @@ export function render(
     })
     .catch((error) => showError(el, error));
 }
+
+export * from "./widget";

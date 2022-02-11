@@ -1,4 +1,9 @@
-import { DOMWidgetView, DOMWidgetModel } from "@jupyter-widgets/base";
+import {
+  DOMWidgetView,
+  DOMWidgetModel,
+  ISerializers,
+} from "@jupyter-widgets/base";
+import { MODULE_NAME, MODULE_VERSION } from "./version";
 import { vegaEmbed } from "./index";
 import { Result } from "vega-embed";
 import * as ndarray from "ndarray";
@@ -42,6 +47,13 @@ export class VegaWidgetModel extends DOMWidgetModel {
     ...DOMWidgetModel.serializers,
     _df: table_serialization,
   };
+
+  static model_name = "VegaWidgetModel";
+  static model_module = MODULE_NAME;
+  static model_module_version = MODULE_VERSION;
+  static view_name = "VegaWidget";
+  static view_module = MODULE_NAME;
+  static view_module_version = MODULE_VERSION;
 }
 
 export class VegaWidget extends DOMWidgetView {
@@ -54,7 +66,8 @@ export class VegaWidget extends DOMWidgetView {
     this.el.appendChild(this.errorElement);
     const reembed = async () => {
       const spec = JSON.parse(this.model.get("_spec_source"));
-      const opt = JSON.parse(this.model.get("_opt_source"));
+      const opt = JSON.parse(this.model.get("_opt_source") || "{}");
+
       if (spec == null) {
         return;
       }
@@ -85,7 +98,7 @@ export class VegaWidget extends DOMWidgetView {
 
       const filter = new Function(
         "datum",
-        "return (" + (update.remove || "false") + ")"
+        `return (${update.remove || "false"})`
       );
       let newValues = update.insert || [];
       if (newValues === "@dataframe") {

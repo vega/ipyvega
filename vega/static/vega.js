@@ -5,7 +5,7 @@ const id = "{id}";
 
 const output_area = this;
 
-require(["nbextensions/jupyter-vega/index"], function(vega) {{
+require(["jupyter-vega"], function(vega) {{
   const target = document.createElement("div");
   target.id = id;
   target.className = "vega-embed";
@@ -24,7 +24,7 @@ require(["nbextensions/jupyter-vega/index"], function(vega) {{
   element[0].appendChild(target);
   element[0].appendChild(style);
 
-  vega.render("#" + id, spec, type, opt, output_area);
+  vega.render(`#${id}`, spec, type, opt, output_area);
 }}, function (err) {{
   if (err.requireType !== "scripterror") {{
     throw(err);

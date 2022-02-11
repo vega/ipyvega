@@ -22,23 +22,29 @@
     "@jupyter-widgets/base": "4.0.0",
     "jupyter-tablewidgets": "^0.2.3",
     "vega": "5.21.0",
-    "vega-embed": "^6.20.5",
+    "vega-embed": "^6.20.6",
     "vega-lite": "4.17.0"
   },
   "devDependencies": {
-    "@types/ndarray": "^1.0.9",
     "@types/webpack-env": "*",
+    "@types/ndarray": "^1.0.11",
+    "filemanager-webpack-plugin": "^6.1.7",
     "prettier": "^2.5.1",
-    "typescript": "^4.5.5",
     "ts-loader": "^9.2.6",
+    "typescript": "^4.5.5",
     "webpack": "^5.68.0",
     "webpack-cli": "^4.9.2"
   },
   "files": [
+    "dist",
+    "src",
+    "package.json",
+    "tsconfig.json",
+    "webpack.config.js",
+    "yarn.lock",
     "vega/static/"
   ],
   "jupyterlab": {
     "extension": "vega/static/labplugin"
-  },
-  "private": true
+  }
 }
