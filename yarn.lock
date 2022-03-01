@@ -2764,9 +2764,9 @@ vega-dataflow@^5.7.3, vega-dataflow@^5.7.4, vega-dataflow@~5.7.4:
     vega-util "^1.16.1"
 
 vega-embed@^6.20.6:
-  version "6.20.6"
-  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-6.20.6.tgz#a3081586c876d6a5f7e1696fc7632dd62886d9a9"
-  integrity sha512-r+K/+6F6kO/uGM9nFgOk2FUnuOrexVsGow3TU4x/Qapvcr4bjq5eiPqhFCxJTthqRaxu0mlsQ2SBnv6G1cSL+A==
+  version "6.20.8"
+  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-6.20.8.tgz#7fdd3ec1f39c9bf8b5fd610011d1622fecd7f96a"
+  integrity sha512-UgUYJ9etuACULPwwy45Uw4Gz0sC4npxIn8yIW6dZsAu7EXMwEmeki+aA/9I9BVzD3EDD/TptG+ndlUTF2RW/Eg==
   dependencies:
     fast-json-patch "^3.1.0"
     json-stringify-pretty-compact "^3.0.0"
