@@ -22,7 +22,6 @@ const commonConfig = {
         onEnd: {
           copy: [
             { source: './src/vega.js', destination: outputPath + '/vega.js' },
-            { source: './src/extension.js', destination: outputPath + '/extension.js' },
             { source: outputPath + '/*', destination: './dist' }
           ]
         }
@@ -40,11 +39,21 @@ module.exports = [
       filename: "extension.js",
       path: outputPath,
       libraryTarget: "amd",
+    },
+    externals: ["@jupyter-widgets/base"]
+  }),
+  // the main vega extension
+  Object.assign({}, commonConfig, {
+    entry: "./src/index.ts",
+    output: {
+      filename: "index.js",
+      path: outputPath,
+      libraryTarget: "amd",
       publicPath: 'https://unpkg.com/jupyter-vega@' + version + '/dist/'
     },
     externals: ["@jupyter-widgets/base"]
   }),
-  // the widget extension
+  // the index extension
   Object.assign({}, commonConfig, {
     entry: "./src/index.ts",
     output: {
