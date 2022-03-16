@@ -24,22 +24,17 @@ exclude = ["notebooks/*"]
 readme = "README.rst"
 
 [tool.poetry.dependencies]
-python = ">= 3.8"
+python = ">= 3.6.1"
 jupyter = "^1.0.0"
 pandas = "^1.0.0"
-ipytablewidgets = "^0.2.3"
-jupyterlab = {version = "3.0.11", optional = true}
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2"
-altair = "^4.2.0"
+pytest = "^7.0"
+altair = "^4.0.1"
 
 [tool.poetry.extras]
 widget = [
     "ipywidgets"
-]
-jupyterlab = [
-    "jupyterlab"
 ]
 
 [tool.poetry.plugins."altair.vegalite.v4.renderer"]
