@@ -38,8 +38,7 @@ jobs:
         run: poetry config virtualenvs.in-project true
 
       - name: Install Python dependencies
-        run: poetry install
-      - run: poetry install --extras "jupyterlab"
+        run: poetry install --extras "jupyterlab"
 
       - name: Setup Node
         uses: actions/setup-node@v2.5.1
