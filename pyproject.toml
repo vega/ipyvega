@@ -36,6 +36,9 @@ altair = "^4.0.1"
 widget = [
     "ipywidgets"
 ]
+jupyterlab = [
+    "jupyterlab"
+]
 
 [tool.poetry.plugins."altair.vegalite.v4.renderer"]
 notebook = "vega.vegalite:entry_point_renderer"
