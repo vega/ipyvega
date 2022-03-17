@@ -35,12 +35,11 @@ jobs:
           poetry-version: 1.1.12
 
       - name: Configure poetry
-        run: poetry config virtualenvs.create false
+        run: poetry config virtualenvs.in-project true
 
       - name: Install Python dependencies
-        run: |
-          poetry install
-          python -m pip install jupyterlab==3.0.11
+        run: poetry install
+      - run: poetry install --extras "jupyterlab"
 
       - name: Setup Node
         uses: actions/setup-node@v2.5.1
@@ -51,11 +50,12 @@ jobs:
       - name: Run tests
         run: |
           yarn run build
-          jupyter labextension install .
+          poetry run jupyter labextension install .
+          export PATH="$(poetry env info -p)/bin:$PATH"
           cd ui-tests/
           yarn
           yarn run start-jlab:detached
-          sleep 20
+          sleep 10
           yarn run test
       - name: Upload output file
         if: failure()
