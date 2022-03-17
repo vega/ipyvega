@@ -1947,10 +1947,10 @@ junk@^3.1.0:
   resolved "https://registry.yarnpkg.com/junk/-/junk-3.1.0.tgz#31499098d902b7e98c5d9b9c80f43457a88abfa1"
   integrity sha512-pBxcB3LFc8QVgdggvZWyeys+hnrNWg4OcZIU/1X59k5jQdLBlCsYGRQaz234SqoRLTCgMH00fY0xRJH+F9METQ==
 
-jupyter-tablewidgets@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/jupyter-tablewidgets/-/jupyter-tablewidgets-0.2.3.tgz#e3841abc95ac959d08727ba89d02039d54b1f3e2"
-  integrity sha512-mcK+QK5SRUFq8I3ehFAsSJe3XcGPTJ2aQBFEx2Aq1eAl3di/rdtnZMjMXYnm3g+j0puVNRi8Doqcs1NBT3GVyg==
+jupyter-tablewidgets@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/jupyter-tablewidgets/-/jupyter-tablewidgets-0.2.4.tgz#94481f3c9355de93d524d75a1b3f61bf88f97238"
+  integrity sha512-DtPBP6mcarWUotfpuuRHZ9p/Sv9yiNb/Posdxu26prjFHbGcoPf/921dowFiiKpbbNxh3jL4zPmMvUyEzc1D6Q==
   dependencies:
     "@jupyter-widgets/base" "4.0.0"
     "@lumino/messaging" "^1.8.0"
