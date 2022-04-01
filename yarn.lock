@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.6.tgz#d5e0706cf8c6acd8c6032f8d54070af261bbbb2f"
   integrity sha512-ws57AidsDvREKrZKYffXddNkyaF14iHNHm8VQnZH6t99E8gczjNN0GpvcGny0imC80yQ0tHz1xVUKk/KFQSUyA==
 
-"@jupyter-widgets/base@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-4.0.0.tgz#6935461a3bd78df5523022e1c3d370ae24c9a454"
-  integrity sha512-lBQgLYzq6C+XjfVJTidk+rckKo/+xlTgIm1XUtACA3BUz8bgi2du2zmbYkcrplJMwGub4QWP6GnKgM5ZZRhzYg==
+"@jupyter-widgets/base@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-4.1.0.tgz#15500da61b800086d5dbce95d2f11c0c0acb43fc"
+  integrity sha512-yYAIiBWLwldr3yHWG3FvGeltRyI2GTo2mQdxoP6X7mvKeib4n43zcSKqIkP8f4h+dhiw48z+Ct8vQxp0BA8Gvg==
   dependencies:
     "@jupyterlab/services" "^6.0.0"
     "@lumino/coreutils" "^1.2.0"
