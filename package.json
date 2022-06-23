@@ -18,7 +18,8 @@
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
-  "dependencies": {
+    "dependencies": {
+    "jupyter-tablewidgets": "^0.2.4",
     "vega": "5.22.1",
     "vega-lite": "4.17.0",
     "vega-embed": "^6.20.6",
