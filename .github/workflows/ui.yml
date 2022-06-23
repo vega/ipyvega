@@ -23,7 +23,7 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v2.3.1
         with:
@@ -49,9 +49,11 @@ jobs:
       - name: Install Node dependencies
         run: yarn --frozen-lockfile
 
+      - name: Build
+        run: yarn run build
+
       - name: Run tests
         run: |
-          yarn run build
           jupyter labextension install .
           cd ui-tests/
           yarn
