@@ -41,7 +41,7 @@ export class VegaWidgetModel extends DOMWidgetModel {
   }
   static serializers = {
     ...DOMWidgetModel.serializers,
-    _df: table_serialization as any,
+    _df: table_serialization,
   };
 
   static model_name = "VegaWidgetModel";
