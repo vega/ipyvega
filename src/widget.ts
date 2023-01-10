@@ -23,8 +23,8 @@ function serializeImgURL(imgURL: string, mgr: VegaWidgetModel): string {
   }
   let id_ = mgr.viewInstance.viewElement.id;
   if (id_ === "" || id_ === undefined) {
-    //hach to avoid jquery dep.
-    id_ = "VEGA_ID" + Math.random().toString().substr(2, 40);
+    // avoid jquery dep.
+    id_ = "VEGA_ID_" + crypto.randomUUID();
     mgr.viewInstance.viewElement.id = id_;
   }
   let canvas = document.querySelector("#" + id_ + " canvas");
