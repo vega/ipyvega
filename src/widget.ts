@@ -17,6 +17,23 @@ interface WidgetUpdateMessage {
   resize: boolean;
 }
 
+function serializeImgURL(imgURL: string, mgr: VegaWidgetModel): string {
+  if (mgr.viewInstance === null || mgr.viewInstance.viewElement === undefined) {
+    return imgURL;
+  }
+  let id_ = mgr.viewInstance.viewElement.id;
+  if (id_ === "" || id_ === undefined) {
+    //hach to avoid jquery dep.
+    id_ = "VEGA_ID" + Math.random().toString().substr(2, 40);
+    mgr.viewInstance.viewElement.id = id_;
+  }
+  let canvas = document.querySelector("#" + id_ + " canvas");
+  if (canvas === null) {
+    return imgURL;
+  }
+  // @ts-ignore
+  return canvas.toDataURL();
+}
 // validate the ev object and cast it to the correct type
 function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
   if (ev.type != "update") {
@@ -36,11 +53,14 @@ export class VegaWidgetModel extends DOMWidgetModel {
       _spec_source: "",
       _opt_source: "",
       _df: ndarray([]),
+      _img_url: "",
       _columns: [],
     };
   }
+  viewInstance: VegaWidget | null = null;
   static serializers = {
     ...DOMWidgetModel.serializers,
+    _img_url: { serialize: serializeImgURL } as any,
     _df: table_serialization as any,
   };
 
@@ -60,14 +80,22 @@ export class VegaWidget extends DOMWidgetView {
     this.el.appendChild(this.viewElement);
     this.errorElement.style.color = "red";
     this.el.appendChild(this.errorElement);
+    let model = this.model as VegaWidgetModel;
+    model.viewInstance = this;
     const reembed = async () => {
       const spec = JSON.parse(this.model.get("_spec_source"));
       const opt = JSON.parse(this.model.get("_opt_source") || "{}");
-
+      const imgURL = this.model.get("_img_url");
+      if (imgURL !== "" && imgURL !== "null") {
+        let imgElement = document.createElement("img");
+        imgElement.src = imgURL;
+        this.viewElement.appendChild(imgElement);
+        this.model.set("_img_url", "null");
+        return;
+      }
       if (spec == null) {
         return;
       }
-
       try {
         const result = await vegaEmbed(this.viewElement, spec, {
           loader: { http: { credentials: "same-origin" } },
@@ -91,7 +119,6 @@ export class VegaWidget extends DOMWidgetView {
       if (result == null) {
         throw new Error("Internal error: no view attached to widget");
       }
-
       const filter = new Function(
         "datum",
         `return (${update.remove || "false"})`
@@ -106,7 +133,6 @@ export class VegaWidget extends DOMWidgetView {
         .changeset()
         .remove(filter)
         .insert(newValues);
-
       const view = result.view.change(update.key, changeSet);
       if (resize) view.resize();
       await view.runAsync();

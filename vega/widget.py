@@ -79,11 +79,13 @@ class VegaWidget(ipywidgets.DOMWidget):
     _opt_source = Unicode('null').tag(sync=True)
     compression = None
     _df = TableType(None).tag(sync=True, **serialization)
+    _img_url = Unicode('null').tag(sync=True)
 
     def __init__(self, spec=None, opt=None, **kwargs):
         super().__init__(**kwargs)
         self._spec_source = json.dumps(spec)
         self._opt_source = json.dumps(opt)
+        self._img_url = "null"
         self._resize = True  # only for pending updates
         self._displayed = False
         self._pending_updates = []
