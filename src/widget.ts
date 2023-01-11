@@ -18,7 +18,11 @@ interface WidgetUpdateMessage {
 }
 
 function serializeImgURL(imgURL: string, mgr: VegaWidgetModel): string {
-  if (mgr.viewInstance === null || mgr.viewInstance.viewElement === undefined) {
+  if (
+    mgr.viewInstance === null ||
+    mgr.viewInstance.viewElement === undefined ||
+    mgr.viewInstance.isUpdated === false
+  ) {
     return imgURL;
   }
   let id_ = mgr.viewInstance.viewElement.id;
@@ -34,6 +38,7 @@ function serializeImgURL(imgURL: string, mgr: VegaWidgetModel): string {
   // @ts-ignore
   return canvas.toDataURL();
 }
+
 // validate the ev object and cast it to the correct type
 function checkWidgetUpdate(ev: any): WidgetUpdateMessage | null {
   if (ev.type != "update") {
@@ -74,6 +79,7 @@ export class VegaWidgetModel extends DOMWidgetModel {
 
 export class VegaWidget extends DOMWidgetView {
   result?: Result;
+  isUpdated: boolean = false;
   viewElement = document.createElement("div");
   errorElement = document.createElement("div");
   async render() {
@@ -139,6 +145,7 @@ export class VegaWidget extends DOMWidgetView {
     };
 
     const applyUpdates = async (message: WidgetUpdateMessage) => {
+      this.isUpdated = true;
       for (const update of message.updates) {
         await applyUpdate(update, message.resize);
       }
