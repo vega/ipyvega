@@ -36,7 +36,14 @@ function serializeImgURL(imgURL: string, mgr: VegaWidgetModel): string {
     return imgURL;
   }
   // @ts-ignore
-  return canvas.toDataURL();
+  return JSON.stringify({
+    // @ts-ignore
+    width: canvas.style.width,
+    // @ts-ignore
+    height: canvas.style.height,
+    // @ts-ignore
+    url: canvas.toDataURL(),
+  });
 }
 
 // validate the ev object and cast it to the correct type
@@ -93,8 +100,11 @@ export class VegaWidget extends DOMWidgetView {
       const opt = JSON.parse(this.model.get("_opt_source") || "{}");
       const imgURL = this.model.get("_img_url");
       if (imgURL !== "" && imgURL !== "null") {
+        let imgJson = JSON.parse(imgURL);
         let imgElement = document.createElement("img");
-        imgElement.src = imgURL;
+        imgElement.src = imgJson.url;
+        imgElement.height = parseInt(imgJson.height);
+        imgElement.width = parseInt(imgJson.width);
         this.viewElement.appendChild(imgElement);
         this.model.set("_img_url", "null");
         return;

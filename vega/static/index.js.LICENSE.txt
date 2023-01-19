@@ -7,8 +7,14 @@
 
 /*!
  * https://github.com/Starcounter-Jack/JSON-Patch
- * (c) 2017 Joachim Wester
+ * (c) 2017-2021 Joachim Wester
  * MIT license
+ */
+
+/*!
+ * https://github.com/Starcounter-Jack/JSON-Patch
+ * (c) 2017-2022 Joachim Wester
+ * MIT licensed
  */
 
 /*! *****************************************************************************
