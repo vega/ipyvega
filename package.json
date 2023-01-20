@@ -21,9 +21,9 @@
     "dependencies": {
     "jupyter-tablewidgets": "^0.2.4",
     "vega": "5.22.1",
-    "vega-lite": "4.17.0",
-    "vega-embed": "^6.20.6",
-    "@jupyter-widgets/base": "4.1.0",
+    "vega-lite": "5.6.0",
+    "vega-embed": "^6.21.0",
+    "@jupyter-widgets/base": "6.0.2",
     "@types/webpack-env": "*"
   },
   "devDependencies": {
@@ -46,6 +46,12 @@
     "vega/static/"
   ],
   "jupyterlab": {
-    "extension": "vega/static/labplugin"
+      "extension": "vega/static/labplugin",
+      "sharedPackages": {
+      "@jupyter-widgets/base": {
+        "bundled": false,
+        "singleton": true
+      }
+    }
   }
 }
