@@ -29,7 +29,7 @@
   "devDependencies": {
     "@types/webpack-env": "*",
     "@types/ndarray": "^1.0.11",
-    "filemanager-webpack-plugin": "^6.1.7",
+    "filemanager-webpack-plugin": "^7.0.0",
     "prettier": "^2.5.1",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.5",
