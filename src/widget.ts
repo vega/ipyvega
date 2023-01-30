@@ -21,21 +21,19 @@ function serializeImgURL(imgURL: string, mgr: VegaWidgetModel): string {
   if (
     mgr.viewInstance === null ||
     mgr.viewInstance.viewElement === undefined ||
-    mgr.viewInstance.isUpdated === false
+    mgr.viewInstance.hasBeenUpdated === false
   ) {
     return imgURL;
   }
   let id_ = mgr.viewInstance.viewElement.id;
   if (id_ === "" || id_ === undefined) {
-    // avoid jquery dep.
     id_ = "VEGA_ID_" + crypto.randomUUID();
     mgr.viewInstance.viewElement.id = id_;
   }
-  let canvas = document.querySelector("#" + id_ + " canvas");
+  let canvas = document.querySelector(`#${id_} canvas`);
   if (canvas === null) {
     return imgURL;
   }
-  // @ts-ignore
   return JSON.stringify({
     // @ts-ignore
     width: canvas.style.width || canvas.width,
@@ -86,9 +84,10 @@ export class VegaWidgetModel extends DOMWidgetModel {
 
 export class VegaWidget extends DOMWidgetView {
   result?: Result;
-  isUpdated: boolean = false;
+  hasBeenUpdated: boolean = false; // when it is "true" it means that the view has been updated at least once
   viewElement = document.createElement("div");
   errorElement = document.createElement("div");
+
   async render() {
     this.el.appendChild(this.viewElement);
     this.errorElement.style.color = "red";
@@ -146,10 +145,14 @@ export class VegaWidget extends DOMWidgetView {
         `return (${update.remove || "false"})`
       );
       let newValues = update.insert || [];
-      if (newValues === "@dataframe") {
-        newValues = this.updateDataFrame();
-      } else if (newValues === "@array2d") {
-        newValues = this.updateArray2D();
+      switch (newValues) {
+        case "@dataframe": {
+          newValues = this.updateDataFrame();
+          break;
+        }
+        case "@array2d": {
+          newValues = this.updateArray2D();
+        }
       }
       const changeSet = result.view
         .changeset()
@@ -161,7 +164,7 @@ export class VegaWidget extends DOMWidgetView {
     };
 
     const applyUpdates = async (message: WidgetUpdateMessage) => {
-      this.isUpdated = true;
+      this.hasBeenUpdated = true;
       for (const update of message.updates) {
         await applyUpdate(update, message.resize);
       }
@@ -196,11 +199,11 @@ export class VegaWidget extends DOMWidgetView {
   }
 
   updateArray2D(): any[] {
-    // A 2D array is encoded for transfer like  a dataframe
-    // having an unique, (2D) column.
-    // The column name is "special", i.e. it is a string containing
-    // three comma separated keys, e.g. "x,y,z"
-    // this format is useful for encoding, for example, a heatmap
+    /* A 2D array is encoded for transfer like  a dataframe
+    having an unique, (2D) column.
+    The column name is "special", i.e. it is a string containing
+    three comma separated keys, e.g. "x,y,z"
+    this format is useful for encoding, for example, a heatmap */
     const table = this.model.get("_df");
     const res = Array(table.size * table.size);
     const fancyCol = table.columns[0];

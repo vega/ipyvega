@@ -38,7 +38,7 @@ widget = [
     "ipywidgets"
 ]
 jupyterlab = [
-"jupyterlab"
+    "jupyterlab"
 ]
 
 [tool.poetry.plugins."altair.vegalite.v4.renderer"]
