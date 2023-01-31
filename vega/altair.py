@@ -66,7 +66,11 @@ def stream(alt_spec, exceptions=None, resize=False, reuse=False):
     alt_spec : top-level chart object such as Chart or LayeredChart
         the Altair specification
     exceptions : list
-        a list of dataframes of id(dataframe) that should be inlined
+        a list of dataframes of id(dataframe) that should be inlined.
+        A small dataframe does not benefit from the streaming API.
+        A geopandas dataframe is also not compressed anyway. If you send
+        one of these, you can put them in the exception list to save
+        some cycles.
     reuse : boolean
         if True, return the context dictionary and the widget. The
         context dictionary associate a dataframe id with a pair
@@ -77,7 +81,12 @@ def stream(alt_spec, exceptions=None, resize=False, reuse=False):
         need it, others don't. Defaults to True but can be overridden
         here.
     reuse: boolean
-        Return the context and widget if True, None otherwise
+        Return the context and widget if True, None otherwise.
+        The context and widget are useful to stream multiple times
+        to the same widget. If the `stream` function is used to speed
+        up the dataset transfer once and for all (the default),
+        there is no need to return the context and widget. It would
+        leave a usefuless value in a notebook cell.
 
     Returns
     -------
