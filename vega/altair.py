@@ -86,7 +86,7 @@ def stream(alt_spec, exceptions=None, resize=False, reuse=False):
         to the same widget. If the `stream` function is used to speed
         up the dataset transfer once and for all (the default),
         there is no need to return the context and widget. It would
-        leave a usefuless value in a notebook cell.
+        leave a useless value in a notebook cell.
 
     Returns
     -------
