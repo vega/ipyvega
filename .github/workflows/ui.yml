@@ -44,7 +44,7 @@ jobs:
           python -m pip install jupyterlab==3.0.11
 
       - name: Setup Node
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
 
       - name: Install Node dependencies
         run: yarn --frozen-lockfile
