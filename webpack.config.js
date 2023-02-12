@@ -22,7 +22,6 @@ const commonConfig = {
         onEnd: {
           copy: [
             { source: './src/vega.js', destination: outputPath + '/vega.js' },
-            { source: './src/extension.js', destination: outputPath + '/extension.js' },
             { source: outputPath + '/*', destination: './dist' }
           ]
         }
@@ -35,6 +34,16 @@ const commonConfig = {
 module.exports = [
   // the main vega extension
   Object.assign({}, commonConfig, {
+    entry: "./src/extension.ts",
+    output: {
+      filename: "extension.js",
+      path: outputPath,
+      libraryTarget: "amd",
+    },
+    externals: ["@jupyter-widgets/base"]
+  }),
+  // the main vega extension
+  Object.assign({}, commonConfig, {
     entry: "./src/index.ts",
     output: {
       filename: "index.js",
@@ -44,17 +53,23 @@ module.exports = [
     },
     externals: ["@jupyter-widgets/base"]
   }),
-  // the widget extension
+  // the index extension
   Object.assign({}, commonConfig, {
-    entry: "./src/widget.ts",
+    entry: "./src/index.ts",
     output: {
-      filename: "widget.js",
+      filename: "index.js",
       path: outputPath,
       libraryTarget: "amd"
     },
-    externals: {
-      "@jupyter-widgets/base": "@jupyter-widgets/base",
-      "./index": "jupyter-vega"
-    }
-  })
+    externals: ["@jupyter-widgets/base"]
+  }),
+  Object.assign({}, commonConfig, {
+    entry: "./src/labplugin.ts",
+    output: {
+      filename: "labplugin.js",
+      path: outputPath,
+      libraryTarget: "amd"
+    },
+    externals: ["@jupyter-widgets/base"]
+  }),
 ];

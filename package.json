@@ -18,18 +18,21 @@
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
-  "dependencies": {
+    "dependencies": {
+    "jupyter-tablewidgets": "^0.2.4",
     "vega": "5.22.1",
     "vega-lite": "4.17.0",
-    "vega-embed": "^6.20.6",
-    "@jupyter-widgets/base": "6.0.1",
+    "vega-embed": "^6.21.0",
+    "@jupyter-widgets/base": "6.0.2",
     "@types/webpack-env": "*"
   },
   "devDependencies": {
+    "@types/webpack-env": "*",
+    "@types/ndarray": "^1.0.11",
     "filemanager-webpack-plugin": "^7.0.0",
     "prettier": "^2.5.1",
-    "typescript": "^4.5.5",
     "ts-loader": "^9.2.6",
+    "typescript": "^4.5.5",
     "webpack": "^5.68.0",
     "webpack-cli": "^4.9.2"
   },
@@ -39,6 +42,16 @@
     "package.json",
     "tsconfig.json",
     "webpack.config.js",
-    "yarn.lock"
-  ]
+    "yarn.lock",
+    "vega/static/"
+  ],
+  "jupyterlab": {
+      "extension": "vega/static/labplugin",
+      "sharedPackages": {
+      "@jupyter-widgets/base": {
+        "bundled": false,
+        "singleton": true
+      }
+    }
+  }
 }

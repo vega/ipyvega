@@ -35,7 +35,7 @@ def sanitize_dataframe(df):
     import numpy as np
     import pandas as pd
 
-    df = df.copy() # type: pd.DataFrame
+    df = df.copy()  # type: pd.DataFrame
 
     if isinstance(df.index, pd.core.indexes.multi.MultiIndex):
         raise ValueError('Hierarchical indices not supported')

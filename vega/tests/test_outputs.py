@@ -45,3 +45,4 @@ def test_vega_output():
     data = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 5, 6]})
     obj = Vega(VEGA_SPEC, data)
     js = obj._generate_js(id='ABC')
+    assert js != None

@@ -16,7 +16,6 @@ class VegaBase(object):
 
     def __init__(self, spec, data=None, opt=None):
         """Initialize the visualization object."""
-        spec = spec
         self.opt = opt or {}
         self.spec = self._prepare_spec(spec, data)
 

@@ -23,8 +23,7 @@ require(["jupyter-vega"], function(vega) {{
   // IPython.display.html#IPython.display.Javascript.__init__
   element[0].appendChild(target);
   element[0].appendChild(style);
-
-  vega.render(`#${id}`, spec, type, opt, output_area);
+  vega.render(`#${{id}}`, spec, type, opt, output_area);
 }}, function (err) {{
   if (err.requireType !== "scripterror") {{
     throw(err);

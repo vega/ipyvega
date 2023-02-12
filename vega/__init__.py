@@ -20,7 +20,7 @@ def _jupyter_nbextension_paths():
         # directory in the `nbextension/` namespace
         dest="jupyter-vega",
         # _also_ in the `nbextension/` namespace
-        require="jupyter-vega/index")]
+        require="jupyter-vega/extension")]
 
 
 def find_static_assets():
