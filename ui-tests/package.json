@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "start-jlab": "jupyter lab --config ./jupyter_server_config.py",
-    "start-jlab:detached": "yarn run start-jlab&",
-    "test:create-references": "galata --skip-visual-regression --skip-html-regression",
+    "start-jlab:detached": "yarn start-jlab&",
+    "test:update-references": "galata --update-references",
     "test": "galata"
   },
   "dependencies": {

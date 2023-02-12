@@ -40,8 +40,8 @@ jobs:
       - name: Install Python dependencies
         run: |
           poetry install
-          python -m pip install jupyterlab-widgets==1.0.2
-          python -m pip install jupyterlab==3.0.11
+          python -m pip install jupyterlab-widgets==1.1.2
+          python -m pip install jupyterlab==3.6.1
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -55,11 +55,12 @@ jobs:
       - name: Run tests
         run: |
           jupyter labextension install .
+          jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
           cd ui-tests/
           yarn
-          yarn run start-jlab:detached
+          yarn start-jlab:detached
           sleep 10
-          yarn run test
+          yarn test
       - name: Upload output file
         if: failure()
         uses: actions/upload-artifact@v2

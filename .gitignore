@@ -65,3 +65,7 @@ node_modules/
 
 # Virtual env
 .venv/*
+
+ui-tests/test-output
+ui-tests/yarn.lock
+ui-tests/uploaded
