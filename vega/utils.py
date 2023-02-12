@@ -1,4 +1,4 @@
-import cgi
+import html
 import codecs
 import os.path
 
@@ -18,7 +18,7 @@ def get_content(path):
 
 def escape(string):
     """Escape the string."""
-    return cgi.escape(string, quote=True)
+    return html.escape(string)
 
 
 def sanitize_dataframe(df):
