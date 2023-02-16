@@ -53,7 +53,6 @@ describe('Vega UI test', () => {
     await galata.notebook.runCellByCell({
       onAfterCellRun: async (cellIndex: number) => {
         const cell = await galata.notebook.getCellOutput(cellIndex);
-	      console.log("CELL:", cell);
         if (cell) {
           if (
             await galata.capture.screenshot(
