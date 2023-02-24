@@ -1,17 +1,25 @@
 {
   "name": "ipyvega-end2end-tests",
-  "version": "1.0.0",
-  "description": "ipyvega end to end Tests",
+  "version": "0.2.0",
+  "description": [
+      "ipyvega end to end Tests",
+      "NB:",
+      "  this configuration was adapted from ipywidgets ui-tests/*",
+      "  Copyright (c) 2015 Project Jupyter Contributors",
+      "  All rights reserved."
+  ],
   "private": true,
-  "scripts": {
-    "start-jlab": "jupyter lab --config ./jupyter_server_config.py",
-    "start-jlab:detached": "yarn start-jlab&",
-    "test:update-references": "galata --update-references",
-    "test": "galata"
+ "scripts": {
+    "start": "jupyter lab --config ./jupyter_server_config.py",
+    "start:detached": "jlpm start&",
+    "test": "playwright test",
+    "test:debug": "PWDEBUG=1 playwright test",
+    "test:report": "http-server ./playwright-report -a localhost -o",
+    "test:update": "playwright test --update-snapshots",
+    "deduplicate": "jlpm && yarn-deduplicate -s fewer --fail"
   },
-  "dependencies": {
-    "@jupyterlab/galata": "3.0.11-2",
-    "@types/jest": "^27.0.1",
-    "jest": "^25.5.4"
+  "devDependencies": {
+    "@jupyterlab/galata": "^4.5.1",
+    "yarn-deduplicate": "^6.0.1"
   }
 }

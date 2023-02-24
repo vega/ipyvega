@@ -1,5 +1,11 @@
 name: UI Tests
 
+# NB: parts of this file were adapted from:
+#
+#     https://github.com/jupyter-widgets/ipywidgets/blob/main/.github/workflows/tests.yml
+#     Copyright (c) 2015 Project Jupyter Contributors
+#     All rights reserved
+
 on:
   push:
     branches:
@@ -40,7 +46,6 @@ jobs:
       - name: Install Python dependencies
         run: |
           poetry install
-          python -m pip install jupyterlab-widgets==1.1.2
           python -m pip install jupyterlab==3.6.1
 
       - name: Setup Node
@@ -52,18 +57,31 @@ jobs:
       - name: Build
         run: yarn run build
 
-      - name: Run tests
+      - name: Setup and start Jupyterlab
         run: |
           jupyter labextension install .
           jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
           cd ui-tests/
-          yarn
-          yarn start-jlab:detached
-          sleep 10
-          yarn test
-      - name: Upload output file
-        if: failure()
-        uses: actions/upload-artifact@v2
+          yarn --frozen-lockfile
+          yarn playwright install chromium
+          yarn start:detached
+      - name: Wait for JupyterLab
+        uses: ifaxity/wait-on-action@v1
         with:
-          name: cell-artifact
-          path: ui-tests/test-output/test/screenshots/vega_cell_*.png
+          resource: http-get://localhost:8888/api
+          timeout: 20000  
+      - name: Run tests
+        run: |
+          cd ui-tests/
+          yarn run test
+      - name: Update images
+        if: failure()
+        run: |
+          cd ui-tests/
+          yarn run test:update
+      - name: Upload images
+        if: failure()    
+        uses: actions/upload-artifact@v3
+        with:
+          name: ipyvega-updated-snapshots
+          path: ui-tests/tests/vega.test.ts-snapshots/

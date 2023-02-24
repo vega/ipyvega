@@ -73,3 +73,11 @@ To rebuild the JavaScript continuously, run `yarn watch`.
 * Then run `poetry publish --build` to update https://pypi.python.org/pypi/vega.
 
 The Conda feedstock for this package is at https://github.com/conda-forge/vega-feedstock. It should update automatically but we may need to merge a pull request with the updates. 
+
+### Visual Regression Tests
+
+ipyvega uses the same solution as [ipywidgets](https://github.com/jupyter-widgets/ipywidgets) for visual regression testing.
+
+Therefore, the instructions provided for [ipywidgets visual regression tests](https://ipywidgets.readthedocs.io/en/stable/dev_testing.html#visual-regression-tests) apply here.
+
+Currently, ipyvega uses `ui-tests/tests/notebooks/NBTest.ipynb` notebook for testing and reference images are in the `ui-tests/tests/vega.test.ts-snapshots/` directory.
