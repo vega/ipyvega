@@ -1,11 +1,5 @@
 name: UI Tests
 
-# NB: parts of this file were adapted from:
-#
-#     https://github.com/jupyter-widgets/ipywidgets/blob/main/.github/workflows/tests.yml
-#     Copyright (c) 2015 Project Jupyter Contributors
-#     All rights reserved
-
 on:
   push:
     branches:

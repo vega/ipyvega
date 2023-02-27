@@ -1,5 +1,6 @@
 /*
- NB: Parts of this file adapted  from Jupyter Widgets (https://github.com/jupyter-widgets/ipywidgets/blob/master/ui-tests/tests/widgets.test.ts)
+This file contains substantial portions of https://github.com/jupyter-widgets/ipywidgets/blob/7325e5952efb71bd69692b2d7ed815646c0ac521/ui-tests/tests/widgets.test.ts, which has the following license:
+
      Copyright (c) 2015 Project Jupyter Contributors
      All rights reserved.
 
@@ -14,8 +15,8 @@
    	and/or other materials provided with the distribution.
 
      3. Neither the name of the copyright holder nor the names of its
-     contributors may be used to endorse or promote products derived from
-     this software without specific prior written permission.
+        contributors may be used to endorse or promote products derived from
+        this software without specific prior written permission.
 
      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
      AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -44,11 +45,11 @@ test.describe('Widget Visual Regression', () => {
     await page.filebrowser.openDirectory(tmpPath);
   });
 
-  test('Run notebook NBTest.ipynb and capture cell outputs', async ({
+  test('Run notebook vega.ipynb and capture cell outputs', async ({
     page,
     tmpPath,
   }) => {
-    const notebook = 'NBTest.ipynb';
+    const notebook = 'vega.ipynb';
     await page.notebook.openByPath(`${tmpPath}/${notebook}`);
     await page.notebook.activate(notebook);
 

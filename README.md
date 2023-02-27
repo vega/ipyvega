@@ -76,8 +76,11 @@ The Conda feedstock for this package is at https://github.com/conda-forge/vega-f
 
 ### Visual Regression Tests
 
-ipyvega uses the same solution as [ipywidgets](https://github.com/jupyter-widgets/ipywidgets) for visual regression testing.
+ipyvega uses the same technical solution as [ipywidgets](https://github.com/jupyter-widgets/ipywidgets) for visual regression testing (i.e. [Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata)).
 
 Therefore, the instructions provided for [ipywidgets visual regression tests](https://ipywidgets.readthedocs.io/en/stable/dev_testing.html#visual-regression-tests) apply here.
 
-Currently, ipyvega uses `ui-tests/tests/notebooks/NBTest.ipynb` notebook for testing and reference images are in the `ui-tests/tests/vega.test.ts-snapshots/` directory.
+Currently:
+
+* ipyvega uses `ui-tests/tests/notebooks/vega.ipynb` notebook for testing
+* reference images are in the `ui-tests/tests/vega.test.ts-snapshots/` directory.
