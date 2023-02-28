@@ -5,13 +5,13 @@ updates:
   schedule:
     interval: monthly
     day: sunday
-- package-ecosystem: pip
-  directory: "/ui-tests"
+- package-ecosystem: npm
+  directory: "/"
   schedule:
     interval: monthly
     day: sunday
 - package-ecosystem: npm
-  directory: "/"
+  directory: "/ui-tests"
   schedule:
     interval: monthly
     day: sunday
