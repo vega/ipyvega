@@ -27,7 +27,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Setup poetry
-        uses: abatilo/actions-poetry@v2.2.0
+        uses: abatilo/actions-poetry@v2.3.0
         with:
           poetry-version: 1.3.2
 
