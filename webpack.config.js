@@ -1,7 +1,7 @@
 const version = require('./package.json').version;
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 
-const outputPath = __dirname + "/vega/static";
+const outputPath = `${__dirname}/vega/static`;
 
 const commonConfig = {
   resolve: {
@@ -21,8 +21,8 @@ const commonConfig = {
       events: {
         onEnd: {
           copy: [
-            { source: './src/vega.js', destination: outputPath + '/vega.js' },
-            { source: outputPath + '/*', destination: './dist' }
+            { source: './src/vega.js', destination: `${outputPath}/vega.js` },
+            { source: `${outputPath}/*`, destination: './dist' }
           ]
         }
       }
@@ -49,7 +49,7 @@ module.exports = [
       filename: "index.js",
       path: outputPath,
       libraryTarget: "amd",
-      publicPath: 'https://unpkg.com/jupyter-vega@' + version + '/dist/'
+      publicPath: `https://unpkg.com/jupyter-vega@${version}/dist/`
     },
     externals: ["@jupyter-widgets/base"]
   }),
