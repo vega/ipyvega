@@ -33,7 +33,7 @@ const commonConfig = {
 
 module.exports = [
   // the main vega extension
-  Object.assign({}, commonConfig, {
+  {...commonConfig, ...{
     entry: "./src/extension.ts",
     output: {
       filename: "extension.js",
@@ -41,9 +41,9 @@ module.exports = [
       libraryTarget: "amd",
     },
     externals: ["@jupyter-widgets/base"]
-  }),
+  }},
   // the main vega extension
-  Object.assign({}, commonConfig, {
+  {...commonConfig, ...{
     entry: "./src/index.ts",
     output: {
       filename: "index.js",
@@ -52,9 +52,9 @@ module.exports = [
       publicPath: `https://unpkg.com/jupyter-vega@${version}/dist/`
     },
     externals: ["@jupyter-widgets/base"]
-  }),
+  }},
   // the index extension
-  Object.assign({}, commonConfig, {
+  {...commonConfig, ...{
     entry: "./src/index.ts",
     output: {
       filename: "index.js",
@@ -62,8 +62,8 @@ module.exports = [
       libraryTarget: "amd"
     },
     externals: ["@jupyter-widgets/base"]
-  }),
-  Object.assign({}, commonConfig, {
+  }},
+  {...commonConfig, ...{
     entry: "./src/labplugin.ts",
     output: {
       filename: "labplugin.js",
@@ -71,5 +71,5 @@ module.exports = [
       libraryTarget: "amd"
     },
     externals: ["@jupyter-widgets/base"]
-  }),
+  }},
 ];

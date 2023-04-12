@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vega"
-version = "3.6.0"
+version = "4.0.0"
 license = "BSD 3-clause"
 description = "A Jupyter widget for Vega 5 and Vega-Lite 4"
 authors = ["Dominik Moritz <domoritz@gmail.com>"]
@@ -48,5 +48,5 @@ notebook = "vega.vegalite:entry_point_renderer"
 notebook = "vega.vega:entry_point_renderer"
 
 [build-system]
-requires = ["poetry>=0.12"]
+requires = ["poetry>=1.4.2"]
 build-backend = "poetry.masonry.api"

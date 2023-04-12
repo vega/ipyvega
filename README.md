@@ -64,7 +64,7 @@ To rebuild the JavaScript continuously, run `yarn watch`.
 
 * Update the JavaScript dependencies by changing `package.json` (e.g. with [ncu](https://www.npmjs.com/package/npm-check-updates)).
 * Run `yarn`.
-* Update the version number in `pyproject.toml` (with `poetry version [VERSION]`), `package.json`, `widget.py`, and `__init__.py`
+* Update the version number in `pyproject.toml` (with `poetry version [VERSION]`), `package.json`, `_frontend.py`, and `__init__.py`
 * Rebuild the JavaScript with `yarn build`.
 * Make sure that everything still works (launch notebook and widgets and try the examples).
 * Add a git tag.
