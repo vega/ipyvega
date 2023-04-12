@@ -9,14 +9,11 @@ updates:
   directory: "/"
   schedule:
     interval: monthly
-    day: sunday
 - package-ecosystem: npm
   directory: "/ui-tests"
   schedule:
     interval: monthly
-    day: sunday
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
     interval: monthly
-    day: sunday
