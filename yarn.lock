@@ -1549,9 +1549,9 @@ jsonfile@^6.0.1:
     graceful-fs "^4.1.6"
 
 jupyter-tablewidgets@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/jupyter-tablewidgets/-/jupyter-tablewidgets-0.3.0.tgz#38040ec96fbdb9065614db60c1a8e0bceecc5b61"
-  integrity sha512-RPTdT1/Wh5b/50KbyZ7f03RKij7WbR3+lLp/nLwn/U3WoGjfK4rjbPM0EnUO3pUiUidN1/Yu+DhZphYkq2/1eg==
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/jupyter-tablewidgets/-/jupyter-tablewidgets-0.3.1.tgz#b9cbe46507de5fbea7da7e4b2e8e1a27c5a84121"
+  integrity sha512-Fp0o/lYIzy9AU8UG3YX4hdQyNTGKR8m7wRMt4tQfXRXD3zOYofpdAjCKGymMCgwaTBKwT9GlPYkwYxESfw0gcQ==
   dependencies:
     "@jupyter-widgets/base" "^2 || ^3 || ^4 || ^5 || ^6"
     lz4js "^0.2.0"
