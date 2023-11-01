@@ -40,7 +40,7 @@ jobs:
       - run: poetry run jupyter nbextension install vega --py --sys-prefix
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
 
       - name: Install Node dependencies
         run: yarn --frozen-lockfile
