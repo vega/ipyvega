@@ -75,7 +75,7 @@ jobs:
           yarn run test:update
       - name: Upload images
         if: failure()    
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ipyvega-updated-snapshots
           path: ui-tests/tests/vega.test.ts-snapshots/
