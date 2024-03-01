@@ -52,10 +52,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@jupyter-widgets/base@6.0.6", "@jupyter-widgets/base@^2 || ^3 || ^4 || ^5 || ^6":
-  version "6.0.6"
-  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-6.0.6.tgz#1e6746c897085ab7a9aea6d2890b10833011b66d"
-  integrity sha512-oafc4mZfH2r7VP15fPTmonwYg9onPsO8To4ip/p4fxRB3aBGIDDev5hou0dk2XfOpZLFgYAASEf3x6ze6KLnrQ==
+"@jupyter-widgets/base@6.0.7", "@jupyter-widgets/base@^2 || ^3 || ^4 || ^5 || ^6":
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-6.0.7.tgz#67e9590b182d298d420025d08ccecf98557baf69"
+  integrity sha512-a4VoUtL+90mGH6VE6m78D2J9aNy9Q1JrPP91HAQTXBysVpCLTtq0Ie8EupN5Su7V8eFwl/wz91J2m0p4jY4h0g==
   dependencies:
     "@jupyterlab/services" "^6.0.0 || ^7.0.0"
     "@lumino/coreutils" "^1.11.1 || ^2.1"
