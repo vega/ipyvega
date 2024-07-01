@@ -45,7 +45,7 @@
     "deduplicate": "jlpm && yarn-deduplicate -s fewer --fail"
   },
   "devDependencies": {
-    "@jupyterlab/galata": "^4.5.3",
+    "@jupyterlab/galata": "^5.2.3",
     "yarn-deduplicate": "^6.0.1"
   }
 }
