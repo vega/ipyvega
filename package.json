@@ -23,7 +23,7 @@
     "vega": "5.30.0",
     "vega-lite": "4.17.0",
     "vega-embed": "^6.21.3",
-    "@jupyter-widgets/base": "6.0.6",
+    "@jupyter-widgets/base": "6.0.10",
     "@types/webpack-env": "*"
   },
   "devDependencies": {
