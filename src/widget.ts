@@ -142,7 +142,7 @@ export class VegaWidget extends DOMWidgetView {
       }
       const filter = new Function(
         "datum",
-        `return (${update.remove || "false"})`
+        `return (${update.remove || "false"})`,
       );
       let newValues = update.insert || [];
       switch (newValues) {
