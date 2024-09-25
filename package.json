@@ -22,19 +22,19 @@
     "jupyter-tablewidgets": "^0.3.0",
     "vega": "5.30.0",
     "vega-lite": "4.17.0",
-    "vega-embed": "^6.21.3",
-    "@jupyter-widgets/base": "6.0.6",
+    "vega-embed": "^6.26.0",
+    "@jupyter-widgets/base": "6.0.10",
     "@types/webpack-env": "*"
   },
   "devDependencies": {
     "@types/webpack-env": "*",
-    "@types/ndarray": "^1.0.11",
+    "@types/ndarray": "^1.0.14",
     "filemanager-webpack-plugin": "^8.0.0",
-    "prettier": "^2.8.7",
-    "ts-loader": "^9.4.2",
+    "prettier": "^3.3.3",
+    "ts-loader": "^9.5.1",
     "typescript": "^5.0.4",
-    "webpack": "^5.78.0",
-    "webpack-cli": "^5.0.1"
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   },
   "files": [
     "dist",

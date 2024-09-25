@@ -70,7 +70,22 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@jupyter-widgets/base@6.0.6", "@jupyter-widgets/base@^2 || ^3 || ^4 || ^5 || ^6":
+"@jupyter-widgets/base@6.0.10":
+  version "6.0.10"
+  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-6.0.10.tgz#f04a4110bc13344406fc4687bb88c6d3aae94c9a"
+  integrity sha512-iJvBT4drhwd3kpfMXaIFoD+FZTqbm1pKNi8Gvv+Wggnefyw6SHugZ0hjHoBxZD362wEUM8fpHQmdj59KvXWg0g==
+  dependencies:
+    "@jupyterlab/services" "^6.0.0 || ^7.0.0"
+    "@lumino/coreutils" "^1.11.1 || ^2.1"
+    "@lumino/messaging" "^1.10.1 || ^2.1"
+    "@lumino/widgets" "^1.30.0 || ^2.1"
+    "@types/backbone" "1.4.14"
+    "@types/lodash" "^4.14.134"
+    backbone "1.4.0"
+    jquery "^3.1.1"
+    lodash "^4.17.4"
+
+"@jupyter-widgets/base@^2 || ^3 || ^4 || ^5 || ^6":
   version "6.0.6"
   resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-6.0.6.tgz#1e6746c897085ab7a9aea6d2890b10833011b66d"
   integrity sha512-oafc4mZfH2r7VP15fPTmonwYg9onPsO8To4ip/p4fxRB3aBGIDDev5hou0dk2XfOpZLFgYAASEf3x6ze6KLnrQ==
@@ -374,7 +389,7 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.192.tgz#5790406361a2852d332d41635d927f1600811285"
   integrity sha512-km+Vyn3BYm5ytMO13k9KTp27O75rbQ0NFw+U//g+PX7VZyjCioXaRFisqSIJRECljcTv73G3i6BpglNGHgUQ5A==
 
-"@types/ndarray@^1.0.11":
+"@types/ndarray@^1.0.14":
   version "1.0.14"
   resolved "https://registry.yarnpkg.com/@types/ndarray/-/ndarray-1.0.14.tgz#96b28c09a3587a76de380243f87bb7a2d63b4b23"
   integrity sha512-oANmFZMnFQvb219SSBIhI1Ih/r4CvHDOzkWyJS/XRqkMrGH5/kaPSA1hQhdIBzouaE+5KpE/f5ylI9cujmckQg==
@@ -1920,10 +1935,10 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-prettier@^2.8.7:
-  version "2.8.7"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.7.tgz#bb79fc8729308549d28fe3a98fce73d2c0656450"
-  integrity sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==
+prettier@^3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.3.3.tgz#30c54fe0be0d8d12e6ae61dbb10109ea00d53105"
+  integrity sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
@@ -2345,7 +2360,7 @@ tr46@~0.0.3:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
 
-ts-loader@^9.4.2:
+ts-loader@^9.5.1:
   version "9.5.1"
   resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-9.5.1.tgz#63d5912a86312f1fbe32cef0859fb8b2193d9b89"
   integrity sha512-rNH3sK9kGZcH9dYzC7CewQm4NtxJTjSEVRJ2DyBZR7f8/wcta+iV44UPCXc5+nzDzivKtlzV6c9P4e+oFhDLYg==
@@ -2487,7 +2502,7 @@ vega-dataflow@^5.7.6, vega-dataflow@~5.7.6:
     vega-loader "^4.5.2"
     vega-util "^1.17.2"
 
-vega-embed@^6.21.3:
+vega-embed@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-6.26.0.tgz#25ca51783b2819adf6e6330ae6dd5771e8da8653"
   integrity sha512-AZCTdKHDAuhp6TFZRQOOs332tStCwZr/5e4uZMNEuJL69A57cT66NNZJdNiCP6u66REzIToYtMJhMTL9wl5B3A==
@@ -2865,7 +2880,7 @@ webidl-conversions@^3.0.0:
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
   integrity sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==
 
-webpack-cli@^5.0.1:
+webpack-cli@^5.1.4:
   version "5.1.4"
   resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-5.1.4.tgz#c8e046ba7eaae4911d7e71e2b25b776fcc35759b"
   integrity sha512-pIDJHIEI9LR0yxHXQ+Qh95k2EvXpWzZ5l+d+jIo+RdSm9MiHfzazIxwwni/p7+x4eJZuvG1AJwgC4TNQ7NRgsg==
@@ -2897,7 +2912,7 @@ webpack-sources@^3.2.3:
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.2.3.tgz#2d4daab8451fd4b240cc27055ff6a0c2ccea0cde"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
-webpack@^5.78.0:
+webpack@^5.94.0:
   version "5.94.0"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.94.0.tgz#77a6089c716e7ab90c1c67574a28da518a20970f"
   integrity sha512-KcsGn50VT+06JH/iunZJedYGUJS5FGjow8wb9c0v5n1Om8O1g4L6LjtfxwlXIATopoQu+vOXXa7gYisWxCoPyg==
