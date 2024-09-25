@@ -51,7 +51,7 @@ export function render(
   spec: Spec | TopLevelSpec,
   type: Mode,
   opt: EmbedOptions,
-  output_area: any
+  output_area: any,
 ) {
   // Find the indices of this visualizations JS and PNG
   // representation.
