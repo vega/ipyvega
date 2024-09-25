@@ -40,7 +40,6 @@ jobs:
       - name: Install Python dependencies
         run: |
           poetry install
-          python -m pip install jupyterlab==3.6.1
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -74,7 +73,7 @@ jobs:
           cd ui-tests/
           yarn run test:update
       - name: Upload images
-        if: failure()    
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: ipyvega-updated-snapshots
