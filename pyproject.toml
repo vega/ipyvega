@@ -31,7 +31,7 @@ ipytablewidgets = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.3"
-altair = "^4.0.1"
+altair = "^5.4.1"
 
 [tool.poetry.extras]
 widget = [
