@@ -70,25 +70,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@jupyter-widgets/base@6.0.10":
+"@jupyter-widgets/base@6.0.10", "@jupyter-widgets/base@^2 || ^3 || ^4 || ^5 || ^6":
   version "6.0.10"
   resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-6.0.10.tgz#f04a4110bc13344406fc4687bb88c6d3aae94c9a"
   integrity sha512-iJvBT4drhwd3kpfMXaIFoD+FZTqbm1pKNi8Gvv+Wggnefyw6SHugZ0hjHoBxZD362wEUM8fpHQmdj59KvXWg0g==
-  dependencies:
-    "@jupyterlab/services" "^6.0.0 || ^7.0.0"
-    "@lumino/coreutils" "^1.11.1 || ^2.1"
-    "@lumino/messaging" "^1.10.1 || ^2.1"
-    "@lumino/widgets" "^1.30.0 || ^2.1"
-    "@types/backbone" "1.4.14"
-    "@types/lodash" "^4.14.134"
-    backbone "1.4.0"
-    jquery "^3.1.1"
-    lodash "^4.17.4"
-
-"@jupyter-widgets/base@^2 || ^3 || ^4 || ^5 || ^6":
-  version "6.0.6"
-  resolved "https://registry.yarnpkg.com/@jupyter-widgets/base/-/base-6.0.6.tgz#1e6746c897085ab7a9aea6d2890b10833011b66d"
-  integrity sha512-oafc4mZfH2r7VP15fPTmonwYg9onPsO8To4ip/p4fxRB3aBGIDDev5hou0dk2XfOpZLFgYAASEf3x6ze6KLnrQ==
   dependencies:
     "@jupyterlab/services" "^6.0.0 || ^7.0.0"
     "@lumino/coreutils" "^1.11.1 || ^2.1"
@@ -1650,9 +1635,9 @@ jsonpointer@^5.0.1:
   integrity sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==
 
 jupyter-tablewidgets@^0.3.0:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/jupyter-tablewidgets/-/jupyter-tablewidgets-0.3.1.tgz#b9cbe46507de5fbea7da7e4b2e8e1a27c5a84121"
-  integrity sha512-Fp0o/lYIzy9AU8UG3YX4hdQyNTGKR8m7wRMt4tQfXRXD3zOYofpdAjCKGymMCgwaTBKwT9GlPYkwYxESfw0gcQ==
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/jupyter-tablewidgets/-/jupyter-tablewidgets-0.3.2.tgz#7d081870580264fac150c5b01be9e1c6a80e34be"
+  integrity sha512-XC0XNLX+CwU2n+GoA/w2BOq+qHIYyqm/Dr9F/uluCqNWI4KyyQ55gAwcgqiGfr/puDbcNWIByrxVaQlgdT34Ag==
   dependencies:
     "@jupyter-widgets/base" "^2 || ^3 || ^4 || ^5 || ^6"
     lz4js "^0.2.0"
