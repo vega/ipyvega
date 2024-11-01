@@ -716,22 +716,21 @@ test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0)", "pytest-asyncio"
 
 [[package]]
 name = "ipytablewidgets"
-version = "0.3.1"
+version = "0.3.2"
 description = "A set of widgets to help facilitate reuse of large tables across widgets"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "ipytablewidgets-0.3.1-py2.py3-none-any.whl", hash = "sha256:6624cbeb73c73c68c5900a3a7719bf6aab560455e76247d373f3fa50336342a8"},
-    {file = "ipytablewidgets-0.3.1.tar.gz", hash = "sha256:d78bc88a1fabfcf1cbc61806dbd62dc2ea2c4812e97b00f60a5b96a47dbea4b7"},
+    {file = "ipytablewidgets-0.3.2-py2.py3-none-any.whl", hash = "sha256:a407d8350faca5ca58392eb4a53d9ebfcc2a98e4481f2b6b50bdae87728c24b8"},
+    {file = "ipytablewidgets-0.3.2.tar.gz", hash = "sha256:08691bfff98b526932bfe8665495f9fb4e091827f0f93b5f0713135d6d1b86cc"},
 ]
 
 [package.dependencies]
 ipywidgets = ">=7.5.0,<9"
 lz4 = "*"
-numpy = ">=1.10.4,<2.0.0"
+numpy = ">=1.10.4,<3.0.0"
 pandas = ">=1.0.0,<3.0.0"
 traitlets = ">=4.3.0"
-traittypes = ">=0.0.6"
 
 [[package]]
 name = "ipython"
@@ -2267,23 +2266,6 @@ files = [
 [package.extras]
 docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
 test = ["argcomplete (>=2.0)", "pre-commit", "pytest", "pytest-mock"]
-
-[[package]]
-name = "traittypes"
-version = "0.2.1"
-description = "Scipy trait types"
-optional = false
-python-versions = "*"
-files = [
-    {file = "traittypes-0.2.1-py2.py3-none-any.whl", hash = "sha256:1340af133810b6eee1a2eb2e988f862b0d12b6c2d16f282aaf3207b782134c2e"},
-    {file = "traittypes-0.2.1.tar.gz", hash = "sha256:be6fa26294733e7489822ded4ae25da5b4824a8a7a0e0c2dccfde596e3489bd6"},
-]
-
-[package.dependencies]
-traitlets = ">=4.2.2"
-
-[package.extras]
-test = ["numpy", "pandas", "pytest", "xarray"]
 
 [[package]]
 name = "typing-extensions"
