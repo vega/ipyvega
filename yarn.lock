@@ -320,6 +320,11 @@
     lodash-es "^4.17.21"
     react-is "^18.2.0"
 
+"@rollup/rollup-linux-x64-gnu@^4.24.4":
+  version "4.28.0"
+  resolved "https://registry.yarnpkg.com/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.28.0.tgz#065952ef2aea7e837dc7e02aa500feeaff4fc507"
+  integrity sha512-Nl4KIzteVEKE9BdAvYoTkW19pa7LR/RBrT6F1dJCV/3pbjwDcaOq+edkP0LXuJ9kflW/xOK414X78r+K84+msw==
+
 "@types/archiver@^5.3.1":
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/@types/archiver/-/archiver-5.3.2.tgz#a9f0bcb0f0b991400e7766d35f6e19d163bdadcc"
@@ -1600,10 +1605,10 @@ json-schema-traverse@^1.0.0:
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz#ae7bcb3656ab77a73ba5c49bf654f38e6b6860e2"
   integrity sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==
 
-json-stringify-pretty-compact@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/json-stringify-pretty-compact/-/json-stringify-pretty-compact-3.0.0.tgz#f71ef9d82ef16483a407869556588e91b681d9ab"
-  integrity sha512-Rc2suX5meI0S3bfdZuA7JMFBGkJ875ApfVyq2WHELjBiiG22My/l7/8zPpH/CfFVQHuVLd8NLR0nv6vi0BYYKA==
+json-stringify-pretty-compact@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/json-stringify-pretty-compact/-/json-stringify-pretty-compact-4.0.0.tgz#cf4844770bddee3cb89a6170fe4b00eee5dbf1d4"
+  integrity sha512-3CNZ2DnrpByG9Nqj6Xo8vqbjT4F6N+tb4Gb28ESAZjYZ5yqvmc56J+/kuIwkaAMOyblTQhUW7PxMkUb8Q36N3Q==
 
 json-stringify-pretty-compact@~2.0.0:
   version "2.0.0"
@@ -2127,7 +2132,7 @@ schema-utils@^4.0.0:
     ajv-formats "^2.1.1"
     ajv-keywords "^5.0.0"
 
-semver@^7.3.4, semver@^7.6.2:
+semver@^7.3.4, semver@^7.6.3:
   version "7.6.3"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.3.tgz#980f7b5550bc175fb4dc09403085627f9eb33143"
   integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
@@ -2351,10 +2356,10 @@ ts-loader@^9.5.1:
     semver "^7.3.4"
     source-map "^0.7.4"
 
-tslib@^2.6.3:
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.3.tgz#0438f810ad7a9edcde7a241c3d80db693c8cbfe0"
-  integrity sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==
+tslib@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
+  integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
 
 tslib@~2.0.3:
   version "2.0.3"
@@ -2483,18 +2488,18 @@ vega-dataflow@^5.7.6, vega-dataflow@~5.7.6:
     vega-util "^1.17.2"
 
 vega-embed@^6.26.0:
-  version "6.26.0"
-  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-6.26.0.tgz#25ca51783b2819adf6e6330ae6dd5771e8da8653"
-  integrity sha512-AZCTdKHDAuhp6TFZRQOOs332tStCwZr/5e4uZMNEuJL69A57cT66NNZJdNiCP6u66REzIToYtMJhMTL9wl5B3A==
+  version "6.29.0"
+  resolved "https://registry.yarnpkg.com/vega-embed/-/vega-embed-6.29.0.tgz#bf7d2e82b70cef0d56d1beb3202d8085e6653bac"
+  integrity sha512-PmlshTLtLFLgWtF/b23T1OwX53AugJ9RZ3qPE2c01VFAbgt3/GSNI/etzA/GzdrkceXFma+FDHNXUppKuM0U6Q==
   dependencies:
     fast-json-patch "^3.1.1"
-    json-stringify-pretty-compact "^3.0.0"
-    semver "^7.6.2"
-    tslib "^2.6.3"
+    json-stringify-pretty-compact "^4.0.0"
+    semver "^7.6.3"
+    tslib "^2.8.1"
     vega-interpreter "^1.0.5"
     vega-schema-url-parser "^2.2.0"
     vega-themes "^2.15.0"
-    vega-tooltip "^0.34.0"
+    vega-tooltip "^0.35.2"
 
 vega-encode@~4.10.1:
   version "4.10.1"
@@ -2733,12 +2738,14 @@ vega-time@^2.1.2, vega-time@~2.1.2:
     d3-time "^3.1.0"
     vega-util "^1.17.2"
 
-vega-tooltip@^0.34.0:
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/vega-tooltip/-/vega-tooltip-0.34.0.tgz#e0aa4d9c9bcf155e257650ba7e670fad7b1ff5ab"
-  integrity sha512-TtxwkcLZ5aWQTvKGlfWDou8tISGuxmqAW1AgGZjrDpf75qsXvgtbPdRAAls2LZMqDxpr5T1kMEZs9XbSpiI8yw==
+vega-tooltip@^0.35.2:
+  version "0.35.2"
+  resolved "https://registry.yarnpkg.com/vega-tooltip/-/vega-tooltip-0.35.2.tgz#a019133d481ce1e0876c0dc948a0a13703d48bcc"
+  integrity sha512-kuYcsAAKYn39ye5wKf2fq1BAxVcjoz0alvKp/G+7BWfIb94J0PHmwrJ5+okGefeStZnbXxINZEOKo7INHaj9GA==
   dependencies:
     vega-util "^1.17.2"
+  optionalDependencies:
+    "@rollup/rollup-linux-x64-gnu" "^4.24.4"
 
 vega-transforms@~4.12.0:
   version "4.12.0"
