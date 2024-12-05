@@ -2,7 +2,7 @@
 name = "vega"
 version = "4.1.0"
 license = "BSD 3-clause"
-description = "A Jupyter widget for Vega 5 and Vega-Lite 4"
+description = "A Jupyter widget for Vega and Vega-Lite"
 authors = ["Dominik Moritz <domoritz@gmail.com>"]
 packages = [
     { include = "vega" },
